@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="English Proficiency Learning Academy helps learners improve speaking, listening, reading, writing, grammar and vocabulary.">
+  <title>English Proficiency Learning Academy</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="English Proficiency Learning Academy home">
+      <span class="brand-mark">EP</span>
+      <span><strong>English Proficiency</strong><small>Learning Academy</small></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+    <nav id="navMenu">
+      <a href="#home">Home</a><a href="#courses">Courses</a><a href="#about">About</a>
+      <a href="#contact">Contact</a><button class="nav-login" id="openLogin">Log in</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <p class="eyebrow">LEARN • PRACTISE • IMPROVE</p>
+        <h1>Build your confidence in <span>English.</span></h1>
+        <p class="hero-text">Practical online lessons to help you speak, listen, read and write English with confidence—one step at a time.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#courses">Explore courses</a>
+          <button class="button secondary" id="openSignup">Join the academy</button>
+        </div>
+        <div class="trust-line"><span>✓</span> Learn at your own pace <span>✓</span> Practise every day</div>
+      </div>
+      <div class="hero-card">
+        <div class="lesson-icon">Aa</div>
+        <p class="card-label">YOUR LEARNING JOURNEY</p>
+        <h2>Small steps. Strong English.</h2>
+        <div class="progress-row"><span>Vocabulary</span><strong>Build</strong></div><div class="progress"><span style="width:78%"></span></div>
+        <div class="progress-row"><span>Speaking</span><strong>Practise</strong></div><div class="progress"><span style="width:58%"></span></div>
+        <div class="progress-row"><span>Grammar</span><strong>Improve</strong></div><div class="progress"><span style="width:68%"></span></div>
+        <p class="demo-note">Illustration only — progress tracking will be connected in a later phase.</p>
+      </div>
+    </section>
+
+    <section class="section" id="courses">
+      <div class="section-heading"><p class="eyebrow">START LEARNING</p><h2>Explore our learning areas</h2><p>Choose a skill and start building your English step by step.</p></div>
+      <div class="course-grid">
+        <article class="course-card"><div class="course-icon blue">🎧</div><h3>Listening</h3><p>Understand spoken English, conversations and everyday instructions.</p><button class="text-button course-action" data-course="Listening">Explore lessons →</button></article>
+        <article class="course-card"><div class="course-icon green">💬</div><h3>Speaking</h3><p>Practise pronunciation, useful expressions and confident conversation.</p><button class="text-button course-action" data-course="Speaking">Explore lessons →</button></article>
+        <article class="course-card"><div class="course-icon orange">📖</div><h3>Reading</h3><p>Improve comprehension, reading fluency and understanding of texts.</p><button class="text-button course-action" data-course="Reading">Explore lessons →</button></article>
+        <article class="course-card"><div class="course-icon purple">✍️</div><h3>Writing</h3><p>Learn to write clear sentences, paragraphs, messages and essays.</p><button class="text-button course-action" data-course="Writing">Explore lessons →</button></article>
+        <article class="course-card"><div class="course-icon pink">🔤</div><h3>Grammar</h3><p>Understand grammar rules and use them correctly in real situations.</p><button class="text-button course-action" data-course="Grammar">Explore lessons →</button></article>
+        <article class="course-card"><div class="course-icon teal">🧠</div><h3>Vocabulary</h3><p>Learn useful words and expressions for school, work and daily life.</p><button class="text-button course-action" data-course="Vocabulary">Explore lessons →</button></article>
+      </div>
+      <div class="notice" id="courseNotice" role="status" hidden></div>
+    </section>
+
+    <section class="feature-section" id="about">
+      <div><p class="eyebrow">WHY LEARN WITH US?</p><h2>A learning space designed for progress.</h2><p>Our goal is to make English learning accessible, practical and encouraging for learners at different levels.</p></div>
+      <div class="feature-list">
+        <div><span>01</span><section><h3>Clear lessons</h3><p>Learn through organised topics and simple explanations.</p></section></div>
+        <div><span>02</span><section><h3>Practice activities</h3><p>Reinforce learning with exercises and knowledge checks.</p></section></div>
+        <div><span>03</span><section><h3>Learn anywhere</h3><p>Use the website on a phone, tablet or computer.</p></section></div>
+      </div>
+    </section>
+
+    <section class="join-banner">
+      <div><p class="eyebrow">YOUR NEXT STEP</p><h2>Start improving your English today.</h2><p>Join the academy and prepare for your learning journey.</p></div>
+      <button class="button light" id="bannerSignup">Create an account</button>
+    </section>
+
+    <section class="section contact-section" id="contact">
+      <div class="section-heading"><p class="eyebrow">GET IN TOUCH</p><h2>Contact the academy</h2><p>Contact details will be added when you choose the official academy email or phone number.</p></div>
+      <div class="contact-placeholder">📩 Official contact information coming soon</div>
+    </section>
+  </main>
+
+  <footer><a class="brand footer-brand" href="#home"><span class="brand-mark">EP</span><span><strong>English Proficiency</strong><small>Learning Academy</small></span></a><p>© <span id="year"></span> English Proficiency Learning Academy. Learn with confidence.</p></footer>
+
+  <dialog id="accountDialog" class="account-dialog">
+    <button class="dialog-close" id="closeDialog" aria-label="Close">×</button>
+    <p class="eyebrow">LEARN WITH US</p><h2 id="dialogTitle">Create your account</h2>
+    <p class="dialog-warning">This is a front-end preview only. Do not enter a real password. Secure registration and activation codes are not connected yet.</p>
+    <form id="demoForm">
+      <label for="fullName" id="nameLabel">Full name</label><input id="fullName" name="fullName" autocomplete="name" placeholder="Your full name">
+      <label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+      <label for="activationCode" id="codeLabel">Activation code (optional for preview)</label><input id="activationCode" name="activationCode" placeholder="Enter a code if you have one">
+      <label for="password">Password (demo only)</label><input id="password" name="password" type="password" placeholder="Do not use a real password" required>
+      <button class="button primary full-width" type="submit" id="formSubmit">Preview registration</button>
+      <p id="formMessage" class="form-message" role="status"></p>
+      <button type="button" class="text-button switch-mode" id="switchMode">Already registered? Log in</button>
+    </form>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
