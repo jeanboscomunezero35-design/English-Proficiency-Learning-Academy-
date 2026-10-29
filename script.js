@@ -1,3 +1,12 @@
+const SUPABASE_URL = 'https://arnlcdpncwuruacaqjko.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'PASTE_YOUR_PUBLISHABLE_KEY_HERE';
+sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-
+const supabaseClient = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_PUBLISHABLE_KEY
+);
+
+
 const dialog = document.getElementById('accountDialog');
 const dialogTitle = document.getElementById('dialogTitle');
 const nameLabel = document.getElementById('nameLabel');
