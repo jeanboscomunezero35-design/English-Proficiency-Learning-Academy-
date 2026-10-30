@@ -1,1 +1,58 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard | English Proficiency Learning Academy</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#f3f6fb;color:#243247}
+header{background:#123b70;color:white;padding:22px 7%;display:flex;justify-content:space-between;align-items:center}
+main{max-width:1100px;margin:40px auto;padding:20px}
+.welcome,.course{background:white;padding:25px;border-radius:12px;margin-bottom:20px}
+h1,h3{color:#123b70}
+.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+button{background:#1769aa;color:white;border:0;padding:12px 18px;border-radius:6px;cursor:pointer}
+.logout{background:white;color:#123b70}
+</style>
+</head>
+<body>
+<header>
+<h2>English Proficiency Learning Academy</h2>
+<button class="logout" id="logoutButton">Log out</button>
+</header>
+<main>
+<section class="welcome">
+<h1>Welcome, <span id="studentName">Student</span>!</h1>
+<p>Welcome to your English learning dashboard.</p>
+<p>Choose a learning area and continue improving your English.</p>
+</section>
+<h2>My Learning Areas</h2>
+<section class="courses">
+<div class="course"><h3>🎧 Listening</h3><p>Improve your understanding of spoken English.</p><button>Explore lessons</button></div>
+<div class="course"><h3>💬 Speaking</h3><p>Develop confidence in English communication.</p><button>Explore lessons</button></div>
+<div class="course"><h3>📖 Reading</h3><p>Improve reading fluency and comprehension.</p><button>Explore lessons</button></div>
+<div class="course"><h3>✍️ Writing</h3><p>Learn to write clear English sentences.</p><button>Explore lessons</button></div>
+<div class="course"><h3>🔤 Grammar</h3><p>Understand and practise English grammar.</p><button>Explore lessons</button></div>
+<div class="course"><h3>🧠 Vocabulary</h3><p>Build your English vocabulary.</p><button>Explore lessons</button></div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const client=window.supabase.createClient(
+'https://arnlcdpncwuruacaqjko.supabase.co',
+'sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-'
+);
+async function start(){
+const {data,error}=await client.auth.getUser();
+if(error||!data.user){window.location.href='index.html';return;}
+document.getElementById('studentName').textContent=
+data.user.user_metadata.full_name||'Student';
+}
+start();
+document.getElementById('logoutButton').onclick=async()=>{
+await client.auth.signOut();
+window.location.href='index.html';
+};
+</script>
+</body>
+</html>
