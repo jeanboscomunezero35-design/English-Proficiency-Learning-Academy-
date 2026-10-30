@@ -122,7 +122,7 @@ document.getElementById('demoForm')
         formMessage.textContent =
           'Login successful! Welcome back to the academy.';
       }
-
+window.location.href = 'dashboard.html';
     } catch (error) {
 
       formMessage.textContent =
