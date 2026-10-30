@@ -86,7 +86,29 @@
       <label for="fullName" id="nameLabel">Full name</label><input id="fullName" name="fullName" autocomplete="name" placeholder="Your full name">
       <label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
       
-      <label for="password">Password</label><input id="password" name="password" type="password" placeholder="placeholder="Create a secure password" required>
+      <label for="password">Password</label>
+
+<div class="password-wrapper">
+  <input
+    id="password"
+    name="password"
+    type="password"
+    placeholder="Create a secure password"
+    required
+  >
+  <button
+    type="button"
+    id="togglePassword"
+    class="password-toggle"
+  >Show</button>
+</div>
+
+<button
+  type="button"
+  id="forgotPassword"
+  class="forgot-password"
+  hidden
+>Forgot password?</button> placeholder="placeholder="Create a secure password" required>
       <button class="button primary full-width" type="submit" id="formSubmit">Create account</button>
       <p id="formMessage" class="form-message" role="status"></p>
       <button type="button" class="text-button switch-mode" id="switchMode">Already registered? Log in</button>
