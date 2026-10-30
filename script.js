@@ -4,7 +4,6 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
-);
 
 const dialog = document.getElementById('accountDialog');
 const nameLabel = document.getElementById('nameLabel');
@@ -60,7 +59,16 @@ document.getElementById('closeDialog')
 switchMode.addEventListener('click', () => {
   openAccount(mode === 'signup' ? 'login' : 'signup');
 });
+togglePassword.addEventListener('click', () => {
+  const showing = password.type === 'text';
 
+  password.type = showing ? 'password' : 'text';
+  togglePassword.textContent = showing ? 'Show' : 'Hide';
+  togglePassword.setAttribute(
+    'aria-label',
+    showing ? 'Show password' : 'Hide password'
+  );
+});
 document.getElementById('demoForm')
   .addEventListener('submit', async event => {
 
