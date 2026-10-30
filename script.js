@@ -14,7 +14,8 @@ const password = document.getElementById('password');
 const formSubmit = document.getElementById('formSubmit');
 const switchMode = document.getElementById('switchMode');
 const formMessage = document.getElementById('formMessage');
-
+const togglePassword = document.getElementById('togglePassword');
+const forgotPassword = document.getElementById('forgotPassword');
 let mode = 'signup';
 
 document.getElementById('year').textContent =
@@ -121,7 +122,9 @@ document.getElementById('demoForm')
     } finally {
 
       formSubmit.disabled = false;
-
+forgotPassword.hidden = signingUp;
+togglePassword.textContent = 'Show';
+password.type = 'password';
     }
   });
 
