@@ -69,6 +69,35 @@ togglePassword.addEventListener('click', () => {
     showing ? 'Show password' : 'Hide password'
   );
 });
+forgotPassword.addEventListener('click', async () => {
+  const userEmail = email.value.trim();
+
+  if (!userEmail) {
+    formMessage.textContent =
+      'Please enter your email address first.';
+    return;
+  }
+
+  forgotPassword.disabled = true;
+  formMessage.textContent = 'Sending password reset request...';
+
+  try {
+    const { error } =
+      await supabaseClient.auth.resetPasswordForEmail(userEmail, {
+        redirectTo: 'https://jeanboscomunezero35-design.github.io/English-Proficiency-Learning-Academy-/reset-password.html'
+      });
+
+    if (error) throw error;
+
+    formMessage.textContent =
+      'If your account exists, a password reset email will be sent.';
+  } catch (error) {
+    formMessage.textContent =
+      error.message || 'Unable to request password reset.';
+  } finally {
+    forgotPassword.disabled = false;
+  }
+});
 document.getElementById('demoForm')
   .addEventListener('submit', async event => {
 
