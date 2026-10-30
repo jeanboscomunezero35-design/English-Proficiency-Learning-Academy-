@@ -8,9 +8,7 @@ const supabaseClient = window.supabase.createClient(
 
 const dialog = document.getElementById('accountDialog');
 const nameLabel = document.getElementById('nameLabel');
-const codeLabel = document.getElementById('codeLabel');
 const fullName = document.getElementById('fullName');
-const activationCode = document.getElementById('activationCode');
 const email = document.getElementById('email');
 const password = document.getElementById('password');
 const formSubmit = document.getElementById('formSubmit');
@@ -33,10 +31,6 @@ function openAccount(nextMode) {
   nameLabel.hidden = !signingUp;
   fullName.hidden = !signingUp;
   fullName.required = signingUp;
-
-  codeLabel.hidden = !signingUp;
-  activationCode.hidden = !signingUp;
-  activationCode.required = signingUp;
 
   formSubmit.textContent =
     signingUp ? 'Create account' : 'Log in';
@@ -81,14 +75,9 @@ document.getElementById('demoForm')
       if (mode === 'signup') {
 
         const userName = fullName.value.trim();
-        const studentCode = activationCode.value.trim().toUpperCase();
 
         if (!userName) {
           throw new Error('Please enter your full name.');
-        }
-
-        if (!studentCode) {
-          throw new Error('Please enter your activation code.');
         }
 
         const { data, error } = await supabaseClient.auth.signUp({
@@ -97,8 +86,7 @@ document.getElementById('demoForm')
 
           options: {
             data: {
-              full_name: userName,
-              activation_code: studentCode
+              full_name: userName
             }
           }
         });
@@ -121,8 +109,10 @@ document.getElementById('demoForm')
 
         formMessage.textContent =
           'Login successful! Welcome back to the academy.';
+
+        window.location.href = 'dashboard.html';
       }
-window.location.href = 'dashboard.html';
+
     } catch (error) {
 
       formMessage.textContent =
