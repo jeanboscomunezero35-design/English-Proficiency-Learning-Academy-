@@ -4,6 +4,7 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
+);
 
 const dialog = document.getElementById('accountDialog');
 const nameLabel = document.getElementById('nameLabel');
@@ -39,7 +40,9 @@ function openAccount(nextMode) {
     ? 'Already registered? Log in'
     : 'New here? Create an account';
 
-  formMessage.textContent = '';
+  forgotPassword.hidden = signingUp;
+togglePassword.textContent = 'Show';
+password.type = 'password';
 
   if (!dialog.open) dialog.showModal();
 }
@@ -157,12 +160,9 @@ document.getElementById('demoForm')
         error.message || 'Something went wrong. Please try again.';
 
     } finally {
-
-      formSubmit.disabled = false;
-forgotPassword.hidden = signingUp;
-togglePassword.textContent = 'Show';
-password.type = 'password';
-    }
+finally {
+  formSubmit.disabled = false;
+}
   });
 
 document.getElementById('menuToggle')
