@@ -163,7 +163,7 @@
     SUPABASE_PUBLISHABLE_KEY
   );
 
-  async function checkStudent() {
+  async function //checkStudent() {
     const { data, error } = await supabaseClient.auth.getUser();
 
     if (error || !data.user) {
