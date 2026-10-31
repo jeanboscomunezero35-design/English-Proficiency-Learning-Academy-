@@ -49,10 +49,28 @@ document.getElementById('studentName').textContent=
 data.user.user_metadata.full_name||'Student';
 }
 start();
-document.getElementById('logoutButton').onclick=async()=>{
-await client.auth.signOut();
-window.location.href='index.html';
-};
-</script>
-</body>
-</html>
+// CONNECT STUDENT DASHBOARD COURSES
+
+const courseNames = [
+  'Listening',
+  'Speaking',
+  'Reading',
+  'Writing',
+  'Grammar',
+  'Vocabulary'
+];
+
+document.querySelectorAll('.course').forEach((card, index) => {
+
+  const button = card.querySelector('button');
+
+  button.addEventListener('click', () => {
+
+    const course = courseNames[index];
+
+    window.location.href =
+      'courses.html?course=' + encodeURIComponent(course);
+
+  });
+
+});
