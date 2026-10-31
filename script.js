@@ -229,6 +229,5 @@ document.querySelectorAll('.course-action')
       });
 
     });
-
-  });
-```
+});.
+  
