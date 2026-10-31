@@ -214,9 +214,11 @@ document.querySelectorAll('#navMenu a')
 document.querySelectorAll('.course-action')
   .forEach(button => {
     button.addEventListener('click', () => {
+
       const course = button.dataset.course;
 
       window.location.href =
         'courses.html?course=' + encodeURIComponent(course);
+
     });
   });
