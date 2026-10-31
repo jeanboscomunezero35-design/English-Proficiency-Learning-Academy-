@@ -16,6 +16,7 @@ const switchMode = document.getElementById('switchMode');
 const formMessage = document.getElementById('formMessage');
 const togglePassword = document.getElementById('togglePassword');
 const forgotPassword = document.getElementById('forgotPassword');
+
 let mode = 'signup';
 
 document.getElementById('year').textContent =
@@ -41,10 +42,14 @@ function openAccount(nextMode) {
     : 'New here? Create an account';
 
   forgotPassword.hidden = signingUp;
-togglePassword.textContent = 'Show';
-password.type = 'password';
+  togglePassword.textContent = 'Show';
+  password.type = 'password';
 
-  if (!dialog.open) dialog.showModal();
+  formMessage.textContent = '';
+
+  if (!dialog.open) {
+    dialog.showModal();
+  }
 }
 
 document.getElementById('openSignup')
@@ -62,16 +67,19 @@ document.getElementById('closeDialog')
 switchMode.addEventListener('click', () => {
   openAccount(mode === 'signup' ? 'login' : 'signup');
 });
+
 togglePassword.addEventListener('click', () => {
   const showing = password.type === 'text';
 
   password.type = showing ? 'password' : 'text';
   togglePassword.textContent = showing ? 'Show' : 'Hide';
+
   togglePassword.setAttribute(
     'aria-label',
     showing ? 'Show password' : 'Hide password'
   );
 });
+
 forgotPassword.addEventListener('click', async () => {
   const userEmail = email.value.trim();
 
@@ -94,18 +102,19 @@ forgotPassword.addEventListener('click', async () => {
 
     formMessage.textContent =
       'If your account exists, a password reset email will be sent.';
-     } catch (error) {
 
-      formMessage.textContent =
-        error.message || 'Something went wrong. Please try again.';
+  } catch (error) {
 
-    } finally {
+    formMessage.textContent =
+      error.message || 'Unable to request password reset.';
 
-      formSubmit.disabled = false;
+  } finally {
 
-    }
+    forgotPassword.disabled = false;
 
-  });
+  }
+});
+
 document.getElementById('demoForm')
   .addEventListener('submit', async event => {
 
@@ -115,6 +124,7 @@ document.getElementById('demoForm')
     formMessage.textContent = 'Please wait...';
 
     try {
+
       const userEmail = email.value.trim();
       const userPassword = password.value;
 
@@ -126,16 +136,17 @@ document.getElementById('demoForm')
           throw new Error('Please enter your full name.');
         }
 
-        const { data, error } = await supabaseClient.auth.signUp({
-          email: userEmail,
-          password: userPassword,
+        const { data, error } =
+          await supabaseClient.auth.signUp({
+            email: userEmail,
+            password: userPassword,
 
-          options: {
-            data: {
-              full_name: userName
+            options: {
+              data: {
+                full_name: userName
+              }
             }
-          }
-        });
+          });
 
         if (error) throw error;
 
@@ -157,6 +168,7 @@ document.getElementById('demoForm')
           'Login successful! Welcome back to the academy.';
 
         window.location.href = 'dashboard.html';
+
       }
 
     } catch (error) {
@@ -165,9 +177,11 @@ document.getElementById('demoForm')
         error.message || 'Something went wrong. Please try again.';
 
     } finally {
-finally {
-  formSubmit.disabled = false;
-}
+
+      formSubmit.disabled = false;
+
+    }
+
   });
 
 document.getElementById('menuToggle')
