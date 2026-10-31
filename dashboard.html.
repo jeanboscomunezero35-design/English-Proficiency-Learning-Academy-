@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Student Dashboard | English Proficiency Learning Academy</title>
 
   <style>
@@ -81,11 +82,17 @@
       cursor: pointer;
     }
 
+    .course button:hover,
+    .chat-input button:hover {
+      background: #123b70;
+    }
+
     footer {
       text-align: center;
       padding: 30px;
       color: #667085;
     }
+
     .ai-assistant {
       background: white;
       padding: 25px;
@@ -172,51 +179,53 @@
   <h2>My Learning Areas</h2>
 
   <section class="courses">
-<section class="courses">
 
-  <div class="course">
-    <h3>🎧 Listening</h3>
-    <p>Improve your understanding of spoken English.</p>
-    <button onclick="openCourse('Listening')">Explore lessons</button>
-  </div>
+    <div class="course">
+      <h3>🎧 Listening</h3>
+      <p>Improve your understanding of spoken English.</p>
+      <button onclick="openCourse('Listening')">Explore lessons</button>
+    </div>
 
-  <div class="course">
-    <h3>💬 Speaking</h3>
-    <p>Develop confidence in English communication.</p>
-    <button onclick="openCourse('Speaking')">Explore lessons</button>
-  </div>
+    <div class="course">
+      <h3>💬 Speaking</h3>
+      <p>Develop confidence in English communication.</p>
+      <button onclick="openCourse('Speaking')">Explore lessons</button>
+    </div>
 
-  <div class="course">
-    <h3>📖 Reading</h3>
-    <p>Improve reading fluency and comprehension.</p>
-    <button onclick="openCourse('Reading')">Explore lessons</button>
-  </div>
+    <div class="course">
+      <h3>📖 Reading</h3>
+      <p>Improve reading fluency and comprehension.</p>
+      <button onclick="openCourse('Reading')">Explore lessons</button>
+    </div>
 
-  <div class="course">
-    <h3>✍️ Writing</h3>
-    <p>Learn to write clear English sentences and paragraphs.</p>
-    <button onclick="openCourse('Writing')">Explore lessons</button>
-  </div>
+    <div class="course">
+      <h3>✍️ Writing</h3>
+      <p>Learn to write clear English sentences and paragraphs.</p>
+      <button onclick="openCourse('Writing')">Explore lessons</button>
+    </div>
 
-  <div class="course">
-    <h3>🔤 Grammar</h3>
-    <p>Understand and practise English grammar.</p>
-    <button onclick="openCourse('Grammar')">Explore lessons</button>
-  </div>
+    <div class="course">
+      <h3>🔤 Grammar</h3>
+      <p>Understand and practise English grammar.</p>
+      <button onclick="openCourse('Grammar')">Explore lessons</button>
+    </div>
 
-  <div class="course">
-    <h3>🧠 Vocabulary</h3>
-    <p>Build your English vocabulary.</p>
-    <button onclick="openCourse('Vocabulary')">Explore lessons</button>
-  </div>
-
-</section>
-
+    <div class="course">
+      <h3>🧠 Vocabulary</h3>
+      <p>Build your English vocabulary.</p>
+      <button onclick="openCourse('Vocabulary')">Explore lessons</button>
+    </div>
 
   </section>
+
   <section class="ai-assistant">
+
     <h2>🤖 Academy AI Learning Assistant</h2>
-    <p>Hello! I am your automatic learning assistant. Ask me questions about English or other academic subjects.</p>
+
+    <p>
+      Hello! I am your automatic learning assistant.
+      Ask me questions about English or other academic subjects.
+    </p>
 
     <div id="chatMessages">
       <div class="chat-message ai-message">
@@ -230,9 +239,12 @@
         id="studentQuestion"
         placeholder="Type your question here..."
       >
+
       <button id="sendQuestion">Send</button>
     </div>
+
   </section>
+
 </main>
 
 <footer>
@@ -242,17 +254,35 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-  const SUPABASE_URL = 'https://arnlcdpncwuruacaqjko.supabase.co';
+
+  // SUPABASE CONNECTION
+
+  const SUPABASE_URL =
+    'https://arnlcdpncwuruacaqjko.supabase.co';
 
   const SUPABASE_PUBLISHABLE_KEY =
     'sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-';
-function openCourse(course) {
-  window.location.href =
-    'courses.html?course=' + encodeURIComponent(course);
-}
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+
+  // COURSE NAVIGATION
+
+  function openCourse(course) {
+    window.location.href =
+      'courses.html?course=' + encodeURIComponent(course);
+  }
+
+
+  // CHECK STUDENT LOGIN
 
   async function checkStudent() {
-    const { data, error } = await supabaseClient.auth.getUser();
+
+    const { data, error } =
+      await supabaseClient.auth.getUser();
 
     if (error || !data.user) {
       window.location.href = 'index.html';
@@ -265,10 +295,14 @@ function openCourse(course) {
 
   checkStudent();
 
+
+  // LOGOUT
+
   document.getElementById('logoutButton')
     .addEventListener('click', async () => {
 
-      const { error } = await supabaseClient.auth.signOut();
+      const { error } =
+        await supabaseClient.auth.signOut();
 
       if (error) {
         alert(error.message);
@@ -276,42 +310,78 @@ function openCourse(course) {
       }
 
       window.location.href = 'index.html';
+
     });
-  // Academy AI Assistant
-  const questionInput = document.getElementById('studentQuestion');
-  const sendButton = document.getElementById('sendQuestion');
-  const chatMessages = document.getElementById('chatMessages');
+
+
+  // AI LEARNING ASSISTANT
+
+  const questionInput =
+    document.getElementById('studentQuestion');
+
+  const sendButton =
+    document.getElementById('sendQuestion');
+
+  const chatMessages =
+    document.getElementById('chatMessages');
+
+
+  // DISPLAY MESSAGES
 
   function addMessage(message, sender) {
+
     const messageDiv = document.createElement('div');
-    messageDiv.className = 'chat-message ' + sender;
+
+    messageDiv.className =
+      'chat-message ' + sender;
+
     messageDiv.textContent = message;
+
     chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    chatMessages.scrollTop =
+      chatMessages.scrollHeight;
   }
 
+
+  // SEND STUDENT QUESTION TO AI
+
   async function sendStudentQuestion() {
+
     const question = questionInput.value.trim();
 
     if (!question) return;
 
     addMessage(question, 'student-message');
+
     questionInput.value = '';
+
     sendButton.disabled = true;
+
     sendButton.textContent = 'Thinking...';
 
-    const waitingMessage = document.createElement('div');
-    waitingMessage.className = 'chat-message ai-message';
-    waitingMessage.textContent = 'The assistant is preparing your answer...';
+    const waitingMessage =
+      document.createElement('div');
+
+    waitingMessage.className =
+      'chat-message ai-message';
+
+    waitingMessage.textContent =
+      'The assistant is preparing your answer...';
+
     chatMessages.appendChild(waitingMessage);
 
     try {
-      const { data, error } = await supabaseClient.functions.invoke(
-        'academy-assistant',
-        {
-          body: { message: question }
-        }
-      );
+
+      const { data, error } =
+        await supabaseClient.functions.invoke(
+          'academy-assistant',
+          {
+            body: {
+              message: question
+            }
+          }
+        );
 
       waitingMessage.remove();
 
@@ -326,44 +396,47 @@ function openCourse(course) {
       addMessage(data.answer, 'ai-message');
 
     } catch (error) {
+
       waitingMessage.remove();
+
       addMessage(
         'Sorry, I could not answer right now. Please try again.',
         'ai-message'
       );
+
       console.error('AI Assistant error:', error);
 
     } finally {
+
       sendButton.disabled = false;
+
       sendButton.textContent = 'Send';
+
       questionInput.focus();
+
     }
+
   }
 
-  sendButton.addEventListener('click', sendStudentQuestion);
+
+  // SEND BUTTON EVENT
+
+  sendButton.addEventListener(
+    'click',
+    sendStudentQuestion
+  );
+
+
+  // PRESS ENTER TO SEND
 
   questionInput.addEventListener('keydown', function(event) {
+
     if (event.key === 'Enter') {
       sendStudentQuestion();
     }
-  });
-// CONNECT STUDENT COURSES
 
-const courseNames = [
-  'Listening',
-  'Speaking',
-  'Reading',
-  'Writing',
-  'Grammar',
-  'Vocabulary'
-];
-
-document.querySelectorAll('.course').forEach((card, index) => {
-  card.querySelector('button').addEventListener('click', () => {
-    window.location.href =
-      'courses.html?course=' + encodeURIComponent(courseNames[index]);
   });
-});
+
 </script>
 
 </body>
