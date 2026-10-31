@@ -70,6 +70,11 @@ button:hover {
   background: #0d477c;
 }
 
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 button.active {
   background: #0b315c;
 }
@@ -120,6 +125,21 @@ footer {
   padding: 25px;
   color: #667;
 }
+
+#tutorQuestion {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  font-family: Arial, sans-serif;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+}
+
+#tutorMessageStatus {
+  margin-top: 12px;
+  font-weight: bold;
+}
+
 </style>
 </head>
 
@@ -163,9 +183,11 @@ footer {
 </section>
 
 <section class="lesson-area" id="tutorArea">
+
   <h2>Meet Your Tutor</h2>
 
   <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+
     <div>
       <img
         src="tutor.jpg"
@@ -179,29 +201,42 @@ footer {
       <p>Welcome to English Proficiency Learning Academy!</p>
       <p>Learn English step by step and ask questions whenever you need help.</p>
     </div>
+
   </div>
 
   <h3>Ask Jean Bosco – Your Personal English Tutor</h3>
 
-<p>
-Welcome! I am Jean Bosco, your English tutor.
-You can ask me questions about grammar, vocabulary,
-speaking, reading and writing.
-Send your question below, and I will respond when available.
-</p>
+  <p>
+    Welcome! I am Jean Bosco, your English tutor.
+    You can ask me questions about grammar, vocabulary,
+    speaking, reading and writing.
+    Send your question below, and I will respond when available.
+  </p>
 
-<h3>Send Your Question to Jean Bosco</h3>
+  <h3>Send Your Question to Jean Bosco</h3>
 
   <textarea
     id="tutorQuestion"
     placeholder="Type your English question here..."
     rows="4"
-    style="width:100%;padding:12px;"
   ></textarea>
 
-  <button onclick="alert('Question submission will be connected soon.')">
+  <button
+    type="button"
+    id="sendTutorQuestion"
+    onclick="sendTutorQuestion()"
+  >
     Send Question
   </button>
+
+  <p id="tutorMessageStatus" role="status" aria-live="polite"></p>
+
+  <h3>My Questions and Tutor Replies</h3>
+
+  <div id="myTutorMessages">
+    Sign in to see your questions and replies.
+  </div>
+
 </section>
 
 <section class="quiz-area" id="quizArea" hidden>
@@ -225,15 +260,30 @@ Send your question below, and I will respond when available.
   Learn with confidence.
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+
+const SUPABASE_URL = "https://arnlcdpncwuruacaqjko.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
 
 const courses = {
 
   Grammar: {
     description: "Understand English grammar rules and use them correctly.",
+
     lessons: [
+
       {
         title: "Lesson 1: Parts of Speech",
+
         content: `
           <h3>What are Parts of Speech?</h3>
 
@@ -264,6 +314,7 @@ const courses = {
 
       {
         title: "Lesson 2: Nouns",
+
         content: `
           <h3>What is a Noun?</h3>
 
@@ -288,6 +339,7 @@ const courses = {
 
       {
         title: "Lesson 3: Simple Present Tense",
+
         content: `
           <h3>What is the Simple Present Tense?</h3>
 
@@ -309,6 +361,7 @@ const courses = {
           <p>With he, she and it, we usually add -s or -es to the verb in affirmative sentences.</p>
 
           <p>Examples:</p>
+
           <ul>
             <li>He plays football.</li>
             <li>She watches television.</li>
@@ -319,6 +372,7 @@ const courses = {
 
       {
         title: "Lesson 4: Articles",
+
         content: `
           <h3>What are Articles?</h3>
 
@@ -337,6 +391,7 @@ const courses = {
           </div>
         `
       }
+
     ]
   },
 
@@ -457,11 +512,13 @@ const questions = [
 
   {
     question: "Choose the correct sentence.",
+
     options: [
       "She play football.",
       "She plays football.",
       "She playing football."
     ],
+
     answer: "She plays football."
   },
 
@@ -498,9 +555,11 @@ function displayQuestions() {
 
       html += `
         <label>
-          <input type="radio"
-                 name="question${index}"
-                 value="${option}">
+          <input
+            type="radio"
+            name="question${index}"
+            value="${option}"
+          >
           ${option}
         </label>
       `;
@@ -540,13 +599,168 @@ function checkAnswers() {
 
 }
 
+async function sendTutorQuestion() {
+
+  const questionBox = document.getElementById("tutorQuestion");
+
+  const status = document.getElementById("tutorMessageStatus");
+
+  const sendButton = document.getElementById("sendTutorQuestion");
+
+  const question = questionBox.value.trim();
+
+  if (!question) {
+
+    status.textContent = "Please type your question first.";
+
+    return;
+
+  }
+
+  sendButton.disabled = true;
+
+  status.textContent = "Sending your question...";
+
+  try {
+
+    const { data: { user }, error: userError } =
+      await supabaseClient.auth.getUser();
+
+    if (userError || !user) {
+
+      status.textContent =
+        "Please sign in to your student account before sending a question.";
+
+      return;
+
+    }
+
+    const { error } = await supabaseClient
+      .from("tutor_messages")
+      .insert({
+        student_id: user.id,
+        question: question
+      });
+
+    if (error) throw error;
+
+    questionBox.value = "";
+
+    status.textContent =
+      "Your question has been sent to Jean Bosco. You can check this section later for his reply.";
+
+    await loadMyTutorMessages();
+
+  } catch (error) {
+
+    console.error("Tutor question error:", error);
+
+    status.textContent =
+      "Your question could not be sent. Please try again later.";
+
+  } finally {
+
+    sendButton.disabled = false;
+
+  }
+
+}
+
+async function loadMyTutorMessages() {
+
+  const container = document.getElementById("myTutorMessages");
+
+  try {
+
+    const { data: { user }, error: userError } =
+      await supabaseClient.auth.getUser();
+
+    if (userError || !user) {
+
+      container.textContent =
+        "Please sign in to view your questions and tutor replies.";
+
+      return;
+
+    }
+
+    const { data, error } = await supabaseClient
+      .from("tutor_messages")
+      .select("question, reply, created_at, replied_at")
+      .eq("student_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    container.innerHTML = "";
+
+    if (!data || data.length === 0) {
+
+      container.textContent =
+        "You have not sent any questions yet.";
+
+      return;
+
+    }
+
+    data.forEach((item) => {
+
+      const card = document.createElement("div");
+
+      card.className = "example";
+
+      const questionTitle = document.createElement("strong");
+
+      questionTitle.textContent = "Your question:";
+
+      const questionText = document.createElement("p");
+
+      questionText.textContent = item.question;
+
+      const replyTitle = document.createElement("strong");
+
+      replyTitle.textContent = "Jean Bosco's reply:";
+
+      const replyText = document.createElement("p");
+
+      replyText.textContent =
+        item.reply || "Waiting for your tutor's response.";
+
+      card.append(
+        questionTitle,
+        questionText,
+        replyTitle,
+        replyText
+      );
+
+      container.appendChild(card);
+
+    });
+
+  } catch (error) {
+
+    console.error("Loading tutor messages error:", error);
+
+    container.textContent =
+      "Your messages could not be loaded. Please try again later.";
+
+  }
+
+}
+
+loadMyTutorMessages();
+
 const requestedCourse =
   new URLSearchParams(window.location.search).get("course");
 
 if (requestedCourse && courses[requestedCourse]) {
+
   showCourse(requestedCourse);
+
 } else {
+
   showCourse("Grammar");
+
 }
 
 </script>
