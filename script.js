@@ -94,13 +94,18 @@ forgotPassword.addEventListener('click', async () => {
 
     formMessage.textContent =
       'If your account exists, a password reset email will be sent.';
-  } catch (error) {
-    formMessage.textContent =
-      error.message || 'Unable to request password reset.';
-  } finally {
-    forgotPassword.disabled = false;
-  }
-});
+     } catch (error) {
+
+      formMessage.textContent =
+        error.message || 'Something went wrong. Please try again.';
+
+    } finally {
+
+      formSubmit.disabled = false;
+
+    }
+
+  });
 document.getElementById('demoForm')
   .addEventListener('submit', async event => {
 
