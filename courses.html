@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Courses | English Proficiency Learning Academy</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f6fb;
+  color: #243247;
+}
+
+header {
+  background: #123b70;
+  color: white;
+  padding: 20px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+header a {
+  color: white;
+  text-decoration: none;
+}
+
+main {
+  max-width: 1100px;
+  margin: 35px auto;
+  padding: 20px;
+}
+
+.welcome, .lesson-area, .quiz-area {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+}
+
+h1, h2, h3 {
+  color: #123b70;
+}
+
+.course-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 25px 0;
+}
+
+button {
+  background: #1769aa;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0d477c;
+}
+
+button.active {
+  background: #0b315c;
+}
+
+.lesson-button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 10px 0;
+  background: #e9f1fa;
+  color: #123b70;
+}
+
+.lesson-button:hover {
+  background: #d5e6f8;
+}
+
+.lesson-content {
+  line-height: 1.8;
+}
+
+.example {
+  background: #eef5fc;
+  padding: 15px;
+  border-left: 4px solid #1769aa;
+  margin: 15px 0;
+}
+
+.question {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f3f6fb;
+  border-radius: 8px;
+}
+
+.question label {
+  display: block;
+  margin: 10px 0;
+}
+
+#result {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #667;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>English Proficiency Learning Academy</h2>
+  <a href="index.html">← Back to Home</a>
+</header>
+
+<main>
+
+<section class="welcome">
+  <h1>Welcome to Our Courses!</h1>
+  <p>Choose a learning area and develop your English skills step by step.</p>
+</section>
+
+<h2>Our Learning Areas</h2>
+
+<div class="course-buttons">
+  <button onclick="showCourse('Listening')">Listening</button>
+  <button onclick="showCourse('Speaking')">Speaking</button>
+  <button onclick="showCourse('Reading')">Reading</button>
+  <button onclick="showCourse('Writing')">Writing</button>
+  <button onclick="showCourse('Grammar')">Grammar</button>
+  <button onclick="showCourse('Vocabulary')">Vocabulary</button>
+</div>
+
+<section class="lesson-area">
+
+  <h2 id="courseTitle">Grammar Course</h2>
+
+  <p id="courseDescription">
+    Learn English grammar through explanations, examples and exercises.
+  </p>
+
+  <div id="lessonList"></div>
+
+  <div id="lessonContent" class="lesson-content"></div>
+
+</section>
+
+<section class="quiz-area" id="quizArea" hidden>
+
+  <h2>Test Your Understanding</h2>
+
+  <p>Choose the correct answers.</p>
+
+  <div id="questions"></div>
+
+  <button onclick="checkAnswers()">Submit Answers</button>
+
+  <p id="result"></p>
+
+</section>
+
+</main>
+
+<footer>
+  © 2026 English Proficiency Learning Academy.
+  Learn with confidence.
+</footer>
+
+<script>
+
+const courses = {
+
+  Grammar: {
+    description: "Understand English grammar rules and use them correctly.",
+    lessons: [
+      {
+        title: "Lesson 1: Parts of Speech",
+        content: `
+          <h3>What are Parts of Speech?</h3>
+
+          <p>Parts of speech are categories of words according to their functions in sentences.</p>
+
+          <h3>Main Parts of Speech</h3>
+
+          <ol>
+            <li><b>Noun:</b> Names a person, place, thing or idea.</li>
+            <li><b>Pronoun:</b> Replaces a noun.</li>
+            <li><b>Verb:</b> Expresses an action or state.</li>
+            <li><b>Adjective:</b> Describes a noun.</li>
+            <li><b>Adverb:</b> Describes a verb, adjective or another adverb.</li>
+            <li><b>Preposition:</b> Shows relationships between words.</li>
+            <li><b>Conjunction:</b> Connects words or sentences.</li>
+            <li><b>Interjection:</b> Expresses sudden feelings.</li>
+          </ol>
+
+          <div class="example">
+            <b>Examples:</b><br>
+            Mary is a beautiful girl.<br>
+            Mary = Noun<br>
+            is = Verb<br>
+            beautiful = Adjective
+          </div>
+        `
+      },
+
+      {
+        title: "Lesson 2: Nouns",
+        content: `
+          <h3>What is a Noun?</h3>
+
+          <p>A noun is a word used to name a person, place, thing or idea.</p>
+
+          <h3>Types of Nouns</h3>
+
+          <ul>
+            <li><b>Proper nouns:</b> Rwanda, John, Kigali.</li>
+            <li><b>Common nouns:</b> Teacher, school, book.</li>
+            <li><b>Collective nouns:</b> Team, family, class.</li>
+            <li><b>Abstract nouns:</b> Love, happiness, honesty.</li>
+          </ul>
+
+          <div class="example">
+            <b>Examples:</b><br>
+            The teacher is in the classroom.<br>
+            Teacher and classroom are nouns.
+          </div>
+        `
+      },
+
+      {
+        title: "Lesson 3: Simple Present Tense",
+        content: `
+          <h3>What is the Simple Present Tense?</h3>
+
+          <p>We use the simple present tense to describe habits, routines, general truths and regular activities.</p>
+
+          <h3>Structure</h3>
+
+          <p>Subject + Verb + Object.</p>
+
+          <div class="example">
+            <b>Examples:</b><br>
+            I study English every day.<br>
+            She teaches English.<br>
+            The sun rises in the east.
+          </div>
+
+          <h3>Important Rule</h3>
+
+          <p>With he, she and it, we usually add -s or -es to the verb in affirmative sentences.</p>
+
+          <p>Examples:</p>
+          <ul>
+            <li>He plays football.</li>
+            <li>She watches television.</li>
+            <li>It works well.</li>
+          </ul>
+        `
+      },
+
+      {
+        title: "Lesson 4: Articles",
+        content: `
+          <h3>What are Articles?</h3>
+
+          <p>Articles are words used before nouns. The main English articles are a, an and the.</p>
+
+          <ul>
+            <li><b>A:</b> Used before a singular countable noun beginning with a consonant sound.</li>
+            <li><b>An:</b> Used before a singular countable noun beginning with a vowel sound.</li>
+            <li><b>The:</b> Used when referring to a particular or known person or thing.</li>
+          </ul>
+
+          <div class="example">
+            I saw a dog.<br>
+            She ate an orange.<br>
+            The teacher is here.
+          </div>
+        `
+      }
+    ]
+  },
+
+  Listening: {
+    description: "Develop your ability to understand spoken English.",
+    lessons: []
+  },
+
+  Speaking: {
+    description: "Develop confidence in English communication.",
+    lessons: []
+  },
+
+  Reading: {
+    description: "Improve reading fluency and comprehension.",
+    lessons: []
+  },
+
+  Writing: {
+    description: "Learn to write clear English sentences and paragraphs.",
+    lessons: []
+  },
+
+  Vocabulary: {
+    description: "Build useful English words and expressions.",
+    lessons: []
+  }
+
+};
+
+let currentCourse = "Grammar";
+
+function showCourse(courseName) {
+
+  currentCourse = courseName;
+
+  const course = courses[courseName];
+
+  document.getElementById("courseTitle").textContent =
+    courseName + " Course";
+
+  document.getElementById("courseDescription").textContent =
+    course.description;
+
+  const list = document.getElementById("lessonList");
+
+  const content = document.getElementById("lessonContent");
+
+  const quiz = document.getElementById("quizArea");
+
+  content.innerHTML = "";
+
+  quiz.hidden = true;
+
+  list.innerHTML = "";
+
+  if (course.lessons.length === 0) {
+
+    list.innerHTML = `
+      <div class="example">
+        <h3>Lessons coming soon!</h3>
+        <p>We are preparing learning materials for this course.</p>
+        <p>Please check again soon.</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  course.lessons.forEach((lesson, index) => {
+
+    const button = document.createElement("button");
+
+    button.className = "lesson-button";
+
+    button.textContent = lesson.title;
+
+    button.onclick = () => openLesson(index);
+
+    list.appendChild(button);
+
+  });
+
+  openLesson(0);
+
+}
+
+function openLesson(index) {
+
+  const lesson = courses[currentCourse].lessons[index];
+
+  document.getElementById("lessonContent").innerHTML =
+    lesson.content;
+
+  if (currentCourse === "Grammar") {
+
+    document.getElementById("quizArea").hidden = false;
+
+    displayQuestions();
+
+  }
+
+}
+
+const questions = [
+
+  {
+    question: "Which word is a noun?",
+    options: ["Quickly", "Teacher", "Beautiful"],
+    answer: "Teacher"
+  },
+
+  {
+    question: "Which word is a verb?",
+    options: ["Run", "School", "Happy"],
+    answer: "Run"
+  },
+
+  {
+    question: "Choose the correct sentence.",
+    options: [
+      "She play football.",
+      "She plays football.",
+      "She playing football."
+    ],
+    answer: "She plays football."
+  },
+
+  {
+    question: "Choose the correct article: ___ orange.",
+    options: ["A", "An", "The"],
+    answer: "An"
+  },
+
+  {
+    question: "Which word is an adjective?",
+    options: ["Beautiful", "Slowly", "Eat"],
+    answer: "Beautiful"
+  }
+
+];
+
+function displayQuestions() {
+
+  const container = document.getElementById("questions");
+
+  container.innerHTML = "";
+
+  document.getElementById("result").textContent = "";
+
+  questions.forEach((question, index) => {
+
+    let html = `
+      <div class="question">
+        <p><b>${index + 1}. ${question.question}</b></p>
+    `;
+
+    question.options.forEach(option => {
+
+      html += `
+        <label>
+          <input type="radio"
+                 name="question${index}"
+                 value="${option}">
+          ${option}
+        </label>
+      `;
+
+    });
+
+    html += "</div>";
+
+    container.innerHTML += html;
+
+  });
+
+}
+
+function checkAnswers() {
+
+  let score = 0;
+
+  questions.forEach((question, index) => {
+
+    const selected = document.querySelector(
+      'input[name="question' + index + '"]:checked'
+    );
+
+    if (selected && selected.value === question.answer) {
+      score++;
+    }
+
+  });
+
+  document.getElementById("result").textContent =
+    "Your score is " + score + " out of " +
+    questions.length + ". " +
+    (score >= 4
+      ? "Excellent work! Keep learning."
+      : "Good attempt! Review the lesson and try again.");
+
+}
+
+const requestedCourse =
+  new URLSearchParams(window.location.search).get("course");
+
+if (requestedCourse && courses[requestedCourse]) {
+  showCourse(requestedCourse);
+} else {
+  showCourse("Grammar");
+}
+
+</script>
+
+</body>
+</html>
