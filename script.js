@@ -172,14 +172,18 @@ document.getElementById('demoForm')
         window.location.href = 'dashboard.html';
       }
 
-    } catch (error) {
+     } catch (error) {
+
       formMessage.textContent =
         error.message || 'Something went wrong. Please try again.';
-    } finally {
-      formSubmit.disabled = false;
-    }
-  });
 
+    } finally {
+
+      formSubmit.disabled = false;
+
+    }
+
+  });
 // MOBILE MENU
 document.getElementById('menuToggle')
   .addEventListener('click', () => {
