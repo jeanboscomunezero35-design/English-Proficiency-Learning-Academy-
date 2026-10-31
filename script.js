@@ -87,16 +87,13 @@ forgotPassword.addEventListener('click', async () => {
     formMessage.textContent =
       'Please enter your email address first.';
     return;
+    } catch (error) {
+    formMessage.textContent =
+      error.message || 'Unable to request password reset.';
+  } finally {
+    forgotPassword.disabled = false;
   }
-
-  forgotPassword.disabled = true;
-  formMessage.textContent = 'Sending password reset request...';
-
-  try {
-    const { error } =
-      await supabaseClient.auth.resetPasswordForEmail(userEmail, {
-        redirectTo: 'https://jeanboscomunezero35-design.github.io/English-Proficiency-Learning-Academy-/reset-password.html'
-      });
+});
 
     if (error) throw error;
 
@@ -151,16 +148,13 @@ document.getElementById('demoForm')
         if (error) throw error;
 
         formMessage.textContent = data.session
-          ? 'Account created successfully! Welcome to the academy.'
-          : 'Registration successful! Please check your email to confirm your account.';
-
-      } else {
-
-        const { error } =
-          await supabaseClient.auth.signInWithPassword({
-            email: userEmail,
-            password: userPassword
-          });
+            } catch (error) {
+      formMessage.textContent =
+        error.message || 'Something went wrong. Please try again.';
+    } finally {
+      formSubmit.disabled = false;
+    }
+  });  
 
         if (error) throw error;
 
