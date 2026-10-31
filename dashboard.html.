@@ -21,6 +21,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     header h2 {
@@ -73,17 +74,19 @@
       color: #123b70;
     }
 
-    .course button {
+    /* DIRECT COURSE LINKS */
+
+    .course-link {
+      display: inline-block;
       background: #1769aa;
       color: white;
-      border: none;
+      text-decoration: none;
       padding: 10px 16px;
       border-radius: 6px;
       cursor: pointer;
     }
 
-    .course button:hover,
-    .chat-input button:hover {
+    .course-link:hover {
       background: #123b70;
     }
 
@@ -154,9 +157,27 @@
       cursor: pointer;
     }
 
+    .chat-input button:hover {
+      background: #123b70;
+    }
+
     #sendQuestion:disabled {
       opacity: 0.6;
       cursor: wait;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        gap: 15px;
+      }
+
+      .chat-input {
+        flex-direction: column;
+      }
+
+      .chat-input button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -183,47 +204,61 @@
     <div class="course">
       <h3>🎧 Listening</h3>
       <p>Improve your understanding of spoken English.</p>
-      <button onclick="openCourse('Listening')">Explore lessons</button>
+      <a class="course-link" href="courses.html?course=Listening">
+        Explore lessons
+      </a>
     </div>
 
     <div class="course">
       <h3>💬 Speaking</h3>
       <p>Develop confidence in English communication.</p>
-      <button onclick="openCourse('Speaking')">Explore lessons</button>
+      <a class="course-link" href="courses.html?course=Speaking">
+        Explore lessons
+      </a>
     </div>
 
     <div class="course">
       <h3>📖 Reading</h3>
       <p>Improve reading fluency and comprehension.</p>
-      <button onclick="openCourse('Reading')">Explore lessons</button>
+      <a class="course-link" href="courses.html?course=Reading">
+        Explore lessons
+      </a>
     </div>
 
     <div class="course">
       <h3>✍️ Writing</h3>
       <p>Learn to write clear English sentences and paragraphs.</p>
-      <button onclick="openCourse('Writing')">Explore lessons</button>
+      <a class="course-link" href="courses.html?course=Writing">
+        Explore lessons
+      </a>
     </div>
 
     <div class="course">
       <h3>🔤 Grammar</h3>
       <p>Understand and practise English grammar.</p>
-      <button onclick="openCourse('Grammar')">Explore lessons</button>
+      <a class="course-link" href="courses.html?course=Grammar">
+        Explore lessons
+      </a>
     </div>
 
     <div class="course">
       <h3>🧠 Vocabulary</h3>
       <p>Build your English vocabulary.</p>
-      <button onclick="openCourse('Vocabulary')">Explore lessons</button>
+      <a class="course-link" href="courses.html?course=Vocabulary">
+        Explore lessons
+      </a>
     </div>
 
   </section>
+
+  <!-- AI LEARNING ASSISTANT -->
 
   <section class="ai-assistant">
 
     <h2>🤖 Academy AI Learning Assistant</h2>
 
     <p>
-      Hello! I am your automatic learning assistant.
+      Hello! I am your automatic AI learning assistant.
       Ask me questions about English or other academic subjects.
     </p>
 
@@ -234,6 +269,7 @@
     </div>
 
     <div class="chat-input">
+
       <input
         type="text"
         id="studentQuestion"
@@ -241,6 +277,7 @@
       >
 
       <button id="sendQuestion">Send</button>
+
     </div>
 
   </section>
@@ -269,14 +306,6 @@
   );
 
 
-  // COURSE NAVIGATION
-
-  function openCourse(course) {
-    window.location.href =
-      'courses.html?course=' + encodeURIComponent(course);
-  }
-
-
   // CHECK STUDENT LOGIN
 
   async function checkStudent() {
@@ -291,6 +320,7 @@
 
     document.getElementById('studentName').textContent =
       data.user.user_metadata.full_name || 'Student';
+
   }
 
   checkStudent();
@@ -341,6 +371,7 @@
 
     chatMessages.scrollTop =
       chatMessages.scrollHeight;
+
   }
 
 
