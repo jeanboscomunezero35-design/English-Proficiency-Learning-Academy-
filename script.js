@@ -1,4 +1,4 @@
-```javascript
+
 const SUPABASE_URL = 'https://arnlcdpncwuruacaqjko.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-';
 
