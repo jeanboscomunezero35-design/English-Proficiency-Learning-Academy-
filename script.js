@@ -214,18 +214,9 @@ document.querySelectorAll('#navMenu a')
 document.querySelectorAll('.course-action')
   .forEach(button => {
     button.addEventListener('click', () => {
-      const notice = document.getElementById('courseNotice');
+      const course = button.dataset.course;
 
-      notice.hidden = false;
-
-      notice.textContent =
-        button.dataset.course +
-        ': course materials will appear here once the learning system is connected.';
-
-      notice.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center'
-      });
+      window.location.href =
+        'courses.html?course=' + encodeURIComponent(course);
     });
   });
-
