@@ -86,6 +86,71 @@
       padding: 30px;
       color: #667085;
     }
+    .ai-assistant {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-top: 35px;
+      box-shadow: 0 3px 12px #00000010;
+    }
+
+    .ai-assistant h2 {
+      color: #123b70;
+    }
+
+    #chatMessages {
+      background: #f3f6fb;
+      padding: 15px;
+      border-radius: 8px;
+      min-height: 120px;
+      max-height: 350px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+
+    .chat-message {
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+
+    .student-message {
+      background: #dcecff;
+      text-align: right;
+    }
+
+    .ai-message {
+      background: white;
+      border: 1px solid #ddd;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      min-width: 0;
+    }
+
+    .chat-input button {
+      background: #1769aa;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #sendQuestion:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
   </style>
 </head>
 
@@ -145,7 +210,25 @@
     </div>
 
   </section>
+  <section class="ai-assistant">
+    <h2>🤖 Academy AI Learning Assistant</h2>
+    <p>Hello! I am your automatic learning assistant. Ask me questions about English or other academic subjects.</p>
 
+    <div id="chatMessages">
+      <div class="chat-message ai-message">
+        Hello! How can I help you learn today?
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input
+        type="text"
+        id="studentQuestion"
+        placeholder="Type your question here..."
+      >
+      <button id="sendQuestion">Send</button>
+    </div>
+  </section>
 </main>
 
 <footer>
@@ -191,6 +274,76 @@
 
       window.location.href = 'index.html';
     });
+  // Academy AI Assistant
+  const questionInput = document.getElementById('studentQuestion');
+  const sendButton = document.getElementById('sendQuestion');
+  const chatMessages = document.getElementById('chatMessages');
+
+  function addMessage(message, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'chat-message ' + sender;
+    messageDiv.textContent = message;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  async function sendStudentQuestion() {
+    const question = questionInput.value.trim();
+
+    if (!question) return;
+
+    addMessage(question, 'student-message');
+    questionInput.value = '';
+    sendButton.disabled = true;
+    sendButton.textContent = 'Thinking...';
+
+    const waitingMessage = document.createElement('div');
+    waitingMessage.className = 'chat-message ai-message';
+    waitingMessage.textContent = 'The assistant is preparing your answer...';
+    chatMessages.appendChild(waitingMessage);
+
+    try {
+      const { data, error } = await supabaseClient.functions.invoke(
+        'academy-assistant',
+        {
+          body: { message: question }
+        }
+      );
+
+      waitingMessage.remove();
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      addMessage(data.answer, 'ai-message');
+
+    } catch (error) {
+      waitingMessage.remove();
+      addMessage(
+        'Sorry, I could not answer right now. Please try again.',
+        'ai-message'
+      );
+      console.error('AI Assistant error:', error);
+
+    } finally {
+      sendButton.disabled = false;
+      sendButton.textContent = 'Send';
+      questionInput.focus();
+    }
+  }
+
+  sendButton.addEventListener('click', sendStudentQuestion);
+
+  questionInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      sendStudentQuestion();
+    }
+  });
 </script>
 
 </body>
