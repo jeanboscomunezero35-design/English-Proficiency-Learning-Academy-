@@ -1,3 +1,4 @@
+```javascript
 const SUPABASE_URL = 'https://arnlcdpncwuruacaqjko.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-';
 
@@ -80,6 +81,7 @@ togglePassword.addEventListener('click', () => {
   );
 });
 
+// PASSWORD RESET
 forgotPassword.addEventListener('click', async () => {
   const userEmail = email.value.trim();
 
@@ -87,13 +89,17 @@ forgotPassword.addEventListener('click', async () => {
     formMessage.textContent =
       'Please enter your email address first.';
     return;
-    } catch (error) {
-    formMessage.textContent =
-      error.message || 'Unable to request password reset.';
-  } finally {
-    forgotPassword.disabled = false;
   }
-});
+
+  forgotPassword.disabled = true;
+  formMessage.textContent = 'Sending password reset email...';
+
+  try {
+    const { error } =
+      await supabaseClient.auth.resetPasswordForEmail(userEmail, {
+        redirectTo:
+          'https://jeanboscomunezero35-design.github.io/English-Proficiency-Learning-Academy-/reset-password.html'
+      });
 
     if (error) throw error;
 
@@ -101,17 +107,14 @@ forgotPassword.addEventListener('click', async () => {
       'If your account exists, a password reset email will be sent.';
 
   } catch (error) {
-
     formMessage.textContent =
       error.message || 'Unable to request password reset.';
-
   } finally {
-
     forgotPassword.disabled = false;
-
   }
 });
 
+// REGISTRATION AND LOGIN
 document.getElementById('demoForm')
   .addEventListener('submit', async event => {
 
@@ -121,12 +124,10 @@ document.getElementById('demoForm')
     formMessage.textContent = 'Please wait...';
 
     try {
-
       const userEmail = email.value.trim();
       const userPassword = password.value;
 
       if (mode === 'signup') {
-
         const userName = fullName.value.trim();
 
         if (!userName) {
@@ -137,7 +138,6 @@ document.getElementById('demoForm')
           await supabaseClient.auth.signUp({
             email: userEmail,
             password: userPassword,
-
             options: {
               data: {
                 full_name: userName
@@ -147,14 +147,22 @@ document.getElementById('demoForm')
 
         if (error) throw error;
 
-        formMessage.textContent = data.session
-            } catch (error) {
-      formMessage.textContent =
-        error.message || 'Something went wrong. Please try again.';
-    } finally {
-      formSubmit.disabled = false;
-    }
-  });  
+        if (data.session) {
+          formMessage.textContent =
+            'Account created successfully! Welcome to the academy.';
+
+          window.location.href = 'dashboard.html';
+        } else {
+          formMessage.textContent =
+            'Account created. Please check your email if confirmation is required.';
+        }
+
+      } else {
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+            email: userEmail,
+            password: userPassword
+          });
 
         if (error) throw error;
 
@@ -162,22 +170,17 @@ document.getElementById('demoForm')
           'Login successful! Welcome back to the academy.';
 
         window.location.href = 'dashboard.html';
-
       }
 
     } catch (error) {
-
       formMessage.textContent =
         error.message || 'Something went wrong. Please try again.';
-
     } finally {
-
       formSubmit.disabled = false;
-
     }
-
   });
 
+// MOBILE MENU
 document.getElementById('menuToggle')
   .addEventListener('click', () => {
 
@@ -204,6 +207,7 @@ document.querySelectorAll('#navMenu a')
 
   });
 
+// COURSE BUTTONS
 document.querySelectorAll('.course-action')
   .forEach(button => {
 
@@ -224,3 +228,4 @@ document.querySelectorAll('.course-action')
     });
 
   });
+```
