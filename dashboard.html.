@@ -172,42 +172,46 @@
   <h2>My Learning Areas</h2>
 
   <section class="courses">
+<section class="courses">
 
-    <div class="course">
-      <h3>🎧 Listening</h3>
-      <p>Improve your understanding of spoken English.</p>
-      <button>Explore lessons</button>
-    </div>
+  <div class="course">
+    <h3>🎧 Listening</h3>
+    <p>Improve your understanding of spoken English.</p>
+    <button onclick="openCourse('Listening')">Explore lessons</button>
+  </div>
 
-    <div class="course">
-      <h3>💬 Speaking</h3>
-      <p>Develop confidence in English communication.</p>
-      <button>Explore lessons</button>
-    </div>
+  <div class="course">
+    <h3>💬 Speaking</h3>
+    <p>Develop confidence in English communication.</p>
+    <button onclick="openCourse('Speaking')">Explore lessons</button>
+  </div>
 
-    <div class="course">
-      <h3>📖 Reading</h3>
-      <p>Improve reading fluency and comprehension.</p>
-      <button>Explore lessons</button>
-    </div>
+  <div class="course">
+    <h3>📖 Reading</h3>
+    <p>Improve reading fluency and comprehension.</p>
+    <button onclick="openCourse('Reading')">Explore lessons</button>
+  </div>
 
-    <div class="course">
-      <h3>✍️ Writing</h3>
-      <p>Learn to write clear English sentences and paragraphs.</p>
-      <button>Explore lessons</button>
-    </div>
+  <div class="course">
+    <h3>✍️ Writing</h3>
+    <p>Learn to write clear English sentences and paragraphs.</p>
+    <button onclick="openCourse('Writing')">Explore lessons</button>
+  </div>
 
-    <div class="course">
-      <h3>🔤 Grammar</h3>
-      <p>Understand and practise English grammar.</p>
-      <button>Explore lessons</button>
-    </div>
+  <div class="course">
+    <h3>🔤 Grammar</h3>
+    <p>Understand and practise English grammar.</p>
+    <button onclick="openCourse('Grammar')">Explore lessons</button>
+  </div>
 
-    <div class="course">
-      <h3>🧠 Vocabulary</h3>
-      <p>Build your English vocabulary.</p>
-      <button>Explore lessons</button>
-    </div>
+  <div class="course">
+    <h3>🧠 Vocabulary</h3>
+    <p>Build your English vocabulary.</p>
+    <button onclick="openCourse('Vocabulary')">Explore lessons</button>
+  </div>
+
+</section>
+
 
   </section>
   <section class="ai-assistant">
@@ -242,11 +246,10 @@
 
   const SUPABASE_PUBLISHABLE_KEY =
     'sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-';
-
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
+function openCourse(course) {
+  window.location.href =
+    'courses.html?course=' + encodeURIComponent(course);
+}
 
   async function checkStudent() {
     const { data, error } = await supabaseClient.auth.getUser();
