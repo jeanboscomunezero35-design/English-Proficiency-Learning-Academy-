@@ -38,6 +38,28 @@ button{background:#1769aa;color:white;border:0;padding:12px 18px;border-radius:6
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  // CONNECT EXPLORE LESSONS BUTTONS
+const courseNames = [
+  'Listening',
+  'Speaking',
+  'Reading',
+  'Writing',
+  'Grammar',
+  'Vocabulary'
+];
+
+document.querySelectorAll('.course').forEach((card, index) => {
+  const button = card.querySelector('button');
+
+  if (button) {
+    button.addEventListener('click', () => {
+      const course = courseNames[index];
+
+      window.location.href =
+        'courses.html?course=' + encodeURIComponent(course);
+    });
+  }
+});
 const client=window.supabase.createClient(
 'https://arnlcdpncwuruacaqjko.supabase.co',
 'sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-'
