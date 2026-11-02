@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Dashboard | English Proficiency Learning Academy</title>
+<title>Dashboard | Bosco English Academy</title>
 
 <style>
 body {
@@ -16,7 +17,7 @@ body {
 header {
   background: #123b70;
   color: white;
-  padding: 22px 7%;
+  padding: 18px 7%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -33,6 +34,33 @@ main {
   padding: 25px;
   border-radius: 12px;
   margin-bottom: 20px;
+}
+
+.profile {
+  text-align: center;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+}
+
+.profile img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #1769aa;
+  display: none;
+}
+
+.profile h2 {
+  color: #123b70;
+  margin-bottom: 5px;
+}
+
+.founder-label {
+  color: #1769aa;
+  font-weight: bold;
 }
 
 h1, h3 {
@@ -58,21 +86,37 @@ button {
   background: white;
   color: #123b70;
 }
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #667;
+}
 </style>
+
 </head>
 
 <body>
 
 <header>
-<h2>English Proficiency Learning Academy</h2>
+<h2>Bosco English Academy</h2>
 <button class="logout" id="logoutButton">Log out</button>
 </header>
 
 <main>
 
+<section class="profile">
+<img id="profilePicture" alt="Profile picture">
+
+<h2 id="studentName">Loading...</h2>
+
+<p id="userRole">Student</p>
+
+</section>
+
 <section class="welcome">
-<h1>Welcome, <span id="studentName">Student</span>!</h1>
-<p>Welcome to your English learning dashboard.</p>
+<h1>Welcome to Your Dashboard!</h1>
+<p>Building Confidence in English.</p>
 <p>Choose a learning area and continue improving your English.</p>
 </section>
 
@@ -83,41 +127,45 @@ button {
 <div class="course">
 <h3>🎧 Listening</h3>
 <p>Improve your understanding of spoken English.</p>
-<button>Explore lessons</button>
+<button onclick="openCourse('Listening')">Explore lessons</button>
 </div>
 
 <div class="course">
 <h3>💬 Speaking</h3>
 <p>Develop confidence in English communication.</p>
-<button>Explore lessons</button>
+<button onclick="openCourse('Speaking')">Explore lessons</button>
 </div>
 
 <div class="course">
 <h3>📖 Reading</h3>
 <p>Improve reading fluency and comprehension.</p>
-<button>Explore lessons</button>
+<button onclick="openCourse('Reading')">Explore lessons</button>
 </div>
 
 <div class="course">
 <h3>✍️ Writing</h3>
 <p>Learn to write clear English sentences.</p>
-<button>Explore lessons</button>
+<button onclick="openCourse('Writing')">Explore lessons</button>
 </div>
 
 <div class="course">
 <h3>🔤 Grammar</h3>
 <p>Understand and practise English grammar.</p>
-<button>Explore lessons</button>
+<button onclick="openCourse('Grammar')">Explore lessons</button>
 </div>
 
 <div class="course">
 <h3>🧠 Vocabulary</h3>
 <p>Build your English vocabulary.</p>
-<button>Explore lessons</button>
+<button onclick="openCourse('Vocabulary')">Explore lessons</button>
 </div>
 
 </section>
 </main>
+
+<footer>
+<p>© 2026 Bosco English Academy | Building Confidence in English</p>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -128,7 +176,6 @@ const client = window.supabase.createClient(
   'sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-'
 );
 
-// CHECK STUDENT LOGIN
 async function start() {
 
   const { data, error } = await client.auth.getUser();
@@ -138,13 +185,48 @@ async function start() {
     return;
   }
 
-  document.getElementById('studentName').textContent =
-    data.user.user_metadata.full_name || 'Student';
+  const user = data.user;
+  const metadata = user.user_metadata || {};
+
+  const name =
+    metadata.full_name ||
+    metadata.name ||
+    user.email ||
+    'Student';
+
+  document.getElementById('studentName').textContent = name;
+
+  const picture =
+    metadata.avatar_url ||
+    metadata.picture ||
+    metadata.photo_url;
+
+  const image = document.getElementById('profilePicture');
+
+  if (picture) {
+    image.src = picture;
+
+    image.onload = () => {
+      image.style.display = 'inline-block';
+    };
+
+    image.onerror = () => {
+      image.style.display = 'none';
+    };
+  }
+
+  const role = document.getElementById('userRole');
+
+  if (user.email === 'jeanboscomunezero1@gmail.com') {
+    role.textContent = 'Founder & Tutor – Bosco English Academy';
+  } else {
+    role.textContent = 'Student – Bosco English Academy';
+  }
+
 }
 
 start();
 
-// LOG OUT
 document.getElementById('logoutButton').onclick = async () => {
 
   await client.auth.signOut();
@@ -153,30 +235,12 @@ document.getElementById('logoutButton').onclick = async () => {
 
 };
 
-// CONNECT COURSE BUTTONS
-const courseNames = [
-  'Listening',
-  'Speaking',
-  'Reading',
-  'Writing',
-  'Grammar',
-  'Vocabulary'
-];
+function openCourse(course) {
 
-document.querySelectorAll('.course').forEach((card, index) => {
+  window.location.href =
+    'courses.html?course=' + encodeURIComponent(course);
 
-  const button = card.querySelector('button');
-
-  button.addEventListener('click', () => {
-
-    const course = courseNames[index];
-
-    window.location.href =
-      'courses.html?course=' + encodeURIComponent(course);
-
-  });
-
-});
+}
 
 </script>
 
