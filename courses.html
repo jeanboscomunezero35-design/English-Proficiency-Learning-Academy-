@@ -1,3 +1,525 @@
-<!-- JEAN BOSCO TUTOR IS AVAILABLE ON THE MAIN DASHBOARD ONLY -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses | Bosco English Academy</title>
 
- 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #263238;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #123b68;
+            color: white;
+            padding: 25px 15px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 6px 0 0;
+        }
+
+        nav {
+            background: #0b2949;
+            padding: 12px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px 12px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 25px auto;
+            padding: 15px;
+        }
+
+        .welcome {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+
+        .course-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .course-button {
+            background: #1769aa;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .course-button:hover {
+            background: #0b477d;
+        }
+
+        .course-button.active {
+            background: #0b2949;
+            outline: 3px solid #9dc8ee;
+        }
+
+        .lesson-area {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+
+        .lesson-area h2 {
+            color: #123b68;
+            margin-top: 0;
+        }
+
+        .lesson-card {
+            border: 1px solid #dce5ee;
+            border-radius: 8px;
+            padding: 17px;
+            margin: 15px 0;
+            background: #fbfdff;
+        }
+
+        .lesson-card h3 {
+            color: #1769aa;
+            margin-top: 0;
+        }
+
+        .example {
+            background: #edf5fc;
+            border-left: 4px solid #1769aa;
+            padding: 12px;
+            margin: 12px 0;
+        }
+
+        .lesson-button {
+            background: #16834a;
+            color: white;
+            border: none;
+            padding: 10px 17px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .lesson-button:hover {
+            background: #106538;
+        }
+
+        .quiz-question {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #dce5ee;
+            border-radius: 8px;
+        }
+
+        .quiz-question label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+
+        #quizResult {
+            margin-top: 18px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: #123b68;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background: #0b2949;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 23px;
+            }
+
+            .lesson-area {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Bosco English Academy</h1>
+    <p>Building Confidence in English</p>
+    <p>Founded by Jean Bosco Munezero</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+</nav>
+
+<div class="container">
+
+    <section class="welcome">
+        <h2>Welcome to Your English Lessons!</h2>
+        <p>
+            Choose a learning area below and study English step by step.
+            Read each lesson carefully and practise what you learn.
+        </p>
+    </section>
+
+    <h2>Explore Learning Areas</h2>
+
+    <div class="course-menu">
+        <button class="course-button" data-course="Listening">Listening</button>
+        <button class="course-button" data-course="Speaking">Speaking</button>
+        <button class="course-button" data-course="Reading">Reading</button>
+        <button class="course-button" data-course="Writing">Writing</button>
+        <button class="course-button" data-course="Grammar">Grammar</button>
+        <button class="course-button" data-course="Vocabulary">Vocabulary</button>
+    </div>
+
+    <section class="lesson-area" id="lessonArea">
+        <h2>Select a Learning Area</h2>
+        <p>Please select one of the six learning areas above to view its lessons.</p>
+    </section>
+
+    <a href="dashboard.html" class="back-button">← Back to Dashboard</a>
+
+</div>
+
+<footer>
+    <p>&copy; 2026 Bosco English Academy. All rights reserved.</p>
+    <p>Building Confidence in English</p>
+</footer>
+
+<script>
+const courses = {
+
+    Listening: {
+        title: "Listening Skills",
+        introduction: "Listening helps you understand spoken English in conversations, lessons and everyday situations.",
+        lessons: [
+            {
+                title: "Lesson 1: Understanding Spoken English",
+                content: "Good listening requires attention to the speaker, the main idea and important details.",
+                example: "Example: When someone says, 'I am going to school tomorrow,' listen carefully to understand the action and the time."
+            },
+            {
+                title: "Lesson 2: Listening for Main Ideas",
+                content: "The main idea is the most important message in a spoken text. Try to understand what the speaker is mainly discussing.",
+                example: "If a speaker talks about the importance of education, the main idea is the value of education."
+            },
+            {
+                title: "Lesson 3: Listening for Details",
+                content: "Details include names, dates, places, numbers and specific information.",
+                example: "If someone says, 'The meeting starts at 9 o'clock on Monday,' the details are the time and the day."
+            }
+        ]
+    },
+
+    Speaking: {
+        title: "Speaking Skills",
+        introduction: "Speaking helps you communicate ideas, express opinions and interact confidently with other people.",
+        lessons: [
+            {
+                title: "Lesson 1: Introducing Yourself",
+                content: "A self-introduction usually includes your name, where you come from, your studies and your interests.",
+                example: "Example: My name is Jean. I come from Rwanda. I am a university student. I enjoy learning English."
+            },
+            {
+                title: "Lesson 2: Asking and Answering Questions",
+                content: "Questions help people exchange information. Listen carefully and give clear answers.",
+                example: "Question: Where do you live? Answer: I live in Rwanda."
+            },
+            {
+                title: "Lesson 3: Expressing Opinions",
+                content: "You can use expressions such as 'I think', 'In my opinion' and 'I believe' to express your views.",
+                example: "Example: In my opinion, education is important because it creates opportunities."
+            }
+        ]
+    },
+
+    Reading: {
+        title: "Reading Skills",
+        introduction: "Reading develops vocabulary, comprehension and the ability to understand written information.",
+        lessons: [
+            {
+                title: "Lesson 1: Skimming",
+                content: "Skimming means reading quickly to understand the general idea of a text.",
+                example: "Read the title, introduction and first sentences to identify the main topic."
+            },
+            {
+                title: "Lesson 2: Scanning",
+                content: "Scanning means looking quickly through a text to find specific information.",
+                example: "Look through a passage to find a particular date, name or number."
+            },
+            {
+                title: "Lesson 3: Reading for Comprehension",
+                content: "Reading comprehension involves understanding the meaning of a passage and answering questions about it.",
+                example: "After reading a passage about health, explain its main message in your own words."
+            }
+        ]
+    },
+
+    Writing: {
+        title: "Writing Skills",
+        introduction: "Writing helps you communicate information, ideas and opinions clearly and correctly.",
+        lessons: [
+            {
+                title: "Lesson 1: Constructing Sentences",
+                content: "A basic English sentence usually contains a subject and a verb.",
+                example: "Example: The student reads. The student is the subject and reads is the verb."
+            },
+            {
+                title: "Lesson 2: Writing Paragraphs",
+                content: "A paragraph develops one main idea. It normally contains a topic sentence, supporting sentences and a concluding sentence.",
+                example: "Topic sentence: Education is important. Supporting sentences explain why education matters."
+            },
+            {
+                title: "Lesson 3: Writing Emails",
+                content: "A formal email should have a clear subject, greeting, message and closing.",
+                example: "Dear Mr John, I am writing to ask for information about the English course. Kind regards, Peter."
+            }
+        ]
+    },
+
+    Grammar: {
+        title: "English Grammar",
+        introduction: "Grammar helps us use English correctly when speaking and writing.",
+        lessons: [
+            {
+                title: "Lesson 1: Parts of Speech",
+                content: "Parts of speech are categories of words according to their functions in sentences. The main categories include nouns, pronouns, verbs, adjectives, adverbs, prepositions, conjunctions and interjections.",
+                example: "Examples: John (noun), he (pronoun), run (verb), beautiful (adjective), quickly (adverb), in (preposition), and (conjunction), wow! (interjection)."
+            },
+            {
+                title: "Lesson 2: Nouns",
+                content: "A noun is a word used to name a person, place, animal, thing or idea. Nouns can be common, proper, countable, uncountable, concrete or abstract.",
+                example: "Examples: teacher, Rwanda, dog, book, honesty and happiness."
+            },
+            {
+                title: "Lesson 3: Simple Present Tense",
+                content: "The simple present tense describes habits, routines, general truths and repeated actions. We usually add -s or -es to the verb when the subject is he, she or it.",
+                example: "Examples: I study English every day. She studies English every day. The sun rises in the east."
+            },
+            {
+                title: "Lesson 4: Articles",
+                content: "The English articles are 'a', 'an' and 'the'. We use 'a' before a singular countable noun beginning with a consonant sound, 'an' before a singular countable noun beginning with a vowel sound, and 'the' when referring to something specific.",
+                example: "Examples: a book, an apple, the teacher."
+            }
+        ]
+    },
+
+    Vocabulary: {
+        title: "English Vocabulary",
+        introduction: "Vocabulary is the collection of words that we know and use in a language.",
+        lessons: [
+            {
+                title: "Lesson 1: Everyday Vocabulary",
+                content: "Everyday vocabulary includes words used in common situations such as school, home, shopping and travelling.",
+                example: "Examples: classroom, market, family, transport and food."
+            },
+            {
+                title: "Lesson 2: Synonyms and Antonyms",
+                content: "Synonyms are words with similar meanings. Antonyms are words with opposite meanings.",
+                example: "Synonyms: happy and joyful. Antonyms: happy and sad."
+            },
+            {
+                title: "Lesson 3: Phrasal Verbs",
+                content: "A phrasal verb is a combination of a verb and a particle, such as an adverb or preposition. Its meaning may differ from the meaning of the individual words.",
+                example: "Examples: give up (stop trying), look after (take care of), find out (discover)."
+            }
+        ]
+    }
+};
+
+
+function openCourse(courseName) {
+    const course = courses[courseName];
+    const lessonArea = document.getElementById("lessonArea");
+
+    if (!course) {
+        lessonArea.innerHTML = "<h2>Course not found</h2><p>Please select another learning area.</p>";
+        return;
+    }
+
+    document.querySelectorAll(".course-button").forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.course === courseName
+        );
+    });
+
+    let html = `
+        <h2>${course.title}</h2>
+        <p>${course.introduction}</p>
+    `;
+
+    course.lessons.forEach((lesson, index) => {
+        html += `
+            <div class="lesson-card">
+                <h3>${lesson.title}</h3>
+                <p>${lesson.content}</p>
+                <div class="example">
+                    <strong>Examples:</strong> ${lesson.example}
+                </div>
+            </div>
+        `;
+    });
+
+    if (courseName === "Grammar") {
+        html += `
+            <div class="lesson-card">
+                <h2>Grammar Practice Quiz</h2>
+                <p>Choose the correct answer for each question.</p>
+
+                <form id="grammarQuiz">
+
+                    <div class="quiz-question">
+                        <p><strong>1. Which word is a noun?</strong></p>
+                        <label><input type="radio" name="q1" value="a"> Quickly</label>
+                        <label><input type="radio" name="q1" value="b"> Teacher</label>
+                        <label><input type="radio" name="q1" value="c"> Beautiful</label>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>2. Which sentence is correct?</strong></p>
+                        <label><input type="radio" name="q2" value="a"> She go to school.</label>
+                        <label><input type="radio" name="q2" value="b"> She going to school.</label>
+                        <label><input type="radio" name="q2" value="c"> She goes to school.</label>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>3. Choose the correct article: ___ apple.</strong></p>
+                        <label><input type="radio" name="q3" value="a"> An</label>
+                        <label><input type="radio" name="q3" value="b"> A</label>
+                        <label><input type="radio" name="q3" value="c"> The</label>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>4. Which word is an adjective?</strong></p>
+                        <label><input type="radio" name="q4" value="a"> Run</label>
+                        <label><input type="radio" name="q4" value="b"> Beautiful</label>
+                        <label><input type="radio" name="q4" value="c"> Quickly</label>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>5. What is the plural of child?</strong></p>
+                        <label><input type="radio" name="q5" value="a"> Childs</label>
+                        <label><input type="radio" name="q5" value="b"> Childes</label>
+                        <label><input type="radio" name="q5" value="c"> Children</label>
+                    </div>
+
+                    <button type="submit" class="lesson-button">
+                        Submit Quiz
+                    </button>
+
+                </form>
+
+                <div id="quizResult" hidden></div>
+            </div>
+        `;
+
+    }
+
+    lessonArea.innerHTML = html;
+
+    const quiz = document.getElementById("grammarQuiz");
+
+    if (quiz) {
+        quiz.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const answers = {
+                q1: "b",
+                q2: "c",
+                q3: "a",
+                q4: "b",
+                q5: "c"
+            };
+
+            let score = 0;
+            const formData = new FormData(quiz);
+
+            for (const question in answers) {
+                if (formData.get(question) === answers[question]) {
+                    score++;
+                }
+            }
+
+            const result = document.getElementById("quizResult");
+
+            result.hidden = false;
+            result.style.background = "#e8f5e9";
+            result.style.color = "#176b35";
+            result.innerHTML =
+                "Your score is " + score + " out of 5. " +
+                (score === 5
+                    ? "Excellent work! You answered all questions correctly."
+                    : "Keep practising. Review the lessons and try again.");
+        });
+    }
+}
+
+
+document.querySelectorAll(".course-button").forEach(button => {
+    button.addEventListener("click", function() {
+        openCourse(this.dataset.course);
+    });
+});
+
+
+const requestedCourse = new URLSearchParams(window.location.search).get("course");
+
+if (requestedCourse && courses[requestedCourse]) {
+    openCourse(requestedCourse);
+}
+</script>
+
+</body>
+</html>
