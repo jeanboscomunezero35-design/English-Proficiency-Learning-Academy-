@@ -324,7 +324,7 @@
 
   </section>
 
-  <!-- AUTOMATIC AI TUTOR -->
+  <!-- ASK BOSCO, YOUR TUTOR -->
 
   <section class="tutor" id="aiTutor">
 
@@ -332,12 +332,12 @@
 
       <img
         src="Jean-Bosco-founder.png.png"
-        alt="Jean Bosco AI Tutor"
+        alt="Bosco, Your Tutor"
       >
 
-      <h2>Jean Bosco AI Tutor</h2>
+      <h2>Ask Bosco, Your Tutor</h2>
 
-      <p>Your personal English learning assistant at Bosco English Academy.</p>
+      <p>Your personal English tutor at Bosco English Academy.</p>
 
       <p>Ask questions, practise English and improve your confidence.</p>
 
@@ -347,11 +347,11 @@
 
       <div class="chat-message tutor-message">
 
-        <strong>Jean Bosco AI Tutor:</strong>
+        <strong>Ask Bosco, Your Tutor:</strong>
 
         <p>Hello! Welcome to Bosco English Academy.</p>
 
-        <p>I am your AI learning assistant. You can ask me questions about grammar, vocabulary, pronunciation, speaking, reading, writing and other educational subjects.</p>
+        <p>I am your personal learning assistant. You can ask me questions about grammar, vocabulary, pronunciation, speaking, reading, writing and other educational subjects.</p>
 
         <p>What would you like to learn today?</p>
 
@@ -361,13 +361,13 @@
 
     <textarea
       id="studentQuestion"
-      placeholder="Type your question here..."
+      placeholder="Ask Bosco a question..."
       rows="3"
     ></textarea>
 
     <br><br>
 
-    <button id="sendQuestion">Send Question</button>
+    <button id="sendQuestion">Ask Bosco</button>
 
     <p id="tutorStatus"></p>
 
@@ -532,7 +532,7 @@ async function sendQuestion() {
 
   sendButton.disabled = true;
 
-  tutorStatus.textContent = 'Jean Bosco AI Tutor is thinking...';
+  tutorStatus.textContent = 'Bosco is thinking...';
 
   addMessage('You', message, 'student-message');
 
@@ -559,7 +559,7 @@ async function sendQuestion() {
     }
 
     addMessage(
-      'Jean Bosco AI Tutor',
+      'Bosco, Your Tutor',
       data.answer,
       'tutor-message'
     );
@@ -571,7 +571,7 @@ async function sendQuestion() {
     console.error('AI Tutor error:', error);
 
     addMessage(
-      'Jean Bosco AI Tutor',
+      'Bosco, Your Tutor',
       'I am sorry. I could not answer your question right now. Please try again.',
       'tutor-message'
     );
