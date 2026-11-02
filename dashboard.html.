@@ -118,13 +118,38 @@
       margin-bottom: 15px;
     }
 
-    .chat-message {
-      padding: 12px;
-      margin: 8px 0;
-      border-radius: 8px;
-      white-space: pre-wrap;
-    }
+   .chat-message {
+  padding: 15px;
+  margin: 12px 0;
+  border-radius: 8px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
 
+.student-message {
+  white-space: pre-wrap;
+}
+
+.ai-message p {
+  margin: 10px 0;
+}
+
+.ai-message h1,
+.ai-message h2,
+.ai-message h3 {
+  color: #123b70;
+  margin-top: 18px;
+  margin-bottom: 8px;
+}
+
+.ai-message ul,
+.ai-message ol {
+  padding-left: 25px;
+}
+
+.ai-message li {
+  margin-bottom: 7px;
+}
     .student-message {
       background: #dcecff;
       text-align: right;
@@ -288,8 +313,8 @@
   © 2026 English Proficiency Learning Academy
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 <script>
 
   // SUPABASE CONNECTION
@@ -354,26 +379,35 @@
 
   const chatMessages =
     document.getElementById('chatMessages');
+function addMessage(message, sender) {
 
+  const messageDiv = document.createElement('div');
 
-  // DISPLAY MESSAGES
+  messageDiv.className = 'chat-message ' + sender;
 
-  function addMessage(message, sender) {
+  if (sender === 'ai-message') {
 
-    const messageDiv = document.createElement('div');
+    const safeHTML = DOMPurify.sanitize(
+      marked.parse(message)
+    );
 
-    messageDiv.className =
-      'chat-message ' + sender;
+    messageDiv.innerHTML = safeHTML;
+
+  } else {
 
     messageDiv.textContent = message;
 
-    chatMessages.appendChild(messageDiv);
-
-    chatMessages.scrollTop =
-      chatMessages.scrollHeight;
-
   }
 
+  chatMessages.appendChild(messageDiv);
+
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+}
+
+  // DISPLAY MESSAGES
+
+ 
 
   // SEND STUDENT QUESTION TO AI
 
