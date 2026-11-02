@@ -6,9 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Dashboard | Bosco English Academy</title>
-#userRole {
-    display: none !important;
-}
+
 <style>
 
 body {
@@ -25,6 +23,11 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+header h2 {
+  margin: 5px 0;
 }
 
 main {
@@ -33,7 +36,10 @@ main {
   padding: 20px;
 }
 
-.welcome, .course {
+.welcome,
+.course,
+.profile,
+.tutor {
   background: white;
   padding: 25px;
   border-radius: 12px;
@@ -42,10 +48,7 @@ main {
 
 .profile {
   text-align: center;
-  background: white;
   padding: 30px;
-  border-radius: 12px;
-  margin-bottom: 25px;
 }
 
 .profile img {
@@ -60,15 +63,10 @@ main {
 
 .profile h2 {
   color: #123b70;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
-#userRole {
-  color: #1769aa;
-  font-weight: bold;
-}
-
-h1, h3 {
+h1, h2, h3 {
   color: #123b70;
 }
 
@@ -85,10 +83,16 @@ button {
   padding: 12px 18px;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 15px;
 }
 
 button:hover {
   background: #123b70;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .logout {
@@ -96,10 +100,94 @@ button:hover {
   color: #123b70;
 }
 
+.tutor {
+  border-top: 5px solid #1769aa;
+}
+
+.tutor-header {
+  text-align: center;
+}
+
+.tutor-header img {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #1769aa;
+}
+
+.tutor-header h2 {
+  margin-bottom: 5px;
+}
+
+.chat-messages {
+  background: #f3f6fb;
+  padding: 15px;
+  border-radius: 10px;
+  min-height: 150px;
+  max-height: 400px;
+  overflow-y: auto;
+  margin: 20px 0;
+}
+
+.chat-message {
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.student-message {
+  background: #dcecff;
+}
+
+.tutor-message {
+  background: white;
+  border-left: 4px solid #1769aa;
+}
+
+#studentQuestion {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  resize: vertical;
+}
+
+#tutorStatus {
+  color: #1769aa;
+  font-weight: bold;
+}
+
 footer {
   text-align: center;
   padding: 20px;
   color: #667;
+}
+
+@media (max-width: 600px) {
+
+  header {
+    padding: 15px;
+  }
+
+  main {
+    margin: 15px auto;
+    padding: 12px;
+  }
+
+  .welcome,
+  .course,
+  .profile,
+  .tutor {
+    padding: 18px;
+  }
+
 }
 
 </style>
@@ -118,6 +206,9 @@ Log out
 </header>
 
 <main>
+
+<!-- FOUNDER AND STUDENT PROFILE -->
+
 <section class="profile">
 
 <h2>Bosco English Academy</h2>
@@ -133,6 +224,7 @@ Log out
 </section>
 
 
+<!-- WELCOME SECTION -->
 
 <section class="welcome">
 
@@ -145,44 +237,141 @@ Log out
 </section>
 
 
+<!-- JEAN BOSCO AI TUTOR -->
+
+<section class="tutor" id="aiTutor">
+
+<div class="tutor-header">
+
+<img
+  src="Jean-Bosco-founder.png.png"
+  alt="Jean Bosco AI Tutor"
+>
+
+<h2>Jean Bosco AI Tutor</h2>
+
+<p>Your personal English learning assistant at Bosco English Academy.</p>
+
+<p>Ask questions, practise English and improve your confidence.</p>
+
+</div>
+
+
+<div class="chat-messages" id="chatMessages">
+
+<div class="chat-message tutor-message">
+
+<strong>Jean Bosco AI Tutor:</strong>
+
+<p>Hello! Welcome to Bosco English Academy.</p>
+
+<p>I am your AI learning assistant. You can ask me questions about grammar, vocabulary, pronunciation, speaking, reading, writing and other educational subjects.</p>
+
+<p>What would you like to learn today?</p>
+
+</div>
+
+</div>
+
+
+<textarea
+  id="studentQuestion"
+  placeholder="Type your question here..."
+  rows="3"
+></textarea>
+
+<br><br>
+
+<button id="sendQuestion">
+Send Question
+</button>
+
+<p id="tutorStatus"></p>
+
+</section>
+
+
+<!-- LEARNING AREAS -->
+
 <h2>My Learning Areas</h2>
 
 <section class="courses">
 
 <div class="course">
+
 <h3>🎧 Listening</h3>
+
 <p>Improve your understanding of spoken English.</p>
-<button onclick="openCourse('Listening')">Explore lessons</button>
+
+<button onclick="openCourse('Listening')">
+Explore lessons
+</button>
+
 </div>
 
+
 <div class="course">
+
 <h3>💬 Speaking</h3>
+
 <p>Develop confidence in English communication.</p>
-<button onclick="openCourse('Speaking')">Explore lessons</button>
+
+<button onclick="openCourse('Speaking')">
+Explore lessons
+</button>
+
 </div>
 
+
 <div class="course">
+
 <h3>📖 Reading</h3>
+
 <p>Improve reading fluency and comprehension.</p>
-<button onclick="openCourse('Reading')">Explore lessons</button>
+
+<button onclick="openCourse('Reading')">
+Explore lessons
+</button>
+
 </div>
 
+
 <div class="course">
+
 <h3>✍️ Writing</h3>
+
 <p>Learn to write clear English sentences.</p>
-<button onclick="openCourse('Writing')">Explore lessons</button>
+
+<button onclick="openCourse('Writing')">
+Explore lessons
+</button>
+
 </div>
 
+
 <div class="course">
+
 <h3>🔤 Grammar</h3>
+
 <p>Understand and practise English grammar.</p>
-<button onclick="openCourse('Grammar')">Explore lessons</button>
+
+<button onclick="openCourse('Grammar')">
+Explore lessons
+</button>
+
 </div>
 
+
 <div class="course">
+
 <h3>🧠 Vocabulary</h3>
+
 <p>Build your English vocabulary.</p>
-<button onclick="openCourse('Vocabulary')">Explore lessons</button>
+
+<button onclick="openCourse('Vocabulary')">
+Explore lessons
+</button>
+
 </div>
 
 </section>
@@ -194,8 +383,12 @@ Log out
 
 <p>© 2026 Bosco English Academy | Building Confidence in English</p>
 
+<p>Founded by Jean Bosco Munezero</p>
+
 </footer>
 
+
+<!-- SUPABASE CONNECTION -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -207,13 +400,18 @@ const client = window.supabase.createClient(
 );
 
 
+// CHECK STUDENT LOGIN
+
 async function start() {
 
   const { data, error } = await client.auth.getUser();
 
   if (error || !data.user) {
+
     window.location.href = 'index.html';
+
     return;
+
   }
 
   const user = data.user;
@@ -228,24 +426,15 @@ async function start() {
 
   document.getElementById('studentName').textContent = name;
 
-
-  const role = document.getElementById('userRole');
-
-  if (user.email === 'jeanboscomunezero1@gmail.com') {
-
-    role.textContent = 'Founder & Tutor – Bosco English Academy';
-
-  } else {
-
-    role.textContent = 'Student – Bosco English Academy';
-
-  }
-
 }
 
 
+// START DASHBOARD
+
 start();
 
+
+// LOG OUT
 
 document.getElementById('logoutButton').onclick = async () => {
 
@@ -256,12 +445,153 @@ document.getElementById('logoutButton').onclick = async () => {
 };
 
 
+// OPEN COURSES
+
 function openCourse(course) {
 
   window.location.href =
     'courses.html?course=' + encodeURIComponent(course);
 
 }
+
+
+// JEAN BOSCO AI TUTOR
+
+const sendButton = document.getElementById('sendQuestion');
+
+const questionBox = document.getElementById('studentQuestion');
+
+const chatMessages = document.getElementById('chatMessages');
+
+const tutorStatus = document.getElementById('tutorStatus');
+
+
+// DISPLAY CHAT MESSAGES
+
+function addMessage(sender, message, className) {
+
+  const messageDiv = document.createElement('div');
+
+  messageDiv.className = 'chat-message ' + className;
+
+  const heading = document.createElement('strong');
+
+  heading.textContent = sender + ':';
+
+  const paragraph = document.createElement('p');
+
+  paragraph.textContent = message;
+
+  messageDiv.appendChild(heading);
+
+  messageDiv.appendChild(paragraph);
+
+  chatMessages.appendChild(messageDiv);
+
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+}
+
+
+// SEND STUDENT QUESTION
+
+async function sendQuestion() {
+
+  const message = questionBox.value.trim();
+
+  if (!message) {
+
+    tutorStatus.textContent = 'Please enter your question.';
+
+    return;
+
+  }
+
+  if (message.length > 4000) {
+
+    tutorStatus.textContent = 'Your question must not exceed 4,000 characters.';
+
+    return;
+
+  }
+
+  sendButton.disabled = true;
+
+  tutorStatus.textContent = 'Jean Bosco AI Tutor is thinking...';
+
+  addMessage('You', message, 'student-message');
+
+  questionBox.value = '';
+
+  try {
+
+    const { data, error } = await client.functions.invoke(
+      'academy-assistant',
+      {
+        body: {
+          message: message
+        }
+      }
+    );
+
+    if (error) {
+
+      throw error;
+
+    }
+
+    if (!data || !data.answer) {
+
+      throw new Error('The tutor did not return an answer.');
+
+    }
+
+    addMessage(
+      'Jean Bosco AI Tutor',
+      data.answer,
+      'tutor-message'
+    );
+
+    tutorStatus.textContent = 'Excellent! You can ask another question.';
+
+  } catch (error) {
+
+    console.error('AI Tutor error:', error);
+
+    addMessage(
+      'Jean Bosco AI Tutor',
+      'I am sorry. I could not answer your question right now. Please try again.',
+      'tutor-message'
+    );
+
+    tutorStatus.textContent =
+      'There was a problem connecting to the tutor. Please try again.';
+
+  }
+
+  sendButton.disabled = false;
+
+}
+
+
+// SEND BUTTON
+
+sendButton.addEventListener('click', sendQuestion);
+
+
+// CTRL + ENTER TO SEND
+
+questionBox.addEventListener('keydown', function(event) {
+
+  if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+
+    event.preventDefault();
+
+    sendQuestion();
+
+  }
+
+});
 
 </script>
 
