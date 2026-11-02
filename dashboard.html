@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Dashboard | Bosco English Academy</title>
 
 <style>
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -45,12 +47,13 @@ main {
 }
 
 .profile img {
-  width: 110px;
-  height: 110px;
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid #1769aa;
-  display: none;
+  display: block;
+  margin: 0 auto;
 }
 
 .profile h2 {
@@ -58,7 +61,7 @@ main {
   margin-bottom: 5px;
 }
 
-.founder-label {
+#userRole {
   color: #1769aa;
   font-weight: bold;
 }
@@ -82,6 +85,10 @@ button {
   cursor: pointer;
 }
 
+button:hover {
+  background: #123b70;
+}
+
 .logout {
   background: white;
   color: #123b70;
@@ -92,25 +99,30 @@ footer {
   padding: 20px;
   color: #667;
 }
-</style>
 
+</style>
 </head>
 
 <body>
 
 <header>
+
 <h2>Bosco English Academy</h2>
-<button class="logout" id="logoutButton">Log out</button>
+
+<button class="logout" id="logoutButton">
+Log out
+</button>
+
 </header>
 
 <main>
 
 <section class="profile">
+
 <img
   id="profilePicture"
   src="tutor.jpg"
   alt="Jean Bosco Munezero - Founder and Tutor"
-  style="display:inline-block;"
 >
 
 <h2 id="studentName">Loading...</h2>
@@ -119,11 +131,17 @@ footer {
 
 </section>
 
+
 <section class="welcome">
+
 <h1>Welcome to Your Dashboard!</h1>
+
 <p>Building Confidence in English.</p>
+
 <p>Choose a learning area and continue improving your English.</p>
+
 </section>
+
 
 <h2>My Learning Areas</h2>
 
@@ -166,11 +184,16 @@ footer {
 </div>
 
 </section>
+
 </main>
 
+
 <footer>
+
 <p>© 2026 Bosco English Academy | Building Confidence in English</p>
+
 </footer>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -180,6 +203,7 @@ const client = window.supabase.createClient(
   'https://arnlcdpncwuruacaqjko.supabase.co',
   'sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-'
 );
+
 
 async function start() {
 
@@ -191,6 +215,7 @@ async function start() {
   }
 
   const user = data.user;
+
   const metadata = user.user_metadata || {};
 
   const name =
@@ -200,33 +225,25 @@ async function start() {
     'Student';
 
   document.getElementById('studentName').textContent = name;
-const picture = 'tutor.jpg';
-  
-  const image = document.getElementById('profilePicture');
 
-  if (picture) {
-    image.src = picture;
-
-    image.onload = () => {
-      image.style.display = 'inline-block';
-    };
-
-    image.onerror = () => {
-      image.style.display = 'none';
-    };
-  }
 
   const role = document.getElementById('userRole');
 
   if (user.email === 'jeanboscomunezero1@gmail.com') {
+
     role.textContent = 'Founder & Tutor – Bosco English Academy';
+
   } else {
+
     role.textContent = 'Student – Bosco English Academy';
+
   }
 
 }
 
+
 start();
+
 
 document.getElementById('logoutButton').onclick = async () => {
 
@@ -235,6 +252,7 @@ document.getElementById('logoutButton').onclick = async () => {
   window.location.href = 'index.html';
 
 };
+
 
 function openCourse(course) {
 
