@@ -208,6 +208,29 @@ button:disabled {
   overflow-x: auto;
 }
 
+/* JEAN BOSCO SPEAKER BUTTON */
+
+.speak-button {
+  margin-top: 12px;
+  background: #16804a;
+  font-size: 14px;
+}
+
+.speak-button:hover {
+  background: #105c35;
+}
+
+.stop-button {
+  margin-top: 12px;
+  margin-left: 8px;
+  background: #a83232;
+  font-size: 14px;
+}
+
+.stop-button:hover {
+  background: #7d2020;
+}
+
 #studentQuestion {
   width: 100%;
   box-sizing: border-box;
@@ -467,6 +490,98 @@ const chatMessages = document.getElementById('chatMessages');
 const tutorStatus = document.getElementById('tutorStatus');
 
 
+// JEAN BOSCO SPEAKING VOICE
+
+function speakText(text) {
+
+  if (!('speechSynthesis' in window)) {
+
+    tutorStatus.textContent =
+      'Voice playback is not supported by this browser.';
+
+    return;
+
+  }
+
+  window.speechSynthesis.cancel();
+
+  // Remove common Markdown symbols before speaking.
+
+  const cleanText = text
+    .replace(/```[\s\S]*?```/g, ' Code example omitted. ')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[([^\]]+)\]\(.*?\)/g, '$1')
+    .replace(/[#*_~>]/g, '')
+    .replace(/\|/g, ' ');
+
+  const speech = new SpeechSynthesisUtterance(cleanText);
+
+  speech.lang = 'en-US';
+  speech.rate = 0.88;
+  speech.pitch = 0.95;
+  speech.volume = 1;
+
+  const voices = window.speechSynthesis.getVoices();
+
+  const maleVoice = voices.find(voice =>
+    voice.lang.toLowerCase().startsWith('en') &&
+    /david|mark|guy|daniel/i.test(voice.name)
+  );
+
+  const englishVoice = voices.find(voice =>
+    voice.lang.toLowerCase().startsWith('en')
+  );
+
+  if (maleVoice) {
+
+    speech.voice = maleVoice;
+
+  } else if (englishVoice) {
+
+    speech.voice = englishVoice;
+
+  }
+
+  speech.onstart = () => {
+
+    tutorStatus.textContent = 'Jean Bosco is speaking...';
+
+  };
+
+  speech.onend = () => {
+
+    tutorStatus.textContent = 'Jean Bosco has finished speaking.';
+
+  };
+
+  speech.onerror = () => {
+
+    tutorStatus.textContent =
+      'Voice playback could not start. Please try again.';
+
+  };
+
+  window.speechSynthesis.speak(speech);
+
+}
+
+
+// STOP SPEAKING
+
+function stopSpeaking() {
+
+  if ('speechSynthesis' in window) {
+
+    window.speechSynthesis.cancel();
+
+    tutorStatus.textContent = 'Voice playback stopped.';
+
+  }
+
+}
+
+
 // DISPLAY CHAT MESSAGES WITH SAFE FORMATTING
 
 function addMessage(sender, message, className) {
@@ -498,6 +613,34 @@ function addMessage(sender, message, className) {
     }
 
     messageDiv.appendChild(answerDiv);
+
+    // ADD LISTEN BUTTON
+
+    const speakButton = document.createElement('button');
+
+    speakButton.className = 'speak-button';
+
+    speakButton.textContent = '🔊 Listen to Jean Bosco';
+
+    speakButton.onclick = () => {
+
+      speakText(answerDiv.innerText);
+
+    };
+
+    messageDiv.appendChild(speakButton);
+
+    // ADD STOP BUTTON
+
+    const stopButton = document.createElement('button');
+
+    stopButton.className = 'stop-button';
+
+    stopButton.textContent = '⏹ Stop';
+
+    stopButton.onclick = stopSpeaking;
+
+    messageDiv.appendChild(stopButton);
 
   } else {
 
