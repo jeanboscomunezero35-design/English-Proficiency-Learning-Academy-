@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -125,7 +126,7 @@ button:disabled {
   padding: 15px;
   border-radius: 10px;
   min-height: 150px;
-  max-height: 400px;
+  max-height: 500px;
   overflow-y: auto;
   margin: 20px 0;
 }
@@ -134,18 +135,78 @@ button:disabled {
   padding: 12px;
   margin-bottom: 12px;
   border-radius: 8px;
-  line-height: 1.6;
-  white-space: pre-wrap;
+  line-height: 1.7;
   overflow-wrap: anywhere;
 }
 
 .student-message {
   background: #dcecff;
+  white-space: pre-wrap;
 }
 
 .tutor-message {
   background: white;
   border-left: 4px solid #1769aa;
+}
+
+.tutor-message p {
+  margin: 10px 0;
+}
+
+.tutor-message h1,
+.tutor-message h2,
+.tutor-message h3,
+.tutor-message h4 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.tutor-message ul,
+.tutor-message ol {
+  padding-left: 25px;
+}
+
+.tutor-message li {
+  margin-bottom: 6px;
+}
+
+.tutor-message table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+  display: block;
+  overflow-x: auto;
+}
+
+.tutor-message th,
+.tutor-message td {
+  border: 1px solid #d5deea;
+  padding: 10px;
+  text-align: left;
+}
+
+.tutor-message th {
+  background: #eaf2fc;
+}
+
+.tutor-message blockquote {
+  border-left: 3px solid #1769aa;
+  margin-left: 0;
+  padding-left: 12px;
+  color: #52657b;
+}
+
+.tutor-message code {
+  background: #eef2f7;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+.tutor-message pre {
+  background: #eef2f7;
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
 }
 
 #studentQuestion {
@@ -191,6 +252,7 @@ footer {
 }
 
 </style>
+
 </head>
 
 <body>
@@ -207,24 +269,20 @@ Log out
 
 <main>
 
-<!-- FOUNDER AND STUDENT PROFILE -->
-
 <section class="profile">
 
 <h2>Bosco English Academy</h2>
 
 <img
-  id="profilePicture"
-  src="Jean-Bosco-founder.png.png"
-  alt="Jean Bosco Munezero"
+id="profilePicture"
+src="Jean-Bosco-founder.png.png"
+alt="Jean Bosco Munezero"
+
 >
 
 <h2 id="studentName">Loading...</h2>
 
 </section>
-
-
-<!-- WELCOME SECTION -->
 
 <section class="welcome">
 
@@ -236,16 +294,14 @@ Log out
 
 </section>
 
-
-<!-- JEAN BOSCO AI TUTOR -->
-
 <section class="tutor" id="aiTutor">
 
 <div class="tutor-header">
 
 <img
-  src="Jean-Bosco-founder.png.png"
-  alt="Jean Bosco AI Tutor"
+src="Jean-Bosco-founder.png.png"
+alt="Jean Bosco AI Tutor"
+
 >
 
 <h2>Jean Bosco AI Tutor</h2>
@@ -255,7 +311,6 @@ Log out
 <p>Ask questions, practise English and improve your confidence.</p>
 
 </div>
-
 
 <div class="chat-messages" id="chatMessages">
 
@@ -273,7 +328,6 @@ Log out
 
 </div>
 
-
 <textarea
   id="studentQuestion"
   placeholder="Type your question here..."
@@ -290,94 +344,49 @@ Send Question
 
 </section>
 
-
-<!-- LEARNING AREAS -->
-
 <h2>My Learning Areas</h2>
 
 <section class="courses">
 
 <div class="course">
-
 <h3>🎧 Listening</h3>
-
 <p>Improve your understanding of spoken English.</p>
-
-<button onclick="openCourse('Listening')">
-Explore lessons
-</button>
-
+<button onclick="openCourse('Listening')">Explore lessons</button>
 </div>
 
-
 <div class="course">
-
 <h3>💬 Speaking</h3>
-
 <p>Develop confidence in English communication.</p>
-
-<button onclick="openCourse('Speaking')">
-Explore lessons
-</button>
-
+<button onclick="openCourse('Speaking')">Explore lessons</button>
 </div>
 
-
 <div class="course">
-
 <h3>📖 Reading</h3>
-
 <p>Improve reading fluency and comprehension.</p>
-
-<button onclick="openCourse('Reading')">
-Explore lessons
-</button>
-
+<button onclick="openCourse('Reading')">Explore lessons</button>
 </div>
 
-
 <div class="course">
-
 <h3>✍️ Writing</h3>
-
 <p>Learn to write clear English sentences.</p>
-
-<button onclick="openCourse('Writing')">
-Explore lessons
-</button>
-
+<button onclick="openCourse('Writing')">Explore lessons</button>
 </div>
 
-
 <div class="course">
-
 <h3>🔤 Grammar</h3>
-
 <p>Understand and practise English grammar.</p>
-
-<button onclick="openCourse('Grammar')">
-Explore lessons
-</button>
-
+<button onclick="openCourse('Grammar')">Explore lessons</button>
 </div>
 
-
 <div class="course">
-
 <h3>🧠 Vocabulary</h3>
-
 <p>Build your English vocabulary.</p>
-
-<button onclick="openCourse('Vocabulary')">
-Explore lessons
-</button>
-
+<button onclick="openCourse('Vocabulary')">Explore lessons</button>
 </div>
 
 </section>
 
 </main>
-
 
 <footer>
 
@@ -387,10 +396,15 @@ Explore lessons
 
 </footer>
 
-
 <!-- SUPABASE CONNECTION -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- MARKDOWN FORMATTING LIBRARIES -->
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 
 <script>
 
@@ -407,15 +421,11 @@ async function start() {
   const { data, error } = await client.auth.getUser();
 
   if (error || !data.user) {
-
     window.location.href = 'index.html';
-
     return;
-
   }
 
   const user = data.user;
-
   const metadata = user.user_metadata || {};
 
   const name =
@@ -427,9 +437,6 @@ async function start() {
   document.getElementById('studentName').textContent = name;
 
 }
-
-
-// START DASHBOARD
 
 start();
 
@@ -458,15 +465,12 @@ function openCourse(course) {
 // JEAN BOSCO AI TUTOR
 
 const sendButton = document.getElementById('sendQuestion');
-
 const questionBox = document.getElementById('studentQuestion');
-
 const chatMessages = document.getElementById('chatMessages');
-
 const tutorStatus = document.getElementById('tutorStatus');
 
 
-// DISPLAY CHAT MESSAGES
+// DISPLAY CHAT MESSAGES WITH SAFE FORMATTING
 
 function addMessage(sender, message, className) {
 
@@ -478,13 +482,35 @@ function addMessage(sender, message, className) {
 
   heading.textContent = sender + ':';
 
-  const paragraph = document.createElement('p');
-
-  paragraph.textContent = message;
-
   messageDiv.appendChild(heading);
 
-  messageDiv.appendChild(paragraph);
+  if (className === 'tutor-message') {
+
+    const answerDiv = document.createElement('div');
+
+    try {
+
+      const formattedHTML = marked.parse(message);
+
+      answerDiv.innerHTML = DOMPurify.sanitize(formattedHTML);
+
+    } catch (error) {
+
+      answerDiv.textContent = message;
+
+    }
+
+    messageDiv.appendChild(answerDiv);
+
+  } else {
+
+    const paragraph = document.createElement('p');
+
+    paragraph.textContent = message;
+
+    messageDiv.appendChild(paragraph);
+
+  }
 
   chatMessages.appendChild(messageDiv);
 
@@ -525,25 +551,27 @@ async function sendQuestion() {
 
   try {
 
-   const { data: sessionData } = await client.auth.getSession();
+    const { data: sessionData } = await client.auth.getSession();
 
-const token = sessionData.session?.access_token;
+    const token = sessionData.session?.access_token;
 
-if (!token) {
-  throw new Error('Your login session has expired. Please log in again.');
-}
+    if (!token) {
 
-const { data, error } = await client.functions.invoke(
-  'academy-assistant',
-  {
-    body: {
-      message: message
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
+      throw new Error('Your login session has expired. Please log in again.');
+
     }
-  }
-);
+
+    const { data, error } = await client.functions.invoke(
+      'academy-assistant',
+      {
+        body: {
+          message: message
+        },
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
 
     if (error) {
 
