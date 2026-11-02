@@ -1,3 +1,4 @@
+````html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +9,6 @@
 <title>Dashboard | Bosco English Academy</title>
 
 <style>
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -28,6 +28,7 @@ header {
 
 header h2 {
   margin: 5px 0;
+  color: white;
 }
 
 main {
@@ -208,8 +209,6 @@ button:disabled {
   overflow-x: auto;
 }
 
-/* JEAN BOSCO SPEAKER BUTTON */
-
 .speak-button {
   margin-top: 12px;
   background: #16804a;
@@ -254,7 +253,6 @@ footer {
 }
 
 @media (max-width: 600px) {
-
   header {
     padding: 15px;
   }
@@ -270,9 +268,7 @@ footer {
   .tutor {
     padding: 18px;
   }
-
 }
-
 </style>
 
 </head>
@@ -280,87 +276,85 @@ footer {
 <body>
 
 <header>
+  <h2>Bosco English Academy</h2>
 
-<h2>Bosco English Academy</h2>
-
-<button class="logout" id="logoutButton">
-Log out
-</button>
-
+  <button class="logout" id="logoutButton">
+    Log out
+  </button>
 </header>
 
 <main>
 
 <section class="profile">
 
-<h2>Bosco English Academy</h2>
+  <h2>Bosco English Academy</h2>
 
-<img
-id="profilePicture"
-src="Jean-Bosco-founder.png.png"
-alt="Jean Bosco Munezero"
->
+  <img
+    id="profilePicture"
+    src="Jean-Bosco-founder.png.png"
+    alt="Jean Bosco Munezero"
+  >
 
-<h2 id="studentName">Loading...</h2>
+  <h2 id="studentName">Loading...</h2>
 
 </section>
 
 <section class="welcome">
 
-<h1>Welcome to Your Dashboard!</h1>
+  <h1>Welcome to Your Dashboard!</h1>
 
-<p>Building Confidence in English.</p>
+  <p>Building Confidence in English.</p>
 
-<p>Choose a learning area and continue improving your English.</p>
+  <p>Choose a learning area and continue improving your English.</p>
 
 </section>
 
 <section class="tutor" id="aiTutor">
 
-<div class="tutor-header">
+  <div class="tutor-header">
 
-<img
-src="Jean-Bosco-founder.png.png"
-alt="Jean Bosco, Your English Tutor"
->
+    <img
+      src="Jean-Bosco-founder.png.png"
+      alt="Jean Bosco, Your English Tutor"
+    >
 
-<h2>Jean Bosco – Your English Tutor</h2>
+    <h2>Jean Bosco – Your English Tutor</h2>
 
-<p>Your personal English tutor at Bosco English Academy.</p>
+    <p>Your personal English tutor at Bosco English Academy.</p>
 
-<p>Ask questions, practise English and improve your confidence.</p>
+    <p>Ask questions, practise English and improve your confidence.</p>
 
-</div>
+  </div>
 
-<div class="chat-messages" id="chatMessages">
+  <div class="chat-messages" id="chatMessages">
 
-<div class="chat-message tutor-message">
+    <div class="chat-message tutor-message">
 
-<strong>Jean Bosco – Your English Tutor:</strong>
+      <strong>Jean Bosco – Your English Tutor:</strong>
 
-<p>Hello! Welcome to Bosco English Academy.</p>
+      <p>Hello! Welcome to Bosco English Academy.</p>
 
-<p>I am your personal English tutor. You can ask me questions about grammar, vocabulary, pronunciation, speaking, reading, writing and other educational subjects.</p>
+      <p>I am your personal English tutor. You can ask me questions about grammar, vocabulary, pronunciation, speaking, reading, writing and other educational subjects.</p>
 
-<p>What would you like to learn today?</p>
+      <p>What would you like to learn today?</p>
 
-</div>
+    </div>
 
-</div>
+  </div>
 
-<textarea
-  id="studentQuestion"
-  placeholder="Type your question here..."
-  rows="3"
-></textarea>
+  <textarea
+    id="studentQuestion"
+    placeholder="Type your question here..."
+    rows="3"
+  ></textarea>
 
-<br><br>
+  <br><br>
 
-<button id="sendQuestion">
-Ask Your Tutor
-</button>
+  <button id="sendQuestion">
+    Ask Your Tutor
+  </button>
 
-<p id="tutorStatus"></p>
+  <p id="tutorStatus"></p>
 
 </section>
 
@@ -368,62 +362,53 @@ Ask Your Tutor
 
 <section class="courses">
 
-<div class="course">
-<h3>🎧 Listening</h3>
-<p>Improve your understanding of spoken English.</p>
-<button onclick="openCourse('Listening')">Explore lessons</button>
-</div>
+  <div class="course">
+    <h3>🎧 Listening</h3>
+    <p>Improve your understanding of spoken English.</p>
+    <button onclick="openCourse('Listening')">Explore lessons</button>
+  </div>
 
-<div class="course">
-<h3>💬 Speaking</h3>
-<p>Develop confidence in English communication.</p>
-<button onclick="openCourse('Speaking')">Explore lessons</button>
-</div>
+  <div class="course">
+    <h3>💬 Speaking</h3>
+    <p>Develop confidence in English communication.</p>
+    <button onclick="openCourse('Speaking')">Explore lessons</button>
+  </div>
 
-<div class="course">
-<h3>📖 Reading</h3>
-<p>Improve reading fluency and comprehension.</p>
-<button onclick="openCourse('Reading')">Explore lessons</button>
-</div>
+  <div class="course">
+    <h3>📖 Reading</h3>
+    <p>Improve reading fluency and comprehension.</p>
+    <button onclick="openCourse('Reading')">Explore lessons</button>
+  </div>
 
-<div class="course">
-<h3>✍️ Writing</h3>
-<p>Learn to write clear English sentences.</p>
-<button onclick="openCourse('Writing')">Explore lessons</button>
-</div>
+  <div class="course">
+    <h3>✍️ Writing</h3>
+    <p>Learn to write clear English sentences.</p>
+    <button onclick="openCourse('Writing')">Explore lessons</button>
+  </div>
 
-<div class="course">
-<h3>🔤 Grammar</h3>
-<p>Understand and practise English grammar.</p>
-<button onclick="openCourse('Grammar')">Explore lessons</button>
-</div>
+  <div class="course">
+    <h3>🔤 Grammar</h3>
+    <p>Understand and practise English grammar.</p>
+    <button onclick="openCourse('Grammar')">Explore lessons</button>
+  </div>
 
-<div class="course">
-<h3>🧠 Vocabulary</h3>
-<p>Build your English vocabulary.</p>
-<button onclick="openCourse('Vocabulary')">Explore lessons</button>
-</div>
+  <div class="course">
+    <h3>🧠 Vocabulary</h3>
+    <p>Build your English vocabulary.</p>
+    <button onclick="openCourse('Vocabulary')">Explore lessons</button>
+  </div>
 
 </section>
 
 </main>
 
 <footer>
-
-<p>© 2026 Bosco English Academy | Building Confidence in English</p>
-
-<p>Founded by Jean Bosco Munezero</p>
-
+  <p>© 2026 Bosco English Academy | Building Confidence in English</p>
+  <p>Founded by Jean Bosco Munezero</p>
 </footer>
 
-<!-- SUPABASE CONNECTION -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- MARKDOWN FORMATTING LIBRARIES -->
-
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 
 <script>
@@ -482,15 +467,17 @@ function openCourse(course) {
 }
 
 
-// JEAN BOSCO – YOUR ENGLISH TUTOR
+// TUTOR ELEMENTS
 
 const sendButton = document.getElementById('sendQuestion');
 const questionBox = document.getElementById('studentQuestion');
 const chatMessages = document.getElementById('chatMessages');
 const tutorStatus = document.getElementById('tutorStatus');
 
+let currentAudio = null;
 
-// JEAN BOSCO SPEAKING VOICE
+
+// BACKUP BROWSER VOICE
 
 function speakText(text) {
 
@@ -504,8 +491,6 @@ function speakText(text) {
   }
 
   window.speechSynthesis.cancel();
-
-  // Remove common Markdown symbols before speaking.
 
   const cleanText = text
     .replace(/```[\s\S]*?```/g, ' Code example omitted. ')
@@ -534,32 +519,22 @@ function speakText(text) {
   );
 
   if (maleVoice) {
-
     speech.voice = maleVoice;
-
   } else if (englishVoice) {
-
     speech.voice = englishVoice;
-
   }
 
   speech.onstart = () => {
-
-    tutorStatus.textContent = 'Jean Bosco is speaking...';
-
+    tutorStatus.textContent = 'Backup voice is speaking...';
   };
 
   speech.onend = () => {
-
     tutorStatus.textContent = 'Jean Bosco has finished speaking.';
-
   };
 
   speech.onerror = () => {
-
     tutorStatus.textContent =
       'Voice playback could not start. Please try again.';
-
   };
 
   window.speechSynthesis.speak(speech);
@@ -567,22 +542,98 @@ function speakText(text) {
 }
 
 
-// STOP SPEAKING
+// STOP BOTH VOICE SYSTEMS
 
 function stopSpeaking() {
 
   if ('speechSynthesis' in window) {
-
     window.speechSynthesis.cancel();
+  }
 
-    tutorStatus.textContent = 'Voice playback stopped.';
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+
+    URL.revokeObjectURL(currentAudio.dataset.audioUrl || '');
+
+    currentAudio = null;
+  }
+
+  tutorStatus.textContent = 'Voice playback stopped.';
+
+}
+
+
+// PLAY ELEVENLABS AUDIO
+
+async function playTutorAudio(base64Audio, fallbackText) {
+
+  if (!base64Audio) {
+    speakText(fallbackText);
+    return;
+  }
+
+  try {
+
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    const binary = atob(base64Audio);
+    const bytes = new Uint8Array(binary.length);
+
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+
+    const audioBlob = new Blob(
+      [bytes],
+      { type: 'audio/mpeg' }
+    );
+
+    const audioURL = URL.createObjectURL(audioBlob);
+
+    currentAudio = new Audio(audioURL);
+    currentAudio.dataset.audioUrl = audioURL;
+
+    currentAudio.onplay = () => {
+      tutorStatus.textContent = 'Roger is speaking for Jean Bosco...';
+    };
+
+    currentAudio.onended = () => {
+      tutorStatus.textContent = 'Jean Bosco has finished speaking.';
+      URL.revokeObjectURL(audioURL);
+      currentAudio = null;
+    };
+
+    currentAudio.onerror = () => {
+      tutorStatus.textContent = 'Using backup voice...';
+      URL.revokeObjectURL(audioURL);
+      currentAudio = null;
+      speakText(fallbackText);
+    };
+
+    await currentAudio.play();
+
+  } catch (error) {
+
+    console.error('Audio playback error:', error);
+
+    tutorStatus.textContent = 'Using backup voice...';
+
+    speakText(fallbackText);
 
   }
 
 }
 
 
-// DISPLAY CHAT MESSAGES WITH SAFE FORMATTING
+// DISPLAY CHAT MESSAGES
 
 function addMessage(sender, message, className) {
 
@@ -614,7 +665,7 @@ function addMessage(sender, message, className) {
 
     messageDiv.appendChild(answerDiv);
 
-    // ADD LISTEN BUTTON
+    // LISTEN BUTTON
 
     const speakButton = document.createElement('button');
 
@@ -624,13 +675,16 @@ function addMessage(sender, message, className) {
 
     speakButton.onclick = () => {
 
-      speakText(answerDiv.innerText);
+      playTutorAudio(
+        messageDiv.dataset.audio || null,
+        answerDiv.innerText
+      );
 
     };
 
     messageDiv.appendChild(speakButton);
 
-    // ADD STOP BUTTON
+    // STOP BUTTON
 
     const stopButton = document.createElement('button');
 
@@ -656,6 +710,8 @@ function addMessage(sender, message, className) {
 
   chatMessages.scrollTop = chatMessages.scrollHeight;
 
+  return messageDiv;
+
 }
 
 
@@ -675,7 +731,8 @@ async function sendQuestion() {
 
   if (message.length > 4000) {
 
-    tutorStatus.textContent = 'Your question must not exceed 4,000 characters.';
+    tutorStatus.textContent =
+      'Your question must not exceed 4,000 characters.';
 
     return;
 
@@ -696,9 +753,7 @@ async function sendQuestion() {
     const token = sessionData.session?.access_token;
 
     if (!token) {
-
       throw new Error('Your login session has expired. Please log in again.');
-
     }
 
     const { data, error } = await client.functions.invoke(
@@ -714,24 +769,27 @@ async function sendQuestion() {
     );
 
     if (error) {
-
       throw error;
-
     }
 
     if (!data || !data.answer) {
-
       throw new Error('The tutor did not return an answer.');
-
     }
 
-    addMessage(
+    const tutorMessage = addMessage(
       'Jean Bosco – Your English Tutor',
       data.answer,
       'tutor-message'
     );
 
-    tutorStatus.textContent = 'Excellent! You can ask another question.';
+    if (data.audio) {
+      tutorMessage.dataset.audio = data.audio;
+    }
+
+    tutorStatus.textContent =
+      data.audio
+        ? 'Your answer is ready. Click Listen to hear Roger.'
+        : 'Your answer is ready. Click Listen to hear the backup voice.';
 
   } catch (error) {
 
@@ -776,3 +834,4 @@ questionBox.addEventListener('keydown', function(event) {
 
 </body>
 </html>
+````
