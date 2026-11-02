@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -277,7 +276,6 @@ Log out
 id="profilePicture"
 src="Jean-Bosco-founder.png.png"
 alt="Jean Bosco Munezero"
-
 >
 
 <h2 id="studentName">Loading...</h2>
@@ -300,13 +298,12 @@ alt="Jean Bosco Munezero"
 
 <img
 src="Jean-Bosco-founder.png.png"
-alt="Jean Bosco AI Tutor"
-
+alt="Jean Bosco, Your English Tutor"
 >
 
-<h2>Jean Bosco AI Tutor</h2>
+<h2>Jean Bosco – Your English Tutor</h2>
 
-<p>Your personal English learning assistant at Bosco English Academy.</p>
+<p>Your personal English tutor at Bosco English Academy.</p>
 
 <p>Ask questions, practise English and improve your confidence.</p>
 
@@ -316,11 +313,11 @@ alt="Jean Bosco AI Tutor"
 
 <div class="chat-message tutor-message">
 
-<strong>Jean Bosco AI Tutor:</strong>
+<strong>Jean Bosco – Your English Tutor:</strong>
 
 <p>Hello! Welcome to Bosco English Academy.</p>
 
-<p>I am your AI learning assistant. You can ask me questions about grammar, vocabulary, pronunciation, speaking, reading, writing and other educational subjects.</p>
+<p>I am your personal English tutor. You can ask me questions about grammar, vocabulary, pronunciation, speaking, reading, writing and other educational subjects.</p>
 
 <p>What would you like to learn today?</p>
 
@@ -337,7 +334,7 @@ alt="Jean Bosco AI Tutor"
 <br><br>
 
 <button id="sendQuestion">
-Send Question
+Ask Your Tutor
 </button>
 
 <p id="tutorStatus"></p>
@@ -462,7 +459,7 @@ function openCourse(course) {
 }
 
 
-// JEAN BOSCO AI TUTOR
+// JEAN BOSCO – YOUR ENGLISH TUTOR
 
 const sendButton = document.getElementById('sendQuestion');
 const questionBox = document.getElementById('studentQuestion');
@@ -543,7 +540,7 @@ async function sendQuestion() {
 
   sendButton.disabled = true;
 
-  tutorStatus.textContent = 'Jean Bosco AI Tutor is thinking...';
+  tutorStatus.textContent = 'Jean Bosco is preparing your answer...';
 
   addMessage('You', message, 'student-message');
 
@@ -586,7 +583,7 @@ async function sendQuestion() {
     }
 
     addMessage(
-      'Jean Bosco AI Tutor',
+      'Jean Bosco – Your English Tutor',
       data.answer,
       'tutor-message'
     );
@@ -595,10 +592,10 @@ async function sendQuestion() {
 
   } catch (error) {
 
-    console.error('AI Tutor error:', error);
+    console.error('Tutor error:', error);
 
     addMessage(
-      'Jean Bosco AI Tutor',
+      'Jean Bosco – Your English Tutor',
       'I am sorry. I could not answer your question right now. Please try again.',
       'tutor-message'
     );
