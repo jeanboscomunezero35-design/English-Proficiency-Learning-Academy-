@@ -106,7 +106,12 @@ footer {
 <main>
 
 <section class="profile">
-<img id="profilePicture" alt="Profile picture">
+<img
+  id="profilePicture"
+  src="tutor.jpg"
+  alt="Jean Bosco Munezero - Founder and Tutor"
+  style="display:inline-block;"
+>
 
 <h2 id="studentName">Loading...</h2>
 
@@ -195,12 +200,8 @@ async function start() {
     'Student';
 
   document.getElementById('studentName').textContent = name;
-
-  const picture =
-    metadata.avatar_url ||
-    metadata.picture ||
-    metadata.photo_url;
-
+const picture = 'tutor.jpg';
+  
   const image = document.getElementById('profilePicture');
 
   if (picture) {
