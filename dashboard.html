@@ -9,6 +9,7 @@
 <title>Dashboard | Bosco English Academy</title>
 
 <style>
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -253,6 +254,7 @@ footer {
 }
 
 @media (max-width: 600px) {
+
   header {
     padding: 15px;
   }
@@ -268,19 +270,22 @@ footer {
   .tutor {
     padding: 18px;
   }
-}
-</style>
 
+}
+
+</style>
 </head>
 
 <body>
 
 <header>
+
   <h2>Bosco English Academy</h2>
 
   <button class="logout" id="logoutButton">
     Log out
   </button>
+
 </header>
 
 <main>
@@ -308,6 +313,8 @@ footer {
   <p>Choose a learning area and continue improving your English.</p>
 
 </section>
+
+<!-- JEAN BOSCO AI TUTOR -->
 
 <section class="tutor" id="aiTutor">
 
@@ -358,6 +365,8 @@ footer {
 
 </section>
 
+<!-- LEARNING AREAS -->
+
 <h2>My Learning Areas</h2>
 
 <section class="courses">
@@ -365,37 +374,49 @@ footer {
   <div class="course">
     <h3>🎧 Listening</h3>
     <p>Improve your understanding of spoken English.</p>
-    <button onclick="openCourse('Listening')">Explore lessons</button>
+    <button onclick="openCourse('Listening')">
+      Explore lessons
+    </button>
   </div>
 
   <div class="course">
     <h3>💬 Speaking</h3>
     <p>Develop confidence in English communication.</p>
-    <button onclick="openCourse('Speaking')">Explore lessons</button>
+    <button onclick="openCourse('Speaking')">
+      Explore lessons
+    </button>
   </div>
 
   <div class="course">
     <h3>📖 Reading</h3>
     <p>Improve reading fluency and comprehension.</p>
-    <button onclick="openCourse('Reading')">Explore lessons</button>
+    <button onclick="openCourse('Reading')">
+      Explore lessons
+    </button>
   </div>
 
   <div class="course">
     <h3>✍️ Writing</h3>
     <p>Learn to write clear English sentences.</p>
-    <button onclick="openCourse('Writing')">Explore lessons</button>
+    <button onclick="openCourse('Writing')">
+      Explore lessons
+    </button>
   </div>
 
   <div class="course">
     <h3>🔤 Grammar</h3>
     <p>Understand and practise English grammar.</p>
-    <button onclick="openCourse('Grammar')">Explore lessons</button>
+    <button onclick="openCourse('Grammar')">
+      Explore lessons
+    </button>
   </div>
 
   <div class="course">
     <h3>🧠 Vocabulary</h3>
     <p>Build your English vocabulary.</p>
-    <button onclick="openCourse('Vocabulary')">Explore lessons</button>
+    <button onclick="openCourse('Vocabulary')">
+      Explore lessons
+    </button>
   </div>
 
 </section>
@@ -403,13 +424,22 @@ footer {
 </main>
 
 <footer>
+
   <p>© 2026 Bosco English Academy | Building Confidence in English</p>
+
   <p>Founded by Jean Bosco Munezero</p>
+
 </footer>
 
+<!-- REQUIRED LIBRARIES -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+
+<!-- DASHBOARD JAVASCRIPT -->
 
 <script>
 
@@ -426,8 +456,11 @@ async function start() {
   const { data, error } = await client.auth.getUser();
 
   if (error || !data.user) {
+
     window.location.href = 'index.html';
+
     return;
+
   }
 
   const user = data.user;
@@ -470,8 +503,11 @@ function openCourse(course) {
 // TUTOR ELEMENTS
 
 const sendButton = document.getElementById('sendQuestion');
+
 const questionBox = document.getElementById('studentQuestion');
+
 const chatMessages = document.getElementById('chatMessages');
+
 const tutorStatus = document.getElementById('tutorStatus');
 
 let currentAudio = null;
@@ -519,22 +555,32 @@ function speakText(text) {
   );
 
   if (maleVoice) {
+
     speech.voice = maleVoice;
+
   } else if (englishVoice) {
+
     speech.voice = englishVoice;
+
   }
 
   speech.onstart = () => {
+
     tutorStatus.textContent = 'Backup voice is speaking...';
+
   };
 
   speech.onend = () => {
+
     tutorStatus.textContent = 'Jean Bosco has finished speaking.';
+
   };
 
   speech.onerror = () => {
+
     tutorStatus.textContent =
       'Voice playback could not start. Please try again.';
+
   };
 
   window.speechSynthesis.speak(speech);
@@ -542,21 +588,26 @@ function speakText(text) {
 }
 
 
-// STOP BOTH VOICE SYSTEMS
+// STOP VOICE SYSTEMS
 
 function stopSpeaking() {
 
   if ('speechSynthesis' in window) {
+
     window.speechSynthesis.cancel();
+
   }
 
   if (currentAudio) {
+
     currentAudio.pause();
+
     currentAudio.currentTime = 0;
 
     URL.revokeObjectURL(currentAudio.dataset.audioUrl || '');
 
     currentAudio = null;
+
   }
 
   tutorStatus.textContent = 'Voice playback stopped.';
@@ -569,26 +620,37 @@ function stopSpeaking() {
 async function playTutorAudio(base64Audio, fallbackText) {
 
   if (!base64Audio) {
+
     speakText(fallbackText);
+
     return;
+
   }
 
   try {
 
     if (currentAudio) {
+
       currentAudio.pause();
+
       currentAudio = null;
+
     }
 
     if ('speechSynthesis' in window) {
+
       window.speechSynthesis.cancel();
+
     }
 
     const binary = atob(base64Audio);
+
     const bytes = new Uint8Array(binary.length);
 
     for (let i = 0; i < binary.length; i++) {
+
       bytes[i] = binary.charCodeAt(i);
+
     }
 
     const audioBlob = new Blob(
@@ -599,23 +661,35 @@ async function playTutorAudio(base64Audio, fallbackText) {
     const audioURL = URL.createObjectURL(audioBlob);
 
     currentAudio = new Audio(audioURL);
+
     currentAudio.dataset.audioUrl = audioURL;
 
     currentAudio.onplay = () => {
+
       tutorStatus.textContent = 'Roger is speaking for Jean Bosco...';
+
     };
 
     currentAudio.onended = () => {
+
       tutorStatus.textContent = 'Jean Bosco has finished speaking.';
+
       URL.revokeObjectURL(audioURL);
+
       currentAudio = null;
+
     };
 
     currentAudio.onerror = () => {
+
       tutorStatus.textContent = 'Using backup voice...';
+
       URL.revokeObjectURL(audioURL);
+
       currentAudio = null;
+
       speakText(fallbackText);
+
     };
 
     await currentAudio.play();
@@ -665,6 +739,7 @@ function addMessage(sender, message, className) {
 
     messageDiv.appendChild(answerDiv);
 
+
     // LISTEN BUTTON
 
     const speakButton = document.createElement('button');
@@ -683,6 +758,7 @@ function addMessage(sender, message, className) {
     };
 
     messageDiv.appendChild(speakButton);
+
 
     // STOP BUTTON
 
@@ -753,7 +829,9 @@ async function sendQuestion() {
     const token = sessionData.session?.access_token;
 
     if (!token) {
+
       throw new Error('Your login session has expired. Please log in again.');
+
     }
 
     const { data, error } = await client.functions.invoke(
@@ -769,11 +847,15 @@ async function sendQuestion() {
     );
 
     if (error) {
+
       throw error;
+
     }
 
     if (!data || !data.answer) {
+
       throw new Error('The tutor did not return an answer.');
+
     }
 
     const tutorMessage = addMessage(
@@ -783,7 +865,9 @@ async function sendQuestion() {
     );
 
     if (data.audio) {
+
       tutorMessage.dataset.audio = data.audio;
+
     }
 
     tutorStatus.textContent =
@@ -804,9 +888,11 @@ async function sendQuestion() {
     tutorStatus.textContent =
       'There was a problem connecting to the tutor. Please try again.';
 
-  }
+  } finally {
 
-  sendButton.disabled = false;
+    sendButton.disabled = false;
+
+  }
 
 }
 
@@ -829,6 +915,11 @@ questionBox.addEventListener('keydown', function(event) {
   }
 
 });
+
+</script>
+
+<!-- D-ID JEAN BOSCO AVATAR EMBED -->
+
 <script type="module"
 src="https://agent.d-id.com/v2/index.js"
 data-mode="fabio"
@@ -840,7 +931,6 @@ data-light-mode="true"
 data-orientation="horizontal"
 data-position="right"
 data-open-mode="expanded">
-</script>
 </script>
 
 </body>
