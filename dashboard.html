@@ -1,4 +1,3 @@
-````html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +8,6 @@
 <title>Dashboard | Bosco English Academy</title>
 
 <style>
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -254,7 +252,6 @@ footer {
 }
 
 @media (max-width: 600px) {
-
   header {
     padding: 15px;
   }
@@ -270,22 +267,18 @@ footer {
   .tutor {
     padding: 18px;
   }
-
 }
-
 </style>
 </head>
 
 <body>
 
 <header>
-
   <h2>Bosco English Academy</h2>
 
   <button class="logout" id="logoutButton">
     Log out
   </button>
-
 </header>
 
 <main>
@@ -565,22 +558,16 @@ function speakText(text) {
   }
 
   speech.onstart = () => {
-
     tutorStatus.textContent = 'Backup voice is speaking...';
-
   };
 
   speech.onend = () => {
-
     tutorStatus.textContent = 'Jean Bosco has finished speaking.';
-
   };
 
   speech.onerror = () => {
-
     tutorStatus.textContent =
       'Voice playback could not start. Please try again.';
-
   };
 
   window.speechSynthesis.speak(speech);
@@ -593,15 +580,12 @@ function speakText(text) {
 function stopSpeaking() {
 
   if ('speechSynthesis' in window) {
-
     window.speechSynthesis.cancel();
-
   }
 
   if (currentAudio) {
 
     currentAudio.pause();
-
     currentAudio.currentTime = 0;
 
     URL.revokeObjectURL(currentAudio.dataset.audioUrl || '');
@@ -620,27 +604,19 @@ function stopSpeaking() {
 async function playTutorAudio(base64Audio, fallbackText) {
 
   if (!base64Audio) {
-
     speakText(fallbackText);
-
     return;
-
   }
 
   try {
 
     if (currentAudio) {
-
       currentAudio.pause();
-
       currentAudio = null;
-
     }
 
     if ('speechSynthesis' in window) {
-
       window.speechSynthesis.cancel();
-
     }
 
     const binary = atob(base64Audio);
@@ -648,9 +624,7 @@ async function playTutorAudio(base64Audio, fallbackText) {
     const bytes = new Uint8Array(binary.length);
 
     for (let i = 0; i < binary.length; i++) {
-
       bytes[i] = binary.charCodeAt(i);
-
     }
 
     const audioBlob = new Blob(
@@ -665,9 +639,7 @@ async function playTutorAudio(base64Audio, fallbackText) {
     currentAudio.dataset.audioUrl = audioURL;
 
     currentAudio.onplay = () => {
-
       tutorStatus.textContent = 'Roger is speaking for Jean Bosco...';
-
     };
 
     currentAudio.onended = () => {
@@ -739,7 +711,6 @@ function addMessage(sender, message, className) {
 
     messageDiv.appendChild(answerDiv);
 
-
     // LISTEN BUTTON
 
     const speakButton = document.createElement('button');
@@ -758,7 +729,6 @@ function addMessage(sender, message, className) {
     };
 
     messageDiv.appendChild(speakButton);
-
 
     // STOP BUTTON
 
@@ -847,15 +817,11 @@ async function sendQuestion() {
     );
 
     if (error) {
-
       throw error;
-
     }
 
     if (!data || !data.answer) {
-
       throw new Error('The tutor did not return an answer.');
-
     }
 
     const tutorMessage = addMessage(
@@ -865,9 +831,7 @@ async function sendQuestion() {
     );
 
     if (data.audio) {
-
       tutorMessage.dataset.audio = data.audio;
-
     }
 
     tutorStatus.textContent =
@@ -920,19 +884,19 @@ questionBox.addEventListener('keydown', function(event) {
 
 <!-- D-ID JEAN BOSCO AVATAR EMBED -->
 
-<script type="module"
-src="https://agent.d-id.com/v2/index.js"
-data-mode="fabio"
-data-client-key="ck_jIY44J1GiCOYIXHFIOnCo"
-data-agent-id="v2_agt_8C04PTY-"
-data-name="did-agent"
-data-monitor="true"
-data-light-mode="true"
-data-orientation="horizontal"
-data-position="right"
-data-open-mode="expanded">
+<script
+  type="module"
+  src="https://agent.d-id.com/v2/index.js"
+  data-mode="fabio"
+  data-client-key="ck_jIY44J1GiCOYIXHFIOnCo"
+  data-agent-id="v2_agt_8C04PTY-"
+  data-name="did-agent"
+  data-monitor="true"
+  data-light-mode="true"
+  data-orientation="horizontal"
+  data-position="right"
+  data-open-mode="expanded">
 </script>
 
 </body>
 </html>
-````
