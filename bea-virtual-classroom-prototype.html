@@ -1017,7 +1017,27 @@ async function connectToClassroom(code,role,name){
 
   try{
     if(!beaSupabase) beaSupabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-    if(classroomChannel){
+   // Get the student's existing BEA academy login
+const {data:{session},error}=await beaSupabase.auth.getSession();
+
+if(error || !session){
+  document.getElementById('entryMessage').textContent=
+    'Please log in to your Bosco English Academy account first.';
+  return;
+}
+
+// Identify the authenticated student
+const user=session.user;
+
+name=user.user_metadata.full_name ||
+     user.user_metadata.name ||
+     user.user_metadata.display_name ||
+     user.email.split('@')[0];
+
+currentParticipantId=user.id;
+
+document.getElementById('displayName').value=name;
+     if(classroomChannel){
       await beaSupabase.removeChannel(classroomChannel);
       classroomChannel=null;
     }
