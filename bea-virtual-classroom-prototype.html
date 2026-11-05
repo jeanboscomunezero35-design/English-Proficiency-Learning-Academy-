@@ -549,10 +549,11 @@ Choose a mode and prepare this demo room.
 <footer>
 © Bosco English Academy · Founded by Jean Bosco Munezero · Building Confidence in English
 </footer>
-
 <script>
 
-/* CAMERA AND MICROPHONE */
+/* =====================================
+   CAMERA AND MICROPHONE
+===================================== */
 
 const camera = document.getElementById('camera');
 const placeholder = document.getElementById('cameraPlaceholder');
@@ -574,9 +575,9 @@ placeholder.style.display = 'none';
 
 document.getElementById('connectionStatus').textContent = '● Camera preview active';
 document.getElementById('cameraBtn').textContent = 'Camera active';
-}
-catch(e){
-alert('Camera could not start. Check browser permission and use HTTPS or localhost. Details: ' + e.message);
+
+}catch(e){
+alert('Camera could not start: ' + e.message);
 }
 }
 
@@ -591,8 +592,8 @@ audioTrack = s.getAudioTracks()[0];
 
 document.getElementById('micBtn').textContent = 'Microphone enabled';
 document.getElementById('connectionStatus').textContent = '● Microphone ready';
-}
-catch(e){
+
+}catch(e){
 alert('Microphone permission was not granted: ' + e.message);
 }
 }
@@ -616,16 +617,26 @@ placeholder.style.display = 'block';
 document.getElementById('cameraBtn').textContent = 'Start camera';
 document.getElementById('micBtn').textContent = 'Enable microphone';
 document.getElementById('connectionStatus').textContent = '● Devices stopped';
+
 };
 
-/* CLASSROOM MODE */
+
+/* =====================================
+   CLASSROOM MODE
+===================================== */
 
 document.querySelectorAll('.mode').forEach(b => {
+
 b.onclick = () => {
-document.querySelectorAll('.mode').forEach(x => x.classList.remove('active'));
+
+document.querySelectorAll('.mode').forEach(x =>
+x.classList.remove('active'));
+
 b.classList.add('active');
 selectedMode = b.dataset.mode;
+
 };
+
 });
 
 document.getElementById('enterBtn').onclick = () => {
@@ -639,7 +650,10 @@ document.getElementById('entryMessage').textContent =
 
 };
 
-/* CLASS DISCUSSION */
+
+/* =====================================
+   CLASS DISCUSSION
+===================================== */
 
 const messages = document.getElementById('messages');
 
@@ -654,13 +668,16 @@ const p = document.createElement('p');
 p.className = 'msg';
 
 const b = document.createElement('b');
-b.textContent = (document.getElementById('displayName').value.trim() || 'Guest') + ': ';
+b.textContent =
+(document.getElementById('displayName').value.trim() || 'Guest') + ': ';
 
 p.append(b, document.createTextNode(value));
 
 messages.appendChild(p);
 messages.scrollTop = messages.scrollHeight;
+
 input.value = '';
+
 }
 
 document.getElementById('sendBtn').onclick = send;
@@ -670,25 +687,32 @@ if(e.key === 'Enter') send();
 });
 
 document.getElementById('handBtn').onclick = () => {
+
 const p = document.createElement('p');
 p.className = 'msg';
 p.innerHTML = '<b>BEA Assistant:</b> ✋ Hand raised (demo).';
+
 messages.appendChild(p);
 messages.scrollTop = messages.scrollHeight;
+
 };
 
 document.getElementById('lowerHandBtn').onclick = () => {
+
 const p = document.createElement('p');
 p.className = 'msg';
 p.innerHTML = '<b>BEA Assistant:</b> Hand lowered (demo).';
+
 messages.appendChild(p);
 messages.scrollTop = messages.scrollHeight;
+
 };
 
 
-/* =========================================
-   BEA ADVANCED INTERACTIVE WHITEBOARD
-========================================= */
+/* =====================================
+   BEA KEYBOARD WHITEBOARD
+   NO FREEHAND DRAWING
+===================================== */
 
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
@@ -700,34 +724,29 @@ const penColor = document.getElementById('penColor');
 const penSize = document.getElementById('penSize');
 
 let activeTool = 'marker';
-let drawing = false;
-let last = null;
-let erasing = false;
+let editorStyle = null;
 
-ctx.lineCap = 'round';
-ctx.lineJoin = 'round';
 
-/* SELECT WRITING TOOLS */
+/* SELECT WRITING TOOL */
 
 function selectTool(tool){
 
 commitText();
 
 activeTool = tool;
-erasing = false;
 
 document.querySelectorAll('.tool-button').forEach(button => {
 button.classList.remove('active');
 });
 
-const buttonMap = {
+const buttons = {
 chalk:'chalkBtn',
 marker:'markerBtn',
 text:'textBtn',
 handwriting:'handwritingBtn'
 };
 
-document.getElementById(buttonMap[tool]).classList.add('active');
+document.getElementById(buttons[tool]).classList.add('active');
 
 if(tool === 'chalk'){
 
@@ -735,7 +754,7 @@ boardSurface.className = 'board-surface chalk-mode';
 penColor.value = '#ffffff';
 
 document.getElementById('boardInstruction').textContent =
-'Chalk selected: Write or draw on the dark classroom blackboard. Choose Text to type chalk-style words.';
+'CHALK selected: Click on the board and type. Your words will appear like white classroom chalk.';
 
 }else if(tool === 'marker'){
 
@@ -743,28 +762,40 @@ boardSurface.className = 'board-surface marker-mode';
 penColor.value = '#173b67';
 
 document.getElementById('boardInstruction').textContent =
-'Marker selected: Draw with your mouse, finger or stylus. Choose Text to type marker-style words.';
+'MARKER selected: Click on the board and type. Your words will appear like marker writing.';
 
 }else if(tool === 'text'){
 
+boardSurface.className = 'board-surface marker-mode';
+
 document.getElementById('boardInstruction').textContent =
-'Text selected: Click anywhere on the board, type your words, then press Enter to place them. Use Shift + Enter for a new line.';
+'TEXT selected: Click anywhere on the board and type normal, clear text.';
 
 }else if(tool === 'handwriting'){
 
+boardSurface.className = 'board-surface marker-mode';
+
 document.getElementById('boardInstruction').textContent =
-'Handwriting selected: Write freely using your mouse, finger or stylus.';
+'HANDWRITING selected: Click on the board and type. Your words will appear in a handwriting-style font.';
 
 }
+
 }
 
-document.getElementById('chalkBtn').onclick = () => selectTool('chalk');
-document.getElementById('markerBtn').onclick = () => selectTool('marker');
-document.getElementById('textBtn').onclick = () => selectTool('text');
-document.getElementById('handwritingBtn').onclick = () => selectTool('handwriting');
+document.getElementById('chalkBtn').onclick =
+() => selectTool('chalk');
+
+document.getElementById('markerBtn').onclick =
+() => selectTool('marker');
+
+document.getElementById('textBtn').onclick =
+() => selectTool('text');
+
+document.getElementById('handwritingBtn').onclick =
+() => selectTool('handwriting');
 
 
-/* DRAWING POSITION */
+/* GET CLICK POSITION */
 
 function getPosition(e){
 
@@ -778,155 +809,126 @@ y:(e.clientY - rect.top) * canvas.height / rect.height
 }
 
 
-/* FREEHAND WRITING */
+/* CLICK BOARD TO START TYPING */
 
-function drawLine(from,to){
-
-ctx.save();
-
-ctx.beginPath();
-ctx.moveTo(from.x,from.y);
-ctx.lineTo(to.x,to.y);
-
-ctx.lineCap = 'round';
-ctx.lineJoin = 'round';
-
-ctx.strokeStyle = erasing ? (
-boardSurface.classList.contains('chalk-mode') ? '#263b32' : '#ffffff'
-) : penColor.value;
-
-ctx.lineWidth = erasing ? 30 : Number(penSize.value);
-
-if(activeTool === 'chalk' && !erasing){
-ctx.shadowColor = penColor.value;
-ctx.shadowBlur = 3;
-ctx.globalAlpha = 0.9;
-}
-
-ctx.stroke();
-ctx.restore();
-
-}
-
-canvas.addEventListener('pointerdown',function(e){
+canvas.addEventListener('pointerdown', function(e){
 
 e.preventDefault();
 
-if(activeTool === 'text'){
+commitText();
 
 const position = getPosition(e);
-openTextEditor(e,position);
-return;
 
-}
-
-drawing = true;
-last = getPosition(e);
-
-canvas.setPointerCapture(e.pointerId);
-
-drawLine(last,{
-x:last.x + 0.5,
-y:last.y + 0.5
-});
+openTextEditor(e, position);
 
 });
 
-canvas.addEventListener('pointermove',function(e){
 
-if(!drawing) return;
+/* OPEN KEYBOARD TEXT BOX */
 
-e.preventDefault();
+function openTextEditor(e, position){
 
-const current = getPosition(e);
+const rect = canvas.getBoundingClientRect();
 
-drawLine(last,current);
-last = current;
+const x = e.clientX - rect.left;
+const y = e.clientY - rect.top;
 
-});
-
-function stopDrawing(){
-drawing = false;
-last = null;
-}
-
-canvas.addEventListener('pointerup',stopDrawing);
-canvas.addEventListener('pointercancel',stopDrawing);
-canvas.addEventListener('lostpointercapture',stopDrawing);
-
-
-/* TYPE DIRECTLY ON THE BOARD */
-
-function openTextEditor(e,position){
-
-if(textEditor.style.display === 'block'){
-commitText();
-}
-
-const canvasRect = canvas.getBoundingClientRect();
-
-const x = e.clientX - canvasRect.left;
-const y = e.clientY - canvasRect.top;
+editorStyle = {
+tool:activeTool,
+color:penColor.value,
+size:Math.max(20, Number(penSize.value) * 3),
+x:x,
+y:y
+};
 
 textEditor.style.left = x + 'px';
 textEditor.style.top = y + 'px';
 textEditor.style.display = 'block';
+textEditor.style.width = '280px';
+textEditor.style.height = '55px';
 
 textEditor.value = '';
 
-const size = Math.max(20,Number(penSize.value) * 3);
+textEditor.style.fontSize = editorStyle.size + 'px';
+textEditor.style.fontWeight = 'bold';
 
-textEditor.style.fontSize = size + 'px';
-textEditor.style.color = penColor.value;
+if(activeTool === 'chalk'){
 
-if(boardSurface.classList.contains('chalk-mode')){
 textEditor.className = 'chalk-text';
-}else{
-textEditor.className = 'marker-text';
-}
+textEditor.style.color = '#ffffff';
+textEditor.style.fontFamily = '"Comic Sans MS", cursive';
 
-textEditor.style.width = '240px';
-textEditor.style.height = '45px';
+}else if(activeTool === 'marker'){
+
+textEditor.className = 'marker-text';
+textEditor.style.color = editorStyle.color;
+textEditor.style.fontFamily = 'Arial, sans-serif';
+
+}else if(activeTool === 'text'){
+
+textEditor.className = 'marker-text';
+textEditor.style.color = editorStyle.color;
+textEditor.style.fontFamily = 'Arial, sans-serif';
+
+}else if(activeTool === 'handwriting'){
+
+textEditor.className = 'marker-text';
+textEditor.style.color = editorStyle.color;
+textEditor.style.fontFamily = '"Comic Sans MS", cursive';
+
+}
 
 textEditor.focus();
 
 }
 
+
+/* PLACE TYPED WORDS PERMANENTLY ON BOARD */
+
 function commitText(){
 
-if(textEditor.style.display !== 'block') return;
+if(textEditor.style.display !== 'block' || !editorStyle) return;
 
 const value = textEditor.value.trim();
 
 if(value){
 
-const canvasRect = canvas.getBoundingClientRect();
+const rect = canvas.getBoundingClientRect();
 
-const x = parseFloat(textEditor.style.left) *
-canvas.width / canvasRect.width;
+const x = editorStyle.x * canvas.width / rect.width;
+const y = editorStyle.y * canvas.height / rect.height;
 
-const y = parseFloat(textEditor.style.top) *
-canvas.height / canvasRect.height;
-
-const fontSize = Math.max(20,Number(penSize.value) * 3);
+const fontSize = editorStyle.size * canvas.width / rect.width;
 
 ctx.save();
 
-ctx.font = `bold ${fontSize}px ${boardSurface.classList.contains('chalk-mode') ? '"Comic Sans MS", cursive' : 'Arial, sans-serif'}`;
+ctx.font = `bold ${fontSize}px ${
+editorStyle.tool === 'chalk' || editorStyle.tool === 'handwriting'
+? '"Comic Sans MS", cursive'
+: 'Arial, sans-serif'
+}`;
 
-ctx.fillStyle = penColor.value;
+ctx.fillStyle = editorStyle.color;
 ctx.textBaseline = 'top';
 
-if(boardSurface.classList.contains('chalk-mode')){
-ctx.shadowColor = penColor.value;
+if(editorStyle.tool === 'chalk'){
+
+ctx.shadowColor = '#ffffff';
 ctx.shadowBlur = 3;
 ctx.globalAlpha = 0.9;
+
 }
 
 const lines = value.split('\n');
 
-lines.forEach((line,index)=>{
-ctx.fillText(line,x,y + index * fontSize * 1.4);
+lines.forEach((line, index) => {
+
+ctx.fillText(
+line,
+x,
+y + index * fontSize * 1.4
+);
+
 });
 
 ctx.restore();
@@ -935,102 +937,106 @@ ctx.restore();
 
 textEditor.style.display = 'none';
 textEditor.value = '';
+editorStyle = null;
 
 }
 
-/* ENTER PLACES THE TEXT ON THE BOARD */
 
-textEditor.addEventListener('keydown',function(e){
+/* ENTER FINISHES WRITING
+   SHIFT + ENTER MAKES A NEW LINE
+*/
+
+textEditor.addEventListener('keydown', function(e){
 
 if(e.key === 'Enter' && !e.shiftKey){
+
 e.preventDefault();
 commitText();
+
 }
 
 if(e.key === 'Escape'){
+
 textEditor.value = '';
 commitText();
+
 }
 
 });
 
-/* CLICK OUTSIDE THE TEXT BOX TO FINISH WRITING */
 
-document.addEventListener('pointerdown',function(e){
+/* CLICK ELSEWHERE TO FINISH WRITING */
+
+document.addEventListener('pointerdown', function(e){
 
 if(
 textEditor.style.display === 'block' &&
 !textEditor.contains(e.target) &&
 e.target !== canvas
 ){
+
 commitText();
+
 }
 
 });
 
 
-/* ERASER */
+/* COLOUR CONTROL */
+
+penColor.addEventListener('input', function(){
+
+if(textEditor.style.display === 'block' && editorStyle){
+
+editorStyle.color = this.value;
+textEditor.style.color = this.value;
+
+}
+
+});
+
+
+/* THICKNESS CONTROL */
+
+penSize.addEventListener('input', function(){
+
+document.getElementById('penSizeValue').textContent = this.value;
+
+});
+
+
+/* ERASER NOTICE */
 
 document.getElementById('eraseBtn').onclick = function(){
 
 commitText();
 
-erasing = !erasing;
-
-if(erasing){
-activeTool = 'eraser';
-this.textContent = '✍️ Pen';
-this.classList.add('active');
-
-document.querySelectorAll('.tool-button').forEach(button=>{
-button.classList.remove('active');
-});
-
-document.getElementById('boardInstruction').textContent =
-'Eraser selected: Drag over the writing you want to remove.';
-
-}else{
-
-this.textContent = 'Eraser';
-this.classList.remove('active');
-selectTool('handwriting');
-
-}
+alert('For typed writing, use Clear board to remove all writing. Select a writing tool to continue.');
 
 };
 
 
-/* CLEAR BOARD */
+/* CLEAR BOARD WITH OK OR CANCEL */
 
 document.getElementById('clearBtn').onclick = function(){
 
 commitText();
 
-if(confirm('Are you sure you want to clear the entire board?')){
-ctx.clearRect(0,0,canvas.width,canvas.height);
+const answer = confirm(
+'Are you sure you want to clear the entire board?'
+);
+
+if(answer){
+
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+document.getElementById('boardInstruction').textContent =
+'Board cleared successfully. Select a writing tool to continue.';
+
 }
 
 };
 
-
-/* THICKNESS DISPLAY */
-
-penSize.addEventListener('input',function(){
-document.getElementById('penSizeValue').textContent = this.value;
-});
-
-
-/* COLOUR CHANGE */
-
-penColor.addEventListener('input',function(){
-
-if(textEditor.style.display === 'block'){
-textEditor.style.color = this.value;
-}
-
-});
-
 </script>
-
 </body>
 </html>
