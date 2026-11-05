@@ -39,30 +39,58 @@ flex-wrap:wrap
 }
 
 .brand{font-weight:800;font-size:19px;letter-spacing:.2px}
+
 .brand small{
-display:block;font-size:11px;color:#c5d6eb;
-font-weight:400;margin-top:4px
+display:block;
+font-size:11px;
+color:#c5d6eb;
+font-weight:400;
+margin-top:4px
 }
 
 .badge{
-background:#234568;border:1px solid #476486;
-border-radius:20px;padding:7px 12px;font-size:12px
+background:#234568;
+border:1px solid #476486;
+border-radius:20px;
+padding:7px 12px;
+font-size:12px
 }
 
-main{max-width:1250px;margin:28px auto;padding:0 18px}
+main{
+max-width:1250px;
+margin:28px auto;
+padding:0 18px
+}
 
 .intro{
-display:flex;justify-content:space-between;
-align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px
+display:flex;
+justify-content:space-between;
+align-items:end;
+gap:16px;
+flex-wrap:wrap;
+margin-bottom:20px
 }
 
-h1{margin:0;color:var(--navy);font-size:clamp(25px,4vw,36px)}
-.intro p{margin:8px 0 0;color:var(--muted)}
+h1{
+margin:0;
+color:var(--navy);
+font-size:clamp(25px,4vw,36px)
+}
+
+.intro p{
+margin:8px 0 0;
+color:var(--muted)
+}
 
 .notice{
-background:#fff8e8;border:1px solid #f2d99d;
-color:#73531a;padding:12px 15px;border-radius:12px;
-margin-bottom:18px;font-size:13px;line-height:1.5
+background:#fff8e8;
+border:1px solid #f2d99d;
+color:#73531a;
+padding:12px 15px;
+border-radius:12px;
+margin-bottom:18px;
+font-size:13px;
+line-height:1.5
 }
 
 .layout{
@@ -72,53 +100,196 @@ gap:18px
 }
 
 .panel{
-background:white;border:1px solid var(--line);
-border-radius:16px;box-shadow:0 5px 18px #17365d0b;
+background:white;
+border:1px solid var(--line);
+border-radius:16px;
+box-shadow:0 5px 18px #17365d0b;
 overflow:hidden
 }
 
 .panel-head{
-padding:15px 18px;border-bottom:1px solid var(--line);
-display:flex;align-items:center;justify-content:space-between;gap:12px
+padding:15px 18px;
+border-bottom:1px solid var(--line);
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px
 }
 
-.panel-head h2{font-size:16px;margin:0;color:var(--navy)}
+.panel-head h2{
+font-size:16px;
+margin:0;
+color:var(--navy)
+}
+
 .stage{padding:16px}
 
-.video{
-height:310px;
+/* TWO CAMERA SYSTEM */
+
+.camera-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
+}
+
+.camera-card{
+background:#102544;
+border-radius:12px;
+overflow:hidden;
+color:white;
+min-width:0;
+transition:all .2s
+}
+
+.camera-heading{
+padding:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px;
+font-size:12px;
+font-weight:bold
+}
+
+.camera-heading span:last-child{
+color:#c5d6eb;
+font-weight:normal
+}
+
+.camera-screen{
+height:260px;
+position:relative;
 background:linear-gradient(135deg,#172c47,#294c70);
-border-radius:12px;position:relative;
-display:flex;align-items:center;justify-content:center;
-overflow:hidden;color:white
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden
 }
 
-video{
-width:100%;height:100%;object-fit:cover;display:none
+.camera-screen video{
+width:100%;
+height:100%;
+object-fit:cover;
+display:none;
+background:#172c47
 }
 
-.placeholder{text-align:center;padding:20px;max-width:390px}
-.placeholder .icon{font-size:42px}
-.placeholder h3{margin:10px 0 6px}
-.placeholder p{font-size:13px;color:#d8e5f3;line-height:1.5;margin:0}
-
-.live-tag{
-position:absolute;top:12px;left:12px;
-background:#b42318;color:white;padding:6px 9px;
-border-radius:7px;font-size:11px;font-weight:bold
+.camera-placeholder{
+text-align:center;
+padding:15px;
+max-width:300px
 }
 
-.teacher-tag{
-position:absolute;bottom:12px;left:12px;
-background:#102544cc;padding:7px 10px;
-border-radius:7px;font-size:12px
+.camera-placeholder .icon{font-size:40px}
+
+.camera-placeholder h3{
+font-size:15px;
+margin:10px 0 6px
 }
 
-.controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.camera-placeholder p{
+font-size:12px;
+color:#d8e5f3;
+line-height:1.5
+}
+
+.camera-live-tag{
+position:absolute;
+top:10px;
+left:10px;
+background:#b42318;
+padding:5px 8px;
+border-radius:6px;
+font-size:10px;
+font-weight:bold;
+display:none
+}
+
+.camera-controls{
+padding:12px;
+display:grid;
+gap:9px
+}
+
+.camera-controls label{
+font-size:11px;
+font-weight:bold;
+color:#d8e5f3
+}
+
+.camera-controls select{
+width:100%;
+font-size:12px;
+padding:9px
+}
+
+.camera-actions{
+display:flex;
+gap:7px;
+flex-wrap:wrap
+}
+
+.camera-actions button{
+flex:1;
+min-width:65px;
+font-size:11px;
+padding:10px 7px
+}
+
+.camera-status{
+font-size:11px;
+color:#c5d6eb;
+line-height:1.5
+}
+
+.camera-card.expanded{
+grid-column:1/-1
+}
+
+.camera-card.expanded .camera-screen{
+height:480px
+}
+
+.camera-card.expanded .camera-heading{
+font-size:14px
+}
+
+.camera-card.expanded .camera-actions button{
+font-size:13px
+}
+
+.camera-global-controls{
+display:flex;
+gap:9px;
+flex-wrap:wrap;
+margin-top:13px
+}
+
+.camera-global-controls button{flex:1}
+
+.camera-note{
+font-size:11px;
+color:var(--muted);
+line-height:1.5;
+margin-top:10px
+}
+
+/* GENERAL BUTTONS */
+
+.controls{
+display:flex;
+gap:9px;
+flex-wrap:wrap;
+margin-top:13px
+}
 
 button,.btn{
-border:0;border-radius:9px;padding:10px 13px;
-font-weight:700;cursor:pointer;font-size:13px
+border:0;
+border-radius:9px;
+padding:10px 13px;
+font-weight:700;
+cursor:pointer;
+font-size:13px
 }
 
 .primary{background:var(--blue);color:white}
@@ -126,18 +297,30 @@ font-weight:700;cursor:pointer;font-size:13px
 .dark{background:#e9edf3;color:#34445a}
 .danger{background:#fff0ef;color:#b42318}
 
-button:disabled{opacity:.45;cursor:not-allowed}
-
-.board-wrap{padding:16px;border-top:1px solid var(--line)}
-
-.board-title{
-display:flex;justify-content:space-between;
-align-items:center;margin-bottom:10px
+button:disabled{
+opacity:.45;
+cursor:not-allowed
 }
 
-.board-title h3{margin:0;color:var(--navy);font-size:15px}
-
 /* WHITEBOARD */
+
+.board-wrap{
+padding:16px;
+border-top:1px solid var(--line)
+}
+
+.board-title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px
+}
+
+.board-title h3{
+margin:0;
+color:var(--navy);
+font-size:15px
+}
 
 .board-surface{
 position:relative;
@@ -145,7 +328,7 @@ width:100%;
 border-radius:10px;
 overflow:hidden;
 background:white;
-border:1px solid #d9e1ea;
+border:1px solid #d9e1ea
 }
 
 canvas{
@@ -154,77 +337,98 @@ height:245px;
 background:white;
 touch-action:none;
 display:block;
-cursor:crosshair;
-transition:background .2s;
+cursor:text;
+transition:background .2s
 }
 
 .board-surface.chalk-mode canvas{
-background:#263b32;
+background:#263b32
 }
 
 .board-surface.marker-mode canvas{
-background:#fff;
+background:#fff
 }
 
-/* TEXT INPUT ON THE BOARD */
+/* LARGE WHITEBOARD TEXT EDITOR */
 
 #textEditor{
 position:absolute;
 display:none;
 z-index:5;
-min-width:150px;
-min-height:40px;
-max-width:95%;
-padding:3px;
-border:1px dashed #f2b544;
+left:0;
+top:0;
+width:100%;
+height:100%;
+padding:8px;
+border:1px dashed var(--gold);
 outline:none;
-resize:both;
-overflow:hidden;
+resize:none;
+overflow:auto;
 background:transparent;
 font-size:25px;
 font-weight:bold;
-line-height:1.35;
+line-height:1.5;
 color:#173b67;
-font-family:"Comic Sans MS",cursive;
+font-family:Arial,sans-serif;
 white-space:pre-wrap;
+overflow-wrap:anywhere;
+box-sizing:border-box
 }
 
 #textEditor.chalk-text{
 color:white;
 text-shadow:1px 1px 2px #ffffff88,0 0 5px #ffffff55;
+font-family:"Comic Sans MS",cursive
 }
 
 #textEditor.marker-text{
 color:#173b67;
-font-family:Arial,sans-serif;
-text-shadow:none;
+font-family:Arial,sans-serif
 }
 
-/* TOOLBAR */
+#textEditor.handwriting-text{
+font-family:"Comic Sans MS",cursive
+}
+
+/* WHITEBOARD TOOLS */
 
 .board-tools{
-display:flex;gap:9px;align-items:center;
-flex-wrap:wrap;margin-top:12px
+display:flex;
+gap:9px;
+align-items:center;
+flex-wrap:wrap;
+margin-top:12px
 }
 
 .pen-tool{
-display:flex;align-items:center;gap:9px;
-min-height:43px;padding:6px 11px;
-background:#eaf4ff;border:1px solid #c5d9ed;
-border-radius:10px;
+display:flex;
+align-items:center;
+gap:9px;
+min-height:43px;
+padding:6px 11px;
+background:#eaf4ff;
+border:1px solid #c5d9ed;
+border-radius:10px
 }
 
 .pen-tool label{
-font-size:12px;font-weight:700;
-color:#15558a;white-space:nowrap
+font-size:12px;
+font-weight:700;
+color:#15558a;
+white-space:nowrap
 }
 
 .color-picker{
-width:38px!important;height:30px!important;
-padding:2px!important;border:2px solid white!important;
-border-radius:50%!important;background:white!important;
-cursor:pointer;appearance:none;
--webkit-appearance:none;overflow:hidden
+width:38px!important;
+height:30px!important;
+padding:2px!important;
+border:2px solid white!important;
+border-radius:50%!important;
+background:white!important;
+cursor:pointer;
+appearance:none;
+-webkit-appearance:none;
+overflow:hidden
 }
 
 .color-picker::-webkit-color-swatch-wrapper{padding:0}
@@ -232,16 +436,23 @@ cursor:pointer;appearance:none;
 .color-picker::-moz-color-swatch{border:0;border-radius:50%}
 
 .thickness-picker{
-width:95px!important;height:20px;
-padding:0!important;margin:0;
-cursor:pointer;accent-color:var(--blue)
+width:95px!important;
+height:20px;
+padding:0!important;
+margin:0;
+cursor:pointer;
+accent-color:var(--blue)
 }
 
 .thickness-value{
-background:var(--blue);color:white;
-font-size:12px;font-weight:bold;
-min-width:25px;text-align:center;
-padding:5px 7px;border-radius:6px
+background:var(--blue);
+color:white;
+font-size:12px;
+font-weight:bold;
+min-width:25px;
+text-align:center;
+padding:5px 7px;
+border-radius:6px
 }
 
 .board-tools button{min-height:40px}
@@ -253,72 +464,152 @@ box-shadow:0 0 0 2px #a9d5f5
 }
 
 .board-instruction{
-font-size:12px;color:#65758b;
-margin-top:10px;line-height:1.5
+font-size:12px;
+color:#65758b;
+margin-top:10px;
+line-height:1.5
 }
 
-.side{display:flex;flex-direction:column;gap:18px}
+/* CLASSROOM SIDEBAR */
+
+.side{
+display:flex;
+flex-direction:column;
+gap:18px
+}
+
 .entry{padding:16px}
 
 .entry label{
-display:block;font-size:12px;font-weight:bold;
-color:#52647a;margin:12px 0 6px
+display:block;
+font-size:12px;
+font-weight:bold;
+color:#52647a;
+margin:12px 0 6px
 }
 
 input,select,textarea{
-width:100%;border:1px solid #d4deea;
-border-radius:8px;padding:10px;
-font:inherit;color:var(--ink);background:white
+border:1px solid #d4deea;
+border-radius:8px;
+padding:10px;
+font:inherit;
+color:var(--ink);
+background:white
 }
 
-.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+input,select{width:100%}
+
+.mode-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:9px;
+margin-top:10px
+}
 
 .mode{
-border:1px solid var(--line);padding:11px;
-border-radius:10px;background:#fff;text-align:left
+border:1px solid var(--line);
+padding:11px;
+border-radius:10px;
+background:#fff;
+text-align:left
 }
 
-.mode.active{border:2px solid var(--blue);background:#f0f7ff}
-.mode strong{display:block;font-size:13px}
-.mode span{
-font-size:11px;color:var(--muted);
-display:block;margin-top:5px;line-height:1.4
+.mode.active{
+border:2px solid var(--blue);
+background:#f0f7ff
 }
+
+.mode strong{
+display:block;
+font-size:13px
+}
+
+.mode span{
+font-size:11px;
+color:var(--muted);
+display:block;
+margin-top:5px;
+line-height:1.4
+}
+
+/* CHAT */
 
 .chat{padding:14px}
+
 .messages{
-height:180px;overflow:auto;background:#f7f9fc;
-border-radius:10px;padding:10px;font-size:13px
+height:180px;
+overflow:auto;
+background:#f7f9fc;
+border-radius:10px;
+padding:10px;
+font-size:13px
 }
 
-.msg{margin:0 0 10px;line-height:1.45}
+.msg{
+margin:0 0 10px;
+line-height:1.45
+}
+
 .msg b{color:var(--blue)}
-.chat-row{display:flex;gap:7px;margin-top:9px}
-.chat-row input{min-width:0}
+
+.chat-row{
+display:flex;
+gap:7px;
+margin-top:9px
+}
+
+.chat-row input{min-width:0;flex:1}
 
 .features{
-display:grid;grid-template-columns:repeat(4,1fr);
-gap:10px;margin-top:18px
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+margin-top:18px
 }
 
 .feature{
-background:white;border:1px solid var(--line);
-border-radius:12px;padding:13px
+background:white;
+border:1px solid var(--line);
+border-radius:12px;
+padding:13px
 }
 
-.feature b{display:block;font-size:13px;color:var(--navy)}
+.feature b{
+display:block;
+font-size:13px;
+color:var(--navy)
+}
+
 .feature span{
-font-size:11px;color:var(--muted);
-line-height:1.4;display:block;margin-top:5px
+font-size:11px;
+color:var(--muted);
+line-height:1.4;
+display:block;
+margin-top:5px
 }
 
-.status{font-size:12px;color:var(--green);font-weight:bold}
-footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
+.status{
+font-size:12px;
+color:var(--green);
+font-weight:bold
+}
+
+footer{
+text-align:center;
+color:#7b899b;
+font-size:11px;
+padding:25px
+}
 
 @media(max-width:850px){
 .layout{grid-template-columns:1fr}
 .features{grid-template-columns:repeat(2,1fr)}
-.video{height:260px}
+}
+
+@media(max-width:650px){
+.camera-grid{grid-template-columns:1fr}
+.camera-screen{height:230px}
+.camera-card.expanded .camera-screen{height:300px}
 }
 
 @media(max-width:460px){
@@ -338,7 +629,7 @@ main{padding:0 12px}
 🎓 BOSCO ENGLISH ACADEMY
 <small>Building Confidence in English</small>
 </div>
-<div class="badge">BEA VIRTUAL CLASSROOM · PROTOTYPE</div>
+<div class="badge">BEA VIRTUAL CLASSROOM · TWO-CAMERA EDITION</div>
 </header>
 
 <main>
@@ -352,8 +643,8 @@ main{padding:0 12px}
 </div>
 
 <div class="notice">
-<b>Prototype notice:</b>
-This first version tests the classroom layout, camera preview and interactive board on your device. It does not yet broadcast to students. Live multi-person video, accounts, room links and recording require a secure video service and backend connection.
+<b>Classroom prototype:</b>
+This version supports two independent local camera previews and an interactive teaching board. You can use one camera for the teacher and another for the student hall. Students cannot yet see these camera feeds remotely. Live broadcasting and shared teaching require a real-time video connection.
 </div>
 
 <div class="layout">
@@ -362,34 +653,116 @@ This first version tests the classroom layout, camera preview and interactive bo
 
 <div class="panel-head">
 <h2>Live teaching area</h2>
-<span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Teacher view</span>
+<span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Teacher and student views</span>
 </div>
 
 <div class="stage">
 
-<div class="video">
+<!-- TWO CAMERA PANELS -->
 
-<video id="camera" autoplay playsinline muted></video>
+<div class="camera-grid">
 
-<div class="placeholder" id="cameraPlaceholder">
-<div class="icon">📹</div>
-<h3>Your teaching room will appear here</h3>
-<p>Allow camera access to preview yourself. For the real classroom, position your camera so students can see both you and the board.</p>
+<!-- TEACHER CAMERA -->
+
+<div class="camera-card" id="teacherCard">
+
+<div class="camera-heading">
+<span>🎥 CAMERA 1 — TEACHER</span>
+<span>Teacher view</span>
 </div>
 
-<span class="live-tag">● LOCAL PREVIEW</span>
-<span class="teacher-tag">Jean Bosco · English Tutor</span>
+<div class="camera-screen">
+
+<video id="teacherCamera" autoplay playsinline muted></video>
+
+<div class="camera-placeholder" id="teacherPlaceholder">
+<div class="icon">👨‍🏫</div>
+<h3>Teacher's View</h3>
+<p>Your teaching area will appear here.</p>
+</div>
+
+<span class="camera-live-tag" id="teacherLiveTag">● CAMERA ACTIVE</span>
 
 </div>
 
-<div class="controls">
-<button class="primary" id="cameraBtn">Start camera</button>
-<button class="secondary" id="micBtn">Enable microphone</button>
-<button class="dark" id="flipBtn" title="Camera selection">Camera settings</button>
-<button class="danger" id="stopBtn">Stop devices</button>
+<div class="camera-controls">
+
+<label for="teacherCameraSelect">Choose teacher camera</label>
+
+<select id="teacherCameraSelect">
+<option value="">Detecting cameras...</option>
+</select>
+
+<div class="camera-actions">
+<button class="primary" id="startTeacher">Start camera</button>
+<button class="dark" id="stopTeacher">Stop</button>
+<button class="secondary" id="expandTeacher">Enlarge</button>
+</div>
+
+<div class="camera-status" id="teacherStatus">Camera not started.</div>
+
+</div>
+</div>
+
+<!-- WHOLE HALL CAMERA -->
+
+<div class="camera-card" id="hallCard">
+
+<div class="camera-heading">
+<span>🏫 CAMERA 2 — WHOLE HALL</span>
+<span>Student view</span>
+</div>
+
+<div class="camera-screen">
+
+<video id="hallCamera" autoplay playsinline muted></video>
+
+<div class="camera-placeholder" id="hallPlaceholder">
+<div class="icon">🏫</div>
+<h3>Students' Classroom</h3>
+<p>Position this camera to capture as much of the hall as possible.</p>
+</div>
+
+<span class="camera-live-tag" id="hallLiveTag">● CAMERA ACTIVE</span>
+
+</div>
+
+<div class="camera-controls">
+
+<label for="hallCameraSelect">Choose hall camera</label>
+
+<select id="hallCameraSelect">
+<option value="">Detecting cameras...</option>
+</select>
+
+<div class="camera-actions">
+<button class="primary" id="startHall">Start camera</button>
+<button class="dark" id="stopHall">Stop</button>
+<button class="secondary" id="expandHall">Enlarge</button>
+</div>
+
+<div class="camera-status" id="hallStatus">Camera not started.</div>
+
+</div>
 </div>
 
 </div>
+
+<div class="camera-global-controls">
+
+<button class="secondary" id="refreshCameras">🔄 Refresh cameras</button>
+
+<button class="danger" id="stopAllCameras">Stop all cameras</button>
+
+</div>
+
+<p class="camera-note">
+For the best whole-hall view, use a wide-angle USB camera positioned at the back or front of the classroom. Two different physical cameras are required for two different views.
+</p>
+
+</div>
+
+<!-- INTERACTIVE BOARD -->
 
 <div class="board-wrap">
 
@@ -403,7 +776,7 @@ This first version tests the classroom layout, camera preview and interactive bo
 <canvas id="board" width="1100" height="360"></canvas>
 
 <textarea id="textEditor" spellcheck="false"
-placeholder="Type your words here..."></textarea>
+placeholder="Start typing your lesson here...&#10;Press Ctrl + Enter when finished."></textarea>
 
 </div>
 
@@ -436,11 +809,14 @@ min="2" max="14" value="4">
 </div>
 
 <p class="board-instruction" id="boardInstruction">
-Marker selected: Draw with your mouse, finger or stylus. Select Text to type directly on the board.
+Marker selected: Click on the board and type. Press Ctrl + Enter to place your writing on the board.
 </p>
 
 </div>
+
 </section>
+
+<!-- SIDEBAR -->
 
 <aside class="side">
 
@@ -520,11 +896,13 @@ Choose a mode and prepare this demo room.
 </aside>
 </div>
 
+<!-- FEATURES -->
+
 <div class="features">
 
 <div class="feature">
-<b>🎥 Teacher camera</b>
-<span>Local camera preview in this prototype.</span>
+<b>🎥 Two-camera teaching</b>
+<span>Teacher and whole-hall camera previews.</span>
 </div>
 
 <div class="feature">
@@ -534,7 +912,7 @@ Choose a mode and prepare this demo room.
 
 <div class="feature">
 <b>📝 Interactive board</b>
-<span>Type, draw, use chalk and write with markers.</span>
+<span>Type long explanations and use different writing styles.</span>
 </div>
 
 <div class="feature">
@@ -549,131 +927,478 @@ Choose a mode and prepare this demo room.
 <footer>
 © Bosco English Academy · Founded by Jean Bosco Munezero · Building Confidence in English
 </footer>
+
 <script>
 
-/* =====================================
-   CAMERA AND MICROPHONE
-===================================== */
+/* =========================================
+   BEA TWO-CAMERA SYSTEM
+========================================= */
 
-const camera = document.getElementById('camera');
-const placeholder = document.getElementById('cameraPlaceholder');
+const teacherCamera = document.getElementById('teacherCamera');
+const hallCamera = document.getElementById('hallCamera');
 
-let stream = null;
-let audioTrack = null;
+let teacherStream = null;
+let hallStream = null;
+let microphoneStream = null;
+
 let selectedMode = 'individual';
 
-async function startCamera(){
+const teacherSelect = document.getElementById('teacherCameraSelect');
+const hallSelect = document.getElementById('hallCameraSelect');
+
+const cameraStatus = document.getElementById('connectionStatus');
+
+
+/* DETECT AVAILABLE CAMERAS */
+
+async function refreshCameras(){
+
+if(!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices){
+alert('Your browser does not support camera selection.');
+return;
+}
+
 try{
-stream = await navigator.mediaDevices.getUserMedia({
-video:true,
-audio:false
+
+const devices = await navigator.mediaDevices.enumerateDevices();
+
+const cameras = devices.filter(device => device.kind === 'videoinput');
+
+function populate(select){
+
+const previous = select.value;
+
+select.innerHTML = '';
+
+if(cameras.length === 0){
+
+const option = document.createElement('option');
+option.value = '';
+option.textContent = 'No camera detected';
+select.appendChild(option);
+return;
+
+}
+
+cameras.forEach((device,index)=>{
+
+const option = document.createElement('option');
+
+option.value = device.deviceId;
+
+option.textContent = device.label || `Camera ${index + 1}`;
+
+select.appendChild(option);
+
 });
 
-camera.srcObject = stream;
-camera.style.display = 'block';
+if(cameras.some(device => device.deviceId === previous)){
+select.value = previous;
+}
+
+}
+
+populate(teacherSelect);
+populate(hallSelect);
+
+if(cameras.length === 1){
+
+teacherSelect.value = cameras[0].deviceId;
+
+hallSelect.value = cameras[0].deviceId;
+
+document.getElementById('hallStatus').textContent =
+'Only one camera detected. Connect another camera for a separate hall view.';
+
+}else if(cameras.length >= 2){
+
+teacherSelect.value = cameras[0].deviceId;
+hallSelect.value = cameras[1].deviceId;
+
+document.getElementById('hallStatus').textContent =
+'Two or more cameras detected. Select the camera for the hall view.';
+
+}
+
+}catch(error){
+
+console.error(error);
+
+alert('Unable to detect cameras: ' + error.message);
+
+}
+
+}
+
+document.getElementById('refreshCameras').onclick = refreshCameras;
+
+
+/* START AN INDIVIDUAL CAMERA */
+
+async function startVideo(which){
+
+const isTeacher = which === 'teacher';
+
+const video = isTeacher ? teacherCamera : hallCamera;
+
+const select = isTeacher ? teacherSelect : hallSelect;
+
+const placeholder = document.getElementById(
+isTeacher ? 'teacherPlaceholder' : 'hallPlaceholder'
+);
+
+const liveTag = document.getElementById(
+isTeacher ? 'teacherLiveTag' : 'hallLiveTag'
+);
+
+const status = document.getElementById(
+isTeacher ? 'teacherStatus' : 'hallStatus'
+);
+
+const previousStream = isTeacher ? teacherStream : hallStream;
+
+try{
+
+if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+
+throw new Error('Camera access is not supported by this browser.');
+
+}
+
+if(previousStream){
+
+previousStream.getTracks().forEach(track => track.stop());
+
+}
+
+const selectedId = select.value;
+
+const videoConstraints = selectedId
+? {
+deviceId:{exact:selectedId},
+width:{ideal:1920},
+height:{ideal:1080}
+}
+: {
+facingMode:'environment',
+width:{ideal:1920},
+height:{ideal:1080}
+};
+
+const newStream = await navigator.mediaDevices.getUserMedia({
+
+video:videoConstraints,
+audio:false
+
+});
+
+video.srcObject = newStream;
+
+await video.play();
+
+if(isTeacher){
+
+teacherStream = newStream;
+
+}else{
+
+hallStream = newStream;
+
+}
+
+video.style.display = 'block';
+
 placeholder.style.display = 'none';
 
-document.getElementById('connectionStatus').textContent = '● Camera preview active';
-document.getElementById('cameraBtn').textContent = 'Camera active';
+liveTag.style.display = 'block';
 
-}catch(e){
-alert('Camera could not start: ' + e.message);
+status.textContent = 'Camera is active and displaying locally.';
+
+cameraStatus.textContent =
+isTeacher
+? '● Teacher camera active'
+: '● Hall camera active';
+
+await refreshCameras();
+
+}catch(error){
+
+console.error(error);
+
+status.textContent = 'Camera could not start.';
+
+alert(
+'Unable to start ' +
+(isTeacher ? 'teacher' : 'hall') +
+' camera: ' + error.message
+);
+
 }
+
 }
+
+
+/* STOP ONE CAMERA */
+
+function stopVideo(which){
+
+const isTeacher = which === 'teacher';
+
+const video = isTeacher ? teacherCamera : hallCamera;
+
+const placeholder = document.getElementById(
+isTeacher ? 'teacherPlaceholder' : 'hallPlaceholder'
+);
+
+const liveTag = document.getElementById(
+isTeacher ? 'teacherLiveTag' : 'hallLiveTag'
+);
+
+const status = document.getElementById(
+isTeacher ? 'teacherStatus' : 'hallStatus'
+);
+
+const currentStream = isTeacher ? teacherStream : hallStream;
+
+if(currentStream){
+
+currentStream.getTracks().forEach(track => track.stop());
+
+}
+
+video.pause();
+video.srcObject = null;
+video.style.display = 'none';
+
+placeholder.style.display = 'block';
+liveTag.style.display = 'none';
+
+if(isTeacher){
+
+teacherStream = null;
+
+}else{
+
+hallStream = null;
+
+}
+
+status.textContent = 'Camera stopped.';
+
+updateOverallStatus();
+
+}
+
+
+/* BUTTON EVENTS */
+
+document.getElementById('startTeacher').onclick =
+() => startVideo('teacher');
+
+document.getElementById('startHall').onclick =
+() => startVideo('hall');
+
+document.getElementById('stopTeacher').onclick =
+() => stopVideo('teacher');
+
+document.getElementById('stopHall').onclick =
+() => stopVideo('hall');
+
+
+/* ENLARGE CAMERA PANELS */
+
+function toggleExpand(cardId,buttonId){
+
+const card = document.getElementById(cardId);
+
+const button = document.getElementById(buttonId);
+
+const expanded = card.classList.toggle('expanded');
+
+button.textContent = expanded ? 'Minimize' : 'Enlarge';
+
+}
+
+document.getElementById('expandTeacher').onclick =
+() => toggleExpand('teacherCard','expandTeacher');
+
+document.getElementById('expandHall').onclick =
+() => toggleExpand('hallCard','expandHall');
+
+
+/* STOP BOTH CAMERAS */
+
+document.getElementById('stopAllCameras').onclick = function(){
+
+stopVideo('teacher');
+stopVideo('hall');
+
+};
+
+
+/* CAMERA SELECTION CHANGE */
+
+teacherSelect.addEventListener('change',function(){
+
+if(teacherStream){
+
+startVideo('teacher');
+
+}
+
+});
+
+hallSelect.addEventListener('change',function(){
+
+if(hallStream){
+
+startVideo('hall');
+
+}
+
+});
+
+
+/* REFRESH AFTER CAMERA PERMISSION */
+
+if(navigator.mediaDevices){
+
+navigator.mediaDevices.addEventListener?.(
+'devicechange',
+refreshCameras
+);
+
+}
+
+
+/* =========================================
+   MICROPHONE
+========================================= */
 
 async function startMic(){
+
 try{
-const s = await navigator.mediaDevices.getUserMedia({
+
+if(microphoneStream){
+
+microphoneStream.getTracks().forEach(track => track.stop());
+
+}
+
+microphoneStream = await navigator.mediaDevices.getUserMedia({
+
 audio:true,
 video:false
+
 });
 
-audioTrack = s.getAudioTracks()[0];
+document.getElementById('micBtn').textContent =
+'Microphone enabled';
 
-document.getElementById('micBtn').textContent = 'Microphone enabled';
-document.getElementById('connectionStatus').textContent = '● Microphone ready';
+cameraStatus.textContent = '● Microphone ready';
 
-}catch(e){
-alert('Microphone permission was not granted: ' + e.message);
+}catch(error){
+
+alert('Microphone permission was not granted: ' + error.message);
+
 }
+
 }
 
-document.getElementById('cameraBtn').onclick = startCamera;
 document.getElementById('micBtn').onclick = startMic;
 
-document.getElementById('flipBtn').onclick = () => {
-alert('Camera selection will be added when we connect the live-video service.');
-};
 
-document.getElementById('stopBtn').onclick = () => {
+/* =========================================
+   OVERALL STATUS
+========================================= */
 
-if(stream) stream.getTracks().forEach(t => t.stop());
-if(audioTrack) audioTrack.stop();
+function updateOverallStatus(){
 
-camera.srcObject = null;
-camera.style.display = 'none';
-placeholder.style.display = 'block';
+if(teacherStream || hallStream){
 
-document.getElementById('cameraBtn').textContent = 'Start camera';
-document.getElementById('micBtn').textContent = 'Enable microphone';
-document.getElementById('connectionStatus').textContent = '● Devices stopped';
+cameraStatus.textContent =
+'● Classroom camera preview active';
 
-};
+}else{
+
+cameraStatus.textContent =
+'● Cameras stopped';
+
+}
+
+}
 
 
-/* =====================================
+/* =========================================
    CLASSROOM MODE
-===================================== */
+========================================= */
 
-document.querySelectorAll('.mode').forEach(b => {
+document.querySelectorAll('.mode').forEach(button=>{
 
-b.onclick = () => {
+button.onclick = ()=>{
 
-document.querySelectorAll('.mode').forEach(x =>
-x.classList.remove('active'));
+document.querySelectorAll('.mode').forEach(item=>
+item.classList.remove('active'));
 
-b.classList.add('active');
-selectedMode = b.dataset.mode;
+button.classList.add('active');
+
+selectedMode = button.dataset.mode;
 
 };
 
 });
 
-document.getElementById('enterBtn').onclick = () => {
+document.getElementById('enterBtn').onclick = ()=>{
 
-const name = document.getElementById('displayName').value.trim() || 'Guest';
-const code = document.getElementById('roomCode').value.trim();
-const role = document.getElementById('role').value;
+const name =
+document.getElementById('displayName').value.trim() || 'Guest';
+
+const code =
+document.getElementById('roomCode').value.trim();
+
+const role =
+document.getElementById('role').value;
 
 document.getElementById('entryMessage').textContent =
-`${name}, your ${selectedMode === 'individual' ? 'individual learner' : 'group classroom'} room is prepared in demo mode${code ? ' · Code: ' + code : ''}. Role: ${role}. Live joining will be enabled after backend integration.`;
+
+`${name}, your ${
+selectedMode === 'individual'
+? 'individual learner'
+: 'group classroom'
+} room is prepared in demo mode${
+code ? ' · Code: ' + code : ''
+}. Role: ${role}. Live joining will be enabled after backend integration.`;
 
 };
 
 
-/* =====================================
+/* =========================================
    CLASS DISCUSSION
-===================================== */
+========================================= */
 
 const messages = document.getElementById('messages');
 
 function send(){
 
 const input = document.getElementById('chatInput');
+
 const value = input.value.trim();
 
-if(!value) return;
+if(!value)return;
 
-const p = document.createElement('p');
-p.className = 'msg';
+const paragraph = document.createElement('p');
 
-const b = document.createElement('b');
-b.textContent =
+paragraph.className = 'msg';
+
+const bold = document.createElement('b');
+
+bold.textContent =
 (document.getElementById('displayName').value.trim() || 'Guest') + ': ';
 
-p.append(b, document.createTextNode(value));
+paragraph.append(bold,document.createTextNode(value));
 
-messages.appendChild(p);
+messages.appendChild(paragraph);
+
 messages.scrollTop = messages.scrollHeight;
 
 input.value = '';
@@ -682,48 +1407,61 @@ input.value = '';
 
 document.getElementById('sendBtn').onclick = send;
 
-document.getElementById('chatInput').addEventListener('keydown', e => {
-if(e.key === 'Enter') send();
+document.getElementById('chatInput').addEventListener('keydown',event=>{
+
+if(event.key === 'Enter')send();
+
 });
 
-document.getElementById('handBtn').onclick = () => {
+document.getElementById('handBtn').onclick = ()=>{
 
-const p = document.createElement('p');
-p.className = 'msg';
-p.innerHTML = '<b>BEA Assistant:</b> ✋ Hand raised (demo).';
-
-messages.appendChild(p);
-messages.scrollTop = messages.scrollHeight;
+addSystemMessage('✋ Hand raised (demo).');
 
 };
 
-document.getElementById('lowerHandBtn').onclick = () => {
+document.getElementById('lowerHandBtn').onclick = ()=>{
 
-const p = document.createElement('p');
-p.className = 'msg';
-p.innerHTML = '<b>BEA Assistant:</b> Hand lowered (demo).';
-
-messages.appendChild(p);
-messages.scrollTop = messages.scrollHeight;
+addSystemMessage('Hand lowered (demo).');
 
 };
 
+function addSystemMessage(message){
 
-/* =====================================
+const paragraph = document.createElement('p');
+
+paragraph.className = 'msg';
+
+const bold = document.createElement('b');
+
+bold.textContent = 'BEA Assistant: ';
+
+paragraph.append(bold,document.createTextNode(message));
+
+messages.appendChild(paragraph);
+
+messages.scrollTop = messages.scrollHeight;
+
+}
+
+
+/* =========================================
    BEA KEYBOARD WHITEBOARD
-   NO FREEHAND DRAWING
-===================================== */
+========================================= */
 
 const canvas = document.getElementById('board');
+
 const ctx = canvas.getContext('2d');
 
 const boardSurface = document.getElementById('boardSurface');
+
 const textEditor = document.getElementById('textEditor');
 
 const penColor = document.getElementById('penColor');
+
 const penSize = document.getElementById('penSize');
 
 let activeTool = 'marker';
+
 let editorStyle = null;
 
 
@@ -735,15 +1473,17 @@ commitText();
 
 activeTool = tool;
 
-document.querySelectorAll('.tool-button').forEach(button => {
+document.querySelectorAll('.tool-button').forEach(button=>{
 button.classList.remove('active');
 });
 
 const buttons = {
+
 chalk:'chalkBtn',
 marker:'markerBtn',
 text:'textBtn',
 handwriting:'handwritingBtn'
+
 };
 
 document.getElementById(buttons[tool]).classList.add('active');
@@ -751,130 +1491,130 @@ document.getElementById(buttons[tool]).classList.add('active');
 if(tool === 'chalk'){
 
 boardSurface.className = 'board-surface chalk-mode';
+
 penColor.value = '#ffffff';
 
 document.getElementById('boardInstruction').textContent =
-'CHALK selected: Click on the board and type. Your words will appear like white classroom chalk.';
+'CHALK selected: Click on the board and type. Press Ctrl + Enter to finish.';
 
 }else if(tool === 'marker'){
 
 boardSurface.className = 'board-surface marker-mode';
+
 penColor.value = '#173b67';
 
 document.getElementById('boardInstruction').textContent =
-'MARKER selected: Click on the board and type. Your words will appear like marker writing.';
+'MARKER selected: Click on the board and type. Press Ctrl + Enter to finish.';
 
 }else if(tool === 'text'){
 
 boardSurface.className = 'board-surface marker-mode';
 
 document.getElementById('boardInstruction').textContent =
-'TEXT selected: Click anywhere on the board and type normal, clear text.';
+'TEXT selected: Click anywhere on the board and type clear text.';
 
 }else if(tool === 'handwriting'){
 
 boardSurface.className = 'board-surface marker-mode';
 
 document.getElementById('boardInstruction').textContent =
-'HANDWRITING selected: Click on the board and type. Your words will appear in a handwriting-style font.';
+'HANDWRITING selected: Click on the board and type in handwriting style.';
 
 }
 
 }
 
 document.getElementById('chalkBtn').onclick =
-() => selectTool('chalk');
+()=>selectTool('chalk');
 
 document.getElementById('markerBtn').onclick =
-() => selectTool('marker');
+()=>selectTool('marker');
 
 document.getElementById('textBtn').onclick =
-() => selectTool('text');
+()=>selectTool('text');
 
 document.getElementById('handwritingBtn').onclick =
-() => selectTool('handwriting');
+()=>selectTool('handwriting');
 
 
-/* GET CLICK POSITION */
+/* OPEN THE LARGE TEXT EDITOR */
 
-function getPosition(e){
+canvas.addEventListener('pointerdown',function(event){
 
-const rect = canvas.getBoundingClientRect();
-
-return {
-x:(e.clientX - rect.left) * canvas.width / rect.width,
-y:(e.clientY - rect.top) * canvas.height / rect.height
-};
-
-}
-
-
-/* CLICK BOARD TO START TYPING */
-
-canvas.addEventListener('pointerdown', function(e){
-
-e.preventDefault();
+event.preventDefault();
 
 commitText();
 
-const position = getPosition(e);
+const rect = canvas.getBoundingClientRect();
 
-openTextEditor(e, position);
+const x = event.clientX - rect.left;
+
+const y = event.clientY - rect.top;
+
+openTextEditor(x,y);
 
 });
 
 
-/* OPEN KEYBOARD TEXT BOX */
-
-function openTextEditor(e, position){
+function openTextEditor(x,y){
 
 const rect = canvas.getBoundingClientRect();
 
-const x = e.clientX - rect.left;
-const y = e.clientY - rect.top;
-
 editorStyle = {
+
 tool:activeTool,
+
 color:penColor.value,
-size:Math.max(20, Number(penSize.value) * 3),
-x:x,
-y:y
+
+size:Math.max(20,Number(penSize.value)*3),
+
+x:x * canvas.width / rect.width,
+
+y:y * canvas.height / rect.height
+
 };
 
-textEditor.style.left = x + 'px';
-textEditor.style.top = y + 'px';
+/* FULL BOARD WRITING AREA */
+
+textEditor.style.left = '0px';
+
+textEditor.style.top = '0px';
+
+textEditor.style.width = '100%';
+
+textEditor.style.height = '100%';
+
+textEditor.style.paddingLeft =
+Math.max(8,x) + 'px';
+
+textEditor.style.paddingTop =
+Math.max(8,y) + 'px';
+
 textEditor.style.display = 'block';
-textEditor.style.width = '280px';
-textEditor.style.height = '55px';
 
 textEditor.value = '';
 
 textEditor.style.fontSize = editorStyle.size + 'px';
+
 textEditor.style.fontWeight = 'bold';
 
 if(activeTool === 'chalk'){
 
 textEditor.className = 'chalk-text';
+
 textEditor.style.color = '#ffffff';
-textEditor.style.fontFamily = '"Comic Sans MS", cursive';
-
-}else if(activeTool === 'marker'){
-
-textEditor.className = 'marker-text';
-textEditor.style.color = editorStyle.color;
-textEditor.style.fontFamily = 'Arial, sans-serif';
-
-}else if(activeTool === 'text'){
-
-textEditor.className = 'marker-text';
-textEditor.style.color = editorStyle.color;
-textEditor.style.fontFamily = 'Arial, sans-serif';
 
 }else if(activeTool === 'handwriting'){
 
-textEditor.className = 'marker-text';
+textEditor.className = 'handwriting-text';
+
 textEditor.style.color = editorStyle.color;
-textEditor.style.fontFamily = '"Comic Sans MS", cursive';
+
+}else{
+
+textEditor.className = 'marker-text';
+
+textEditor.style.color = editorStyle.color;
 
 }
 
@@ -883,11 +1623,11 @@ textEditor.focus();
 }
 
 
-/* PLACE TYPED WORDS PERMANENTLY ON BOARD */
+/* COMMIT TEXT TO THE BOARD WITH AUTOMATIC WRAPPING */
 
 function commitText(){
 
-if(textEditor.style.display !== 'block' || !editorStyle) return;
+if(textEditor.style.display !== 'block' || !editorStyle)return;
 
 const value = textEditor.value.trim();
 
@@ -895,39 +1635,80 @@ if(value){
 
 const rect = canvas.getBoundingClientRect();
 
-const x = editorStyle.x * canvas.width / rect.width;
-const y = editorStyle.y * canvas.height / rect.height;
+const scaleX = canvas.width / rect.width;
 
-const fontSize = editorStyle.size * canvas.width / rect.width;
+const scaleY = canvas.height / rect.height;
+
+const x = editorStyle.x;
+
+const y = editorStyle.y;
+
+const fontSize = editorStyle.size * scaleX;
 
 ctx.save();
 
 ctx.font = `bold ${fontSize}px ${
-editorStyle.tool === 'chalk' || editorStyle.tool === 'handwriting'
-? '"Comic Sans MS", cursive'
-: 'Arial, sans-serif'
+editorStyle.tool === 'chalk' ||
+editorStyle.tool === 'handwriting'
+? '"Comic Sans MS",cursive'
+: 'Arial,sans-serif'
 }`;
 
 ctx.fillStyle = editorStyle.color;
+
 ctx.textBaseline = 'top';
 
 if(editorStyle.tool === 'chalk'){
 
 ctx.shadowColor = '#ffffff';
+
 ctx.shadowBlur = 3;
+
 ctx.globalAlpha = 0.9;
 
 }
 
-const lines = value.split('\n');
+const maxWidth = canvas.width - x - 15;
 
-lines.forEach((line, index) => {
+const lineHeight = fontSize * 1.5;
 
-ctx.fillText(
-line,
-x,
-y + index * fontSize * 1.4
-);
+let currentY = y;
+
+const paragraphs = value.split('\n');
+
+paragraphs.forEach(paragraph=>{
+
+const words = paragraph.split(/\s+/);
+
+let line = '';
+
+words.forEach(word=>{
+
+const testLine = line ? line + ' ' + word : word;
+
+if(ctx.measureText(testLine).width > maxWidth && line){
+
+ctx.fillText(line,x,currentY);
+
+currentY += lineHeight;
+
+line = word;
+
+}else{
+
+line = testLine;
+
+}
+
+});
+
+if(line){
+
+ctx.fillText(line,x,currentY);
+
+currentY += lineHeight;
+
+}
 
 });
 
@@ -936,28 +1717,36 @@ ctx.restore();
 }
 
 textEditor.style.display = 'none';
+
 textEditor.value = '';
+
 editorStyle = null;
 
 }
 
 
-/* ENTER FINISHES WRITING
-   SHIFT + ENTER MAKES A NEW LINE
+/* CTRL + ENTER FINISHES WRITING
+   ENTER MAKES A NEW LINE
+   ESCAPE CANCELS CURRENT WRITING
 */
 
-textEditor.addEventListener('keydown', function(e){
+textEditor.addEventListener('keydown',function(event){
 
-if(e.key === 'Enter' && !e.shiftKey){
+if(event.key === 'Enter' && event.ctrlKey){
 
-e.preventDefault();
+event.preventDefault();
+
 commitText();
+
+document.getElementById('boardInstruction').textContent =
+'Your writing has been placed on the board successfully.';
 
 }
 
-if(e.key === 'Escape'){
+if(event.key === 'Escape'){
 
 textEditor.value = '';
+
 commitText();
 
 }
@@ -965,14 +1754,18 @@ commitText();
 });
 
 
-/* CLICK ELSEWHERE TO FINISH WRITING */
+/* CLICK OUTSIDE TO FINISH WRITING */
 
-document.addEventListener('pointerdown', function(e){
+document.addEventListener('pointerdown',function(event){
 
 if(
+
 textEditor.style.display === 'block' &&
-!textEditor.contains(e.target) &&
-e.target !== canvas
+
+!textEditor.contains(event.target) &&
+
+event.target !== canvas
+
 ){
 
 commitText();
@@ -984,11 +1777,12 @@ commitText();
 
 /* COLOUR CONTROL */
 
-penColor.addEventListener('input', function(){
+penColor.addEventListener('input',function(){
 
 if(textEditor.style.display === 'block' && editorStyle){
 
 editorStyle.color = this.value;
+
 textEditor.style.color = this.value;
 
 }
@@ -998,7 +1792,7 @@ textEditor.style.color = this.value;
 
 /* THICKNESS CONTROL */
 
-penSize.addEventListener('input', function(){
+penSize.addEventListener('input',function(){
 
 document.getElementById('penSizeValue').textContent = this.value;
 
@@ -1011,7 +1805,9 @@ document.getElementById('eraseBtn').onclick = function(){
 
 commitText();
 
-alert('For typed writing, use Clear board to remove all writing. Select a writing tool to continue.');
+alert(
+'For typed writing, use Clear board to remove all writing.'
+);
 
 };
 
@@ -1028,7 +1824,7 @@ const answer = confirm(
 
 if(answer){
 
-ctx.clearRect(0, 0, canvas.width, canvas.height);
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
 document.getElementById('boardInstruction').textContent =
 'Board cleared successfully. Select a writing tool to continue.';
@@ -1037,6 +1833,29 @@ document.getElementById('boardInstruction').textContent =
 
 };
 
+
+/* INITIAL CAMERA DETECTION */
+
+refreshCameras().catch(console.error);
+
+
+/* CLEAN UP CAMERA STREAMS WHEN LEAVING */
+
+window.addEventListener('beforeunload',function(){
+
+[teacherStream,hallStream,microphoneStream].forEach(stream=>{
+
+if(stream){
+
+stream.getTracks().forEach(track=>track.stop());
+
+}
+
+});
+
+});
+
 </script>
+
 </body>
 </html>
