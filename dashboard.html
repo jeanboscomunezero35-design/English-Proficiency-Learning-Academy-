@@ -347,7 +347,9 @@ footer {
     placeholder="Type your question here..."
     rows="3"
   ></textarea>
-
+<button id="micButton" type="button">
+  🎤 Speak Your Question
+</button>
   <br><br>
 
   <button id="sendQuestion">
@@ -502,7 +504,64 @@ const questionBox = document.getElementById('studentQuestion');
 const chatMessages = document.getElementById('chatMessages');
 
 const tutorStatus = document.getElementById('tutorStatus');
+// STUDENT MICROPHONE
 
+const micButton = document.getElementById('micButton');
+
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+
+  const recognition = new SpeechRecognition();
+
+  recognition.lang = 'en-GB';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  micButton.addEventListener('click', () => {
+
+    recognition.start();
+
+    micButton.textContent = '🎤 Listening...';
+
+    tutorStatus.textContent = 'Please speak your question clearly.';
+
+  });
+
+  recognition.onresult = (event) => {
+
+    const spokenWords = event.results[0][0].transcript;
+
+    questionBox.value = spokenWords;
+
+    tutorStatus.textContent =
+      'Your question has been recognised. Click Ask Your Tutor.';
+
+  };
+
+  recognition.onend = () => {
+
+    micButton.textContent = '🎤 Speak Your Question';
+
+  };
+
+  recognition.onerror = () => {
+
+    micButton.textContent = '🎤 Speak Your Question';
+
+    tutorStatus.textContent =
+      'Microphone error. Please check your microphone permission.';
+
+  };
+
+} else {
+
+  micButton.disabled = true;
+
+  micButton.textContent = 'Microphone not supported';
+
+}
 let currentAudio = null;
 
 
