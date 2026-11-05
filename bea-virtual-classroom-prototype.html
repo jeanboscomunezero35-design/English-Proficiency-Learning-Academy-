@@ -1,8 +1,9 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewporT" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BEA Virtual Classroom | Bosco English Academy</title>
 
 <style>
@@ -124,7 +125,7 @@ color:var(--navy)
 
 .stage{padding:16px}
 
-/* TWO CAMERA SYSTEM */
+/* CAMERA SYSTEM */
 
 .camera-grid{
 display:grid;
@@ -172,6 +173,12 @@ height:100%;
 object-fit:cover;
 display:none;
 background:#172c47
+}
+
+/* Show the whole hall with less cropping */
+#hallCamera{
+object-fit:contain;
+background:#101b2b
 }
 
 .camera-placeholder{
@@ -274,7 +281,7 @@ line-height:1.5;
 margin-top:10px
 }
 
-/* GENERAL BUTTONS */
+/* BUTTONS */
 
 .controls{
 display:flex;
@@ -341,15 +348,8 @@ cursor:text;
 transition:background .2s
 }
 
-.board-surface.chalk-mode canvas{
-background:#263b32
-}
-
-.board-surface.marker-mode canvas{
-background:#fff
-}
-
-/* LARGE WHITEBOARD TEXT EDITOR */
+.board-surface.chalk-mode canvas{background:#263b32}
+.board-surface.marker-mode canvas{background:#fff}
 
 #textEditor{
 position:absolute;
@@ -389,8 +389,6 @@ font-family:Arial,sans-serif
 #textEditor.handwriting-text{
 font-family:"Comic Sans MS",cursive
 }
-
-/* WHITEBOARD TOOLS */
 
 .board-tools{
 display:flex;
@@ -470,7 +468,7 @@ margin-top:10px;
 line-height:1.5
 }
 
-/* CLASSROOM SIDEBAR */
+/* SIDEBAR */
 
 .side{
 display:flex;
@@ -629,7 +627,7 @@ main{padding:0 12px}
 🎓 BOSCO ENGLISH ACADEMY
 <small>Building Confidence in English</small>
 </div>
-<div class="badge">BEA VIRTUAL CLASSROOM · TWO-CAMERA EDITION</div>
+<div class="badge">BEA VIRTUAL CLASSROOM · HD CAMERA EDITION</div>
 </header>
 
 <main>
@@ -644,7 +642,7 @@ main{padding:0 12px}
 
 <div class="notice">
 <b>Classroom prototype:</b>
-This version supports two independent local camera previews and an interactive teaching board. You can use one camera for the teacher and another for the student hall. Students cannot yet see these camera feeds remotely. Live broadcasting and shared teaching require a real-time video connection.
+Choose Auto, 720p, 1080p Full HD or 4K for each camera independently. The actual resolution depends on your camera and computer. These are local previews only: students cannot yet see the camera feeds remotely. Live broadcasting requires a real-time video connection.
 </div>
 
 <div class="layout">
@@ -657,8 +655,6 @@ This version supports two independent local camera previews and an interactive t
 </div>
 
 <div class="stage">
-
-<!-- TWO CAMERA PANELS -->
 
 <div class="camera-grid">
 
@@ -688,9 +684,16 @@ This version supports two independent local camera previews and an interactive t
 <div class="camera-controls">
 
 <label for="teacherCameraSelect">Choose teacher camera</label>
-
 <select id="teacherCameraSelect">
 <option value="">Detecting cameras...</option>
+</select>
+
+<label for="teacherQuality">Teacher camera quality</label>
+<select id="teacherQuality">
+<option value="auto">Auto — Best available</option>
+<option value="720">HD — 720p</option>
+<option value="1080" selected>Full HD — 1080p</option>
+<option value="4k">Ultra HD — 4K</option>
 </select>
 
 <div class="camera-actions">
@@ -730,9 +733,16 @@ This version supports two independent local camera previews and an interactive t
 <div class="camera-controls">
 
 <label for="hallCameraSelect">Choose hall camera</label>
-
 <select id="hallCameraSelect">
 <option value="">Detecting cameras...</option>
+</select>
+
+<label for="hallQuality">Whole-hall camera quality</label>
+<select id="hallQuality">
+<option value="auto">Auto — Best available</option>
+<option value="720">HD — 720p</option>
+<option value="1080" selected>Full HD — 1080p</option>
+<option value="4k">Ultra HD — 4K</option>
 </select>
 
 <div class="camera-actions">
@@ -749,20 +759,19 @@ This version supports two independent local camera previews and an interactive t
 </div>
 
 <div class="camera-global-controls">
-
 <button class="secondary" id="refreshCameras">🔄 Refresh cameras</button>
-
+<button class="primary" id="startMic">🎤 Start microphone</button>
+<button class="dark" id="stopMic">Stop microphone</button>
 <button class="danger" id="stopAllCameras">Stop all cameras</button>
-
 </div>
 
 <p class="camera-note">
-For the best whole-hall view, use a wide-angle USB camera positioned at the back or front of the classroom. Two different physical cameras are required for two different views.
+For the best whole-hall view, use a wide-angle USB camera positioned at the back or front of the classroom. Two different physical cameras are required for two different views. The microphone preview is also local and does not transmit audio to students yet.
 </p>
 
 </div>
 
-<!-- INTERACTIVE BOARD -->
+<!-- WHITEBOARD -->
 
 <div class="board-wrap">
 
@@ -783,23 +792,18 @@ placeholder="Start typing your lesson here...&#10;Press Ctrl + Enter when finish
 <div class="board-tools">
 
 <button class="secondary tool-button" id="chalkBtn">🖍️ Chalk</button>
-
 <button class="secondary tool-button active" id="markerBtn">🖊️ Marker</button>
-
 <button class="secondary tool-button" id="textBtn">⌨️ Text</button>
-
 <button class="secondary tool-button" id="handwritingBtn">✍️ Handwriting</button>
 
 <div class="pen-tool">
 <label for="penColor">🎨 Colour</label>
-<input type="color" class="color-picker" id="penColor"
-value="#173b67" title="Choose writing colour">
+<input type="color" class="color-picker" id="penColor" value="#173b67">
 </div>
 
 <div class="pen-tool">
 <label for="penSize">Thickness</label>
-<input type="range" class="thickness-picker" id="penSize"
-min="2" max="14" value="4">
+<input type="range" class="thickness-picker" id="penSize" min="2" max="14" value="4">
 <span class="thickness-value" id="penSizeValue">4</span>
 </div>
 
@@ -896,13 +900,11 @@ Choose a mode and prepare this demo room.
 </aside>
 </div>
 
-<!-- FEATURES -->
-
 <div class="features">
 
 <div class="feature">
-<b>🎥 Two-camera teaching</b>
-<span>Teacher and whole-hall camera previews.</span>
+<b>🎥 HD two-camera teaching</b>
+<span>Independent camera quality and teacher/hall previews.</span>
 </div>
 
 <div class="feature">
@@ -912,7 +914,7 @@ Choose a mode and prepare this demo room.
 
 <div class="feature">
 <b>📝 Interactive board</b>
-<span>Type long explanations and use different writing styles.</span>
+<span>Type explanations and use different writing styles.</span>
 </div>
 
 <div class="feature">
@@ -931,11 +933,14 @@ Choose a mode and prepare this demo room.
 <script>
 
 /* =========================================
-   BEA TWO-CAMERA SYSTEM
+   BEA CAMERA QUALITY SETTINGS
 ========================================= */
 
 const teacherCamera = document.getElementById('teacherCamera');
 const hallCamera = document.getElementById('hallCamera');
+
+const teacherSelect = document.getElementById('teacherCameraSelect');
+const hallSelect = document.getElementById('hallCameraSelect');
 
 let teacherStream = null;
 let hallStream = null;
@@ -943,18 +948,46 @@ let microphoneStream = null;
 
 let selectedMode = 'individual';
 
-const teacherSelect = document.getElementById('teacherCameraSelect');
-const hallSelect = document.getElementById('hallCameraSelect');
-
 const cameraStatus = document.getElementById('connectionStatus');
 
+function getQualityConstraints(quality){
 
-/* DETECT AVAILABLE CAMERAS */
+let width = 1920;
+let height = 1080;
+
+if(quality === '720'){
+width = 1280;
+height = 720;
+}
+
+if(quality === '1080'){
+width = 1920;
+height = 1080;
+}
+
+if(quality === '4k'){
+width = 3840;
+height = 2160;
+}
+
+/* Auto requests Full HD as a sensible starting point.
+   The browser can select the best supported resolution. */
+
+return {
+width:{ideal:width},
+height:{ideal:height},
+frameRate:{ideal:30,max:30}
+};
+
+}
+
+
+/* DETECT CAMERAS */
 
 async function refreshCameras(){
 
-if(!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices){
-alert('Your browser does not support camera selection.');
+if(!navigator.mediaDevices ||
+!navigator.mediaDevices.enumerateDevices){
 return;
 }
 
@@ -962,19 +995,19 @@ try{
 
 const devices = await navigator.mediaDevices.enumerateDevices();
 
-const cameras = devices.filter(device => device.kind === 'videoinput');
+const cameras = devices.filter(device=>device.kind==='videoinput');
 
 function populate(select){
 
 const previous = select.value;
 
-select.innerHTML = '';
+select.innerHTML='';
 
-if(cameras.length === 0){
+if(cameras.length===0){
 
-const option = document.createElement('option');
-option.value = '';
-option.textContent = 'No camera detected';
+const option=document.createElement('option');
+option.value='';
+option.textContent='No camera detected';
 select.appendChild(option);
 return;
 
@@ -982,18 +1015,17 @@ return;
 
 cameras.forEach((device,index)=>{
 
-const option = document.createElement('option');
+const option=document.createElement('option');
 
-option.value = device.deviceId;
-
-option.textContent = device.label || `Camera ${index + 1}`;
+option.value=device.deviceId;
+option.textContent=device.label || `Camera ${index+1}`;
 
 select.appendChild(option);
 
 });
 
-if(cameras.some(device => device.deviceId === previous)){
-select.value = previous;
+if(cameras.some(device=>device.deviceId===previous)){
+select.value=previous;
 }
 
 }
@@ -1001,123 +1033,123 @@ select.value = previous;
 populate(teacherSelect);
 populate(hallSelect);
 
-if(cameras.length === 1){
+/* Choose default cameras only when no selection exists. */
 
-teacherSelect.value = cameras[0].deviceId;
+if(!teacherSelect.value && cameras.length){
+teacherSelect.value=cameras[0].deviceId;
+}
 
-hallSelect.value = cameras[0].deviceId;
+if(!hallSelect.value && cameras.length){
+hallSelect.value=cameras.length>=2
+? cameras[1].deviceId
+: cameras[0].deviceId;
+}
+
+if(cameras.length===1){
 
 document.getElementById('hallStatus').textContent =
-'Only one camera detected. Connect another camera for a separate hall view.';
-
-}else if(cameras.length >= 2){
-
-teacherSelect.value = cameras[0].deviceId;
-hallSelect.value = cameras[1].deviceId;
-
-document.getElementById('hallStatus').textContent =
-'Two or more cameras detected. Select the camera for the hall view.';
+'One camera detected. Connect a second camera for a separate hall view.';
 
 }
 
 }catch(error){
 
-console.error(error);
-
-alert('Unable to detect cameras: ' + error.message);
+console.error('Camera detection:',error);
 
 }
 
 }
 
-document.getElementById('refreshCameras').onclick = refreshCameras;
+document.getElementById('refreshCameras').onclick=refreshCameras;
 
 
-/* START AN INDIVIDUAL CAMERA */
+/* START CAMERA */
 
 async function startVideo(which){
 
-const isTeacher = which === 'teacher';
+const isTeacher=which==='teacher';
 
-const video = isTeacher ? teacherCamera : hallCamera;
+const video=isTeacher?teacherCamera:hallCamera;
 
-const select = isTeacher ? teacherSelect : hallSelect;
+const select=isTeacher?teacherSelect:hallSelect;
 
-const placeholder = document.getElementById(
-isTeacher ? 'teacherPlaceholder' : 'hallPlaceholder'
+const qualitySelect=document.getElementById(
+isTeacher?'teacherQuality':'hallQuality'
 );
 
-const liveTag = document.getElementById(
-isTeacher ? 'teacherLiveTag' : 'hallLiveTag'
+const placeholder=document.getElementById(
+isTeacher?'teacherPlaceholder':'hallPlaceholder'
 );
 
-const status = document.getElementById(
-isTeacher ? 'teacherStatus' : 'hallStatus'
+const liveTag=document.getElementById(
+isTeacher?'teacherLiveTag':'hallLiveTag'
 );
 
-const previousStream = isTeacher ? teacherStream : hallStream;
+const status=document.getElementById(
+isTeacher?'teacherStatus':'hallStatus'
+);
+
+const oldStream=isTeacher?teacherStream:hallStream;
+
+status.textContent='Starting camera...';
 
 try{
 
-if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+if(!navigator.mediaDevices ||
+!navigator.mediaDevices.getUserMedia){
 
-throw new Error('Camera access is not supported by this browser.');
-
-}
-
-if(previousStream){
-
-previousStream.getTracks().forEach(track => track.stop());
+throw new Error('Camera access requires a supported browser and HTTPS.');
 
 }
 
-const selectedId = select.value;
+const selectedId=select.value;
 
-const videoConstraints = selectedId
-? {
-deviceId:{exact:selectedId},
-width:{ideal:1920},
-height:{ideal:1080}
+const constraints={
+audio:false,
+video:{
+...getQualityConstraints(qualitySelect.value),
+...(selectedId?{deviceId:{exact:selectedId}}:{})
 }
-: {
-facingMode:'environment',
-width:{ideal:1920},
-height:{ideal:1080}
 };
 
-const newStream = await navigator.mediaDevices.getUserMedia({
+/* Request the new camera before stopping the previous one. */
 
-video:videoConstraints,
-audio:false
+const newStream=await navigator.mediaDevices.getUserMedia(constraints);
 
-});
-
-video.srcObject = newStream;
+video.srcObject=newStream;
 
 await video.play();
 
-if(isTeacher){
-
-teacherStream = newStream;
-
-}else{
-
-hallStream = newStream;
-
+if(oldStream){
+oldStream.getTracks().forEach(track=>track.stop());
 }
 
-video.style.display = 'block';
+if(isTeacher){
+teacherStream=newStream;
+}else{
+hallStream=newStream;
+}
 
-placeholder.style.display = 'none';
+video.style.display='block';
+placeholder.style.display='none';
+liveTag.style.display='block';
 
-liveTag.style.display = 'block';
+/* Read the real resolution provided by the camera. */
 
-status.textContent = 'Camera is active and displaying locally.';
+const track=newStream.getVideoTracks()[0];
+const settings=track.getSettings();
 
-cameraStatus.textContent =
-isTeacher
-? '● Teacher camera active'
-: '● Hall camera active';
+const actualWidth=settings.width || 'Unknown';
+const actualHeight=settings.height || 'Unknown';
+
+const actualFPS=settings.frameRate
+? ` · ${Math.round(settings.frameRate)} FPS`
+: '';
+
+status.textContent=
+`Camera active: ${actualWidth} × ${actualHeight}${actualFPS}.`;
+
+updateOverallStatus();
 
 await refreshCameras();
 
@@ -1125,12 +1157,26 @@ await refreshCameras();
 
 console.error(error);
 
-status.textContent = 'Camera could not start.';
+status.textContent='Camera could not start.';
+
+let explanation=error.message;
+
+if(error.name==='OverconstrainedError'){
+explanation='The selected camera cannot meet the requested settings. Try Auto or 1080p.';
+}
+
+if(error.name==='NotAllowedError'){
+explanation='Camera permission was denied. Allow camera access in your browser settings.';
+}
+
+if(error.name==='NotReadableError'){
+explanation='The camera may already be in use by another application.';
+}
 
 alert(
-'Unable to start ' +
-(isTeacher ? 'teacher' : 'hall') +
-' camera: ' + error.message
+'Unable to start '+
+(isTeacher?'teacher':'hall')+
+' camera: '+explanation
 );
 
 }
@@ -1142,93 +1188,110 @@ alert(
 
 function stopVideo(which){
 
-const isTeacher = which === 'teacher';
+const isTeacher=which==='teacher';
 
-const video = isTeacher ? teacherCamera : hallCamera;
+const video=isTeacher?teacherCamera:hallCamera;
 
-const placeholder = document.getElementById(
-isTeacher ? 'teacherPlaceholder' : 'hallPlaceholder'
+const placeholder=document.getElementById(
+isTeacher?'teacherPlaceholder':'hallPlaceholder'
 );
 
-const liveTag = document.getElementById(
-isTeacher ? 'teacherLiveTag' : 'hallLiveTag'
+const liveTag=document.getElementById(
+isTeacher?'teacherLiveTag':'hallLiveTag'
 );
 
-const status = document.getElementById(
-isTeacher ? 'teacherStatus' : 'hallStatus'
+const status=document.getElementById(
+isTeacher?'teacherStatus':'hallStatus'
 );
 
-const currentStream = isTeacher ? teacherStream : hallStream;
+const stream=isTeacher?teacherStream:hallStream;
 
-if(currentStream){
-
-currentStream.getTracks().forEach(track => track.stop());
-
+if(stream){
+stream.getTracks().forEach(track=>track.stop());
 }
 
 video.pause();
-video.srcObject = null;
-video.style.display = 'none';
+video.srcObject=null;
+video.style.display='none';
 
-placeholder.style.display = 'block';
-liveTag.style.display = 'none';
+placeholder.style.display='block';
+liveTag.style.display='none';
 
 if(isTeacher){
-
-teacherStream = null;
-
+teacherStream=null;
 }else{
-
-hallStream = null;
-
+hallStream=null;
 }
 
-status.textContent = 'Camera stopped.';
+status.textContent='Camera stopped.';
 
 updateOverallStatus();
 
 }
 
 
-/* BUTTON EVENTS */
+/* CAMERA BUTTONS */
 
-document.getElementById('startTeacher').onclick =
-() => startVideo('teacher');
+document.getElementById('startTeacher').onclick=()=>startVideo('teacher');
+document.getElementById('startHall').onclick=()=>startVideo('hall');
 
-document.getElementById('startHall').onclick =
-() => startVideo('hall');
-
-document.getElementById('stopTeacher').onclick =
-() => stopVideo('teacher');
-
-document.getElementById('stopHall').onclick =
-() => stopVideo('hall');
+document.getElementById('stopTeacher').onclick=()=>stopVideo('teacher');
+document.getElementById('stopHall').onclick=()=>stopVideo('hall');
 
 
-/* ENLARGE CAMERA PANELS */
+/* QUALITY CHANGE */
+
+document.getElementById('teacherQuality').addEventListener('change',()=>{
+if(teacherStream){
+startVideo('teacher');
+}
+});
+
+document.getElementById('hallQuality').addEventListener('change',()=>{
+if(hallStream){
+startVideo('hall');
+}
+});
+
+
+/* CAMERA SELECTION CHANGE */
+
+teacherSelect.addEventListener('change',()=>{
+if(teacherStream){
+startVideo('teacher');
+}
+});
+
+hallSelect.addEventListener('change',()=>{
+if(hallStream){
+startVideo('hall');
+}
+});
+
+
+/* ENLARGE CAMERA */
 
 function toggleExpand(cardId,buttonId){
 
-const card = document.getElementById(cardId);
+const card=document.getElementById(cardId);
+const button=document.getElementById(buttonId);
 
-const button = document.getElementById(buttonId);
+const expanded=card.classList.toggle('expanded');
 
-const expanded = card.classList.toggle('expanded');
-
-button.textContent = expanded ? 'Minimize' : 'Enlarge';
+button.textContent=expanded?'Minimize':'Enlarge';
 
 }
 
-document.getElementById('expandTeacher').onclick =
-() => toggleExpand('teacherCard','expandTeacher');
+document.getElementById('expandTeacher').onclick=
+()=>toggleExpand('teacherCard','expandTeacher');
 
-document.getElementById('expandHall').onclick =
-() => toggleExpand('hallCard','expandHall');
+document.getElementById('expandHall').onclick=
+()=>toggleExpand('hallCard','expandHall');
 
 
-/* STOP BOTH CAMERAS */
+/* STOP ALL CAMERAS */
 
-document.getElementById('stopAllCameras').onclick = function(){
+document.getElementById('stopAllCameras').onclick=()=>{
 
 stopVideo('teacher');
 stopVideo('hall');
@@ -1236,30 +1299,7 @@ stopVideo('hall');
 };
 
 
-/* CAMERA SELECTION CHANGE */
-
-teacherSelect.addEventListener('change',function(){
-
-if(teacherStream){
-
-startVideo('teacher');
-
-}
-
-});
-
-hallSelect.addEventListener('change',function(){
-
-if(hallStream){
-
-startVideo('hall');
-
-}
-
-});
-
-
-/* REFRESH AFTER CAMERA PERMISSION */
+/* CAMERA DEVICE CHANGES */
 
 if(navigator.mediaDevices){
 
@@ -1272,58 +1312,70 @@ refreshCameras
 
 
 /* =========================================
-   MICROPHONE
+   MICROPHONE CONTROLS
 ========================================= */
 
 async function startMic(){
 
 try{
 
-if(microphoneStream){
-
-microphoneStream.getTracks().forEach(track => track.stop());
-
+if(!navigator.mediaDevices ||
+!navigator.mediaDevices.getUserMedia){
+throw new Error('Microphone access is not supported.');
 }
 
-microphoneStream = await navigator.mediaDevices.getUserMedia({
+if(microphoneStream){
+microphoneStream.getTracks().forEach(track=>track.stop());
+}
 
+microphoneStream=await navigator.mediaDevices.getUserMedia({
 audio:true,
 video:false
-
 });
 
-document.getElementById('micBtn').textContent =
-'Microphone enabled';
+document.getElementById('startMic').textContent='🎤 Microphone active';
 
-cameraStatus.textContent = '● Microphone ready';
+cameraStatus.textContent='● Local microphone active';
 
 }catch(error){
 
-alert('Microphone permission was not granted: ' + error.message);
+alert('Unable to start microphone: '+error.message);
 
 }
 
 }
 
-document.getElementById('micBtn').onclick = startMic;
+function stopMic(){
+
+if(microphoneStream){
+microphoneStream.getTracks().forEach(track=>track.stop());
+microphoneStream=null;
+}
+
+document.getElementById('startMic').textContent='🎤 Start microphone';
+
+updateOverallStatus();
+
+}
+
+document.getElementById('startMic').onclick=startMic;
+document.getElementById('stopMic').onclick=stopMic;
 
 
-/* =========================================
-   OVERALL STATUS
-========================================= */
+/* OVERALL STATUS */
 
 function updateOverallStatus(){
 
-if(teacherStream || hallStream){
-
-cameraStatus.textContent =
-'● Classroom camera preview active';
-
+if(teacherStream && hallStream){
+cameraStatus.textContent='● Both camera previews active';
+}else if(teacherStream){
+cameraStatus.textContent='● Teacher camera active';
+}else if(hallStream){
+cameraStatus.textContent='● Hall camera active';
+}else if(microphoneStream){
+cameraStatus.textContent='● Microphone active';
 }else{
-
-cameraStatus.textContent =
-'● Cameras stopped';
-
+cameraStatus.textContent='● Cameras stopped';
 }
 
 }
@@ -1335,38 +1387,31 @@ cameraStatus.textContent =
 
 document.querySelectorAll('.mode').forEach(button=>{
 
-button.onclick = ()=>{
+button.onclick=()=>{
 
 document.querySelectorAll('.mode').forEach(item=>
 item.classList.remove('active'));
 
 button.classList.add('active');
 
-selectedMode = button.dataset.mode;
+selectedMode=button.dataset.mode;
 
 };
 
 });
 
-document.getElementById('enterBtn').onclick = ()=>{
+document.getElementById('enterBtn').onclick=()=>{
 
-const name =
-document.getElementById('displayName').value.trim() || 'Guest';
+const name=document.getElementById('displayName').value.trim()||'Guest';
+const code=document.getElementById('roomCode').value.trim();
+const role=document.getElementById('role').value;
 
-const code =
-document.getElementById('roomCode').value.trim();
-
-const role =
-document.getElementById('role').value;
-
-document.getElementById('entryMessage').textContent =
+document.getElementById('entryMessage').textContent=
 
 `${name}, your ${
-selectedMode === 'individual'
-? 'individual learner'
-: 'group classroom'
+selectedMode==='individual'?'individual learner':'group classroom'
 } room is prepared in demo mode${
-code ? ' · Code: ' + code : ''
+code?' · Code: '+code:''
 }. Role: ${role}. Live joining will be enabled after backend integration.`;
 
 };
@@ -1376,180 +1421,150 @@ code ? ' · Code: ' + code : ''
    CLASS DISCUSSION
 ========================================= */
 
-const messages = document.getElementById('messages');
+const messages=document.getElementById('messages');
 
 function send(){
 
-const input = document.getElementById('chatInput');
-
-const value = input.value.trim();
+const input=document.getElementById('chatInput');
+const value=input.value.trim();
 
 if(!value)return;
 
-const paragraph = document.createElement('p');
+const paragraph=document.createElement('p');
+paragraph.className='msg';
 
-paragraph.className = 'msg';
+const bold=document.createElement('b');
 
-const bold = document.createElement('b');
-
-bold.textContent =
-(document.getElementById('displayName').value.trim() || 'Guest') + ': ';
+bold.textContent=
+(document.getElementById('displayName').value.trim()||'Guest')+': ';
 
 paragraph.append(bold,document.createTextNode(value));
 
 messages.appendChild(paragraph);
+messages.scrollTop=messages.scrollHeight;
 
-messages.scrollTop = messages.scrollHeight;
-
-input.value = '';
+input.value='';
 
 }
 
-document.getElementById('sendBtn').onclick = send;
+document.getElementById('sendBtn').onclick=send;
 
 document.getElementById('chatInput').addEventListener('keydown',event=>{
-
-if(event.key === 'Enter')send();
-
+if(event.key==='Enter')send();
 });
 
-document.getElementById('handBtn').onclick = ()=>{
-
+document.getElementById('handBtn').onclick=()=>{
 addSystemMessage('✋ Hand raised (demo).');
-
 };
 
-document.getElementById('lowerHandBtn').onclick = ()=>{
-
+document.getElementById('lowerHandBtn').onclick=()=>{
 addSystemMessage('Hand lowered (demo).');
-
 };
 
 function addSystemMessage(message){
 
-const paragraph = document.createElement('p');
+const paragraph=document.createElement('p');
+paragraph.className='msg';
 
-paragraph.className = 'msg';
-
-const bold = document.createElement('b');
-
-bold.textContent = 'BEA Assistant: ';
+const bold=document.createElement('b');
+bold.textContent='BEA Assistant: ';
 
 paragraph.append(bold,document.createTextNode(message));
 
 messages.appendChild(paragraph);
-
-messages.scrollTop = messages.scrollHeight;
+messages.scrollTop=messages.scrollHeight;
 
 }
 
 
 /* =========================================
-   BEA KEYBOARD WHITEBOARD
+   INTERACTIVE WHITEBOARD
 ========================================= */
 
-const canvas = document.getElementById('board');
+const canvas=document.getElementById('board');
+const ctx=canvas.getContext('2d');
 
-const ctx = canvas.getContext('2d');
+const boardSurface=document.getElementById('boardSurface');
+const textEditor=document.getElementById('textEditor');
 
-const boardSurface = document.getElementById('boardSurface');
+const penColor=document.getElementById('penColor');
+const penSize=document.getElementById('penSize');
 
-const textEditor = document.getElementById('textEditor');
+let activeTool='marker';
+let editorStyle=null;
 
-const penColor = document.getElementById('penColor');
-
-const penSize = document.getElementById('penSize');
-
-let activeTool = 'marker';
-
-let editorStyle = null;
-
-
-/* SELECT WRITING TOOL */
 
 function selectTool(tool){
 
 commitText();
 
-activeTool = tool;
+activeTool=tool;
 
 document.querySelectorAll('.tool-button').forEach(button=>{
 button.classList.remove('active');
 });
 
-const buttons = {
-
+const buttons={
 chalk:'chalkBtn',
 marker:'markerBtn',
 text:'textBtn',
 handwriting:'handwritingBtn'
-
 };
 
 document.getElementById(buttons[tool]).classList.add('active');
 
-if(tool === 'chalk'){
+if(tool==='chalk'){
 
-boardSurface.className = 'board-surface chalk-mode';
+boardSurface.className='board-surface chalk-mode';
+penColor.value='#ffffff';
 
-penColor.value = '#ffffff';
-
-document.getElementById('boardInstruction').textContent =
+document.getElementById('boardInstruction').textContent=
 'CHALK selected: Click on the board and type. Press Ctrl + Enter to finish.';
 
-}else if(tool === 'marker'){
+}else if(tool==='marker'){
 
-boardSurface.className = 'board-surface marker-mode';
+boardSurface.className='board-surface marker-mode';
+penColor.value='#173b67';
 
-penColor.value = '#173b67';
-
-document.getElementById('boardInstruction').textContent =
+document.getElementById('boardInstruction').textContent=
 'MARKER selected: Click on the board and type. Press Ctrl + Enter to finish.';
 
-}else if(tool === 'text'){
+}else if(tool==='text'){
 
-boardSurface.className = 'board-surface marker-mode';
+boardSurface.className='board-surface marker-mode';
 
-document.getElementById('boardInstruction').textContent =
+document.getElementById('boardInstruction').textContent=
 'TEXT selected: Click anywhere on the board and type clear text.';
 
-}else if(tool === 'handwriting'){
+}else if(tool==='handwriting'){
 
-boardSurface.className = 'board-surface marker-mode';
+boardSurface.className='board-surface marker-mode';
 
-document.getElementById('boardInstruction').textContent =
+document.getElementById('boardInstruction').textContent=
 'HANDWRITING selected: Click on the board and type in handwriting style.';
 
 }
 
 }
 
-document.getElementById('chalkBtn').onclick =
-()=>selectTool('chalk');
-
-document.getElementById('markerBtn').onclick =
-()=>selectTool('marker');
-
-document.getElementById('textBtn').onclick =
-()=>selectTool('text');
-
-document.getElementById('handwritingBtn').onclick =
-()=>selectTool('handwriting');
+document.getElementById('chalkBtn').onclick=()=>selectTool('chalk');
+document.getElementById('markerBtn').onclick=()=>selectTool('marker');
+document.getElementById('textBtn').onclick=()=>selectTool('text');
+document.getElementById('handwritingBtn').onclick=()=>selectTool('handwriting');
 
 
-/* OPEN THE LARGE TEXT EDITOR */
+/* OPEN TEXT EDITOR */
 
-canvas.addEventListener('pointerdown',function(event){
+canvas.addEventListener('pointerdown',event=>{
 
 event.preventDefault();
 
 commitText();
 
-const rect = canvas.getBoundingClientRect();
+const rect=canvas.getBoundingClientRect();
 
-const x = event.clientX - rect.left;
-
-const y = event.clientY - rect.top;
+const x=event.clientX-rect.left;
+const y=event.clientY-rect.top;
 
 openTextEditor(x,y);
 
@@ -1558,63 +1573,46 @@ openTextEditor(x,y);
 
 function openTextEditor(x,y){
 
-const rect = canvas.getBoundingClientRect();
+const rect=canvas.getBoundingClientRect();
 
-editorStyle = {
+editorStyle={
 
 tool:activeTool,
-
 color:penColor.value,
-
 size:Math.max(20,Number(penSize.value)*3),
-
-x:x * canvas.width / rect.width,
-
-y:y * canvas.height / rect.height
+x:x*canvas.width/rect.width,
+y:y*canvas.height/rect.height
 
 };
 
-/* FULL BOARD WRITING AREA */
+textEditor.style.left='0px';
+textEditor.style.top='0px';
+textEditor.style.width='100%';
+textEditor.style.height='100%';
 
-textEditor.style.left = '0px';
+textEditor.style.paddingLeft=Math.max(8,x)+'px';
+textEditor.style.paddingTop=Math.max(8,y)+'px';
 
-textEditor.style.top = '0px';
+textEditor.style.display='block';
+textEditor.value='';
 
-textEditor.style.width = '100%';
+textEditor.style.fontSize=editorStyle.size+'px';
+textEditor.style.fontWeight='bold';
 
-textEditor.style.height = '100%';
+if(activeTool==='chalk'){
 
-textEditor.style.paddingLeft =
-Math.max(8,x) + 'px';
+textEditor.className='chalk-text';
+textEditor.style.color='#ffffff';
 
-textEditor.style.paddingTop =
-Math.max(8,y) + 'px';
+}else if(activeTool==='handwriting'){
 
-textEditor.style.display = 'block';
-
-textEditor.value = '';
-
-textEditor.style.fontSize = editorStyle.size + 'px';
-
-textEditor.style.fontWeight = 'bold';
-
-if(activeTool === 'chalk'){
-
-textEditor.className = 'chalk-text';
-
-textEditor.style.color = '#ffffff';
-
-}else if(activeTool === 'handwriting'){
-
-textEditor.className = 'handwriting-text';
-
-textEditor.style.color = editorStyle.color;
+textEditor.className='handwriting-text';
+textEditor.style.color=editorStyle.color;
 
 }else{
 
-textEditor.className = 'marker-text';
-
-textEditor.style.color = editorStyle.color;
+textEditor.className='marker-text';
+textEditor.style.color=editorStyle.color;
 
 }
 
@@ -1623,91 +1621,76 @@ textEditor.focus();
 }
 
 
-/* COMMIT TEXT TO THE BOARD WITH AUTOMATIC WRAPPING */
+/* PLACE TEXT ON BOARD */
 
 function commitText(){
 
-if(textEditor.style.display !== 'block' || !editorStyle)return;
+if(textEditor.style.display!=='block'||!editorStyle)return;
 
-const value = textEditor.value.trim();
+const value=textEditor.value.trim();
 
 if(value){
 
-const rect = canvas.getBoundingClientRect();
+const rect=canvas.getBoundingClientRect();
 
-const scaleX = canvas.width / rect.width;
+const scaleX=canvas.width/rect.width;
 
-const scaleY = canvas.height / rect.height;
+const x=editorStyle.x;
+const y=editorStyle.y;
 
-const x = editorStyle.x;
-
-const y = editorStyle.y;
-
-const fontSize = editorStyle.size * scaleX;
+const fontSize=editorStyle.size*scaleX;
 
 ctx.save();
 
-ctx.font = `bold ${fontSize}px ${
-editorStyle.tool === 'chalk' ||
-editorStyle.tool === 'handwriting'
-? '"Comic Sans MS",cursive'
-: 'Arial,sans-serif'
+ctx.font=`bold ${fontSize}px ${
+editorStyle.tool==='chalk'||
+editorStyle.tool==='handwriting'
+?'"Comic Sans MS",cursive'
+:'Arial,sans-serif'
 }`;
 
-ctx.fillStyle = editorStyle.color;
+ctx.fillStyle=editorStyle.color;
+ctx.textBaseline='top';
 
-ctx.textBaseline = 'top';
+if(editorStyle.tool==='chalk'){
 
-if(editorStyle.tool === 'chalk'){
-
-ctx.shadowColor = '#ffffff';
-
-ctx.shadowBlur = 3;
-
-ctx.globalAlpha = 0.9;
+ctx.shadowColor='#ffffff';
+ctx.shadowBlur=3;
+ctx.globalAlpha=.9;
 
 }
 
-const maxWidth = canvas.width - x - 15;
+const maxWidth=canvas.width-x-15;
+const lineHeight=fontSize*1.5;
 
-const lineHeight = fontSize * 1.5;
+let currentY=y;
 
-let currentY = y;
+value.split('\n').forEach(paragraph=>{
 
-const paragraphs = value.split('\n');
-
-paragraphs.forEach(paragraph=>{
-
-const words = paragraph.split(/\s+/);
-
-let line = '';
+const words=paragraph.split(/\s+/);
+let line='';
 
 words.forEach(word=>{
 
-const testLine = line ? line + ' ' + word : word;
+const testLine=line?line+' '+word:word;
 
-if(ctx.measureText(testLine).width > maxWidth && line){
+if(ctx.measureText(testLine).width>maxWidth&&line){
 
 ctx.fillText(line,x,currentY);
-
-currentY += lineHeight;
-
-line = word;
+currentY+=lineHeight;
+line=word;
 
 }else{
 
-line = testLine;
+line=testLine;
 
 }
 
 });
 
 if(line){
-
 ctx.fillText(line,x,currentY);
-
-currentY += lineHeight;
-
+currentY+=lineHeight;
 }
 
 });
@@ -1716,37 +1699,31 @@ ctx.restore();
 
 }
 
-textEditor.style.display = 'none';
-
-textEditor.value = '';
-
-editorStyle = null;
+textEditor.style.display='none';
+textEditor.value='';
+editorStyle=null;
 
 }
 
 
-/* CTRL + ENTER FINISHES WRITING
-   ENTER MAKES A NEW LINE
-   ESCAPE CANCELS CURRENT WRITING
-*/
+/* KEYBOARD CONTROLS */
 
-textEditor.addEventListener('keydown',function(event){
+textEditor.addEventListener('keydown',event=>{
 
-if(event.key === 'Enter' && event.ctrlKey){
+if(event.key==='Enter'&&event.ctrlKey){
 
 event.preventDefault();
 
 commitText();
 
-document.getElementById('boardInstruction').textContent =
+document.getElementById('boardInstruction').textContent=
 'Your writing has been placed on the board successfully.';
 
 }
 
-if(event.key === 'Escape'){
+if(event.key==='Escape'){
 
-textEditor.value = '';
-
+textEditor.value='';
 commitText();
 
 }
@@ -1754,18 +1731,14 @@ commitText();
 });
 
 
-/* CLICK OUTSIDE TO FINISH WRITING */
+/* CLICK OUTSIDE EDITOR */
 
-document.addEventListener('pointerdown',function(event){
+document.addEventListener('pointerdown',event=>{
 
 if(
-
-textEditor.style.display === 'block' &&
-
-!textEditor.contains(event.target) &&
-
-event.target !== canvas
-
+textEditor.style.display==='block'&&
+!textEditor.contains(event.target)&&
+event.target!==canvas
 ){
 
 commitText();
@@ -1775,58 +1748,53 @@ commitText();
 });
 
 
-/* COLOUR CONTROL */
+/* COLOUR */
 
 penColor.addEventListener('input',function(){
 
-if(textEditor.style.display === 'block' && editorStyle){
+if(textEditor.style.display==='block'&&editorStyle){
 
-editorStyle.color = this.value;
-
-textEditor.style.color = this.value;
+editorStyle.color=this.value;
+textEditor.style.color=this.value;
 
 }
 
 });
 
 
-/* THICKNESS CONTROL */
+/* THICKNESS */
 
 penSize.addEventListener('input',function(){
 
-document.getElementById('penSizeValue').textContent = this.value;
+document.getElementById('penSizeValue').textContent=this.value;
 
 });
 
 
-/* ERASER NOTICE */
+/* ERASER */
 
-document.getElementById('eraseBtn').onclick = function(){
+document.getElementById('eraseBtn').onclick=()=>{
 
 commitText();
 
-alert(
-'For typed writing, use Clear board to remove all writing.'
-);
+alert('For typed writing, use Clear board to remove all writing.');
 
 };
 
 
-/* CLEAR BOARD WITH OK OR CANCEL */
+/* CLEAR BOARD */
 
-document.getElementById('clearBtn').onclick = function(){
+document.getElementById('clearBtn').onclick=()=>{
 
 commitText();
 
-const answer = confirm(
-'Are you sure you want to clear the entire board?'
-);
+const answer=confirm('Are you sure you want to clear the entire board?');
 
 if(answer){
 
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
-document.getElementById('boardInstruction').textContent =
+document.getElementById('boardInstruction').textContent=
 'Board cleared successfully. Select a writing tool to continue.';
 
 }
@@ -1834,21 +1802,19 @@ document.getElementById('boardInstruction').textContent =
 };
 
 
-/* INITIAL CAMERA DETECTION */
+/* INITIALISE CAMERAS */
 
-refreshCameras().catch(console.error);
+refreshCameras();
 
 
-/* CLEAN UP CAMERA STREAMS WHEN LEAVING */
+/* CLEAN UP WHEN LEAVING */
 
-window.addEventListener('beforeunload',function(){
+window.addEventListener('beforeunload',()=>{
 
 [teacherStream,hallStream,microphoneStream].forEach(stream=>{
 
 if(stream){
-
 stream.getTracks().forEach(track=>track.stop());
-
 }
 
 });
@@ -1859,3 +1825,4 @@ stream.getTracks().forEach(track=>track.stop());
 
 </body>
 </html>
+```
