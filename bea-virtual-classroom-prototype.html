@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -617,6 +616,18 @@ main{padding:0 12px}
 .mode-grid{grid-template-columns:1fr}
 .pen-tool{flex:1}
 }
+
+
+/* CLASSROOM ENTRY AND LIVE ROOM */
+.room-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.room-share{display:none;margin-top:14px;padding:12px;background:#f0f7ff;border:1px solid #c9def2;border-radius:10px}
+.room-share strong{display:block;color:var(--navy);font-size:12px;margin-bottom:6px}
+.room-share input{font-size:12px;margin-bottom:8px}
+.room-state{font-size:12px;line-height:1.5;margin-top:10px;color:#52647a}
+.participant-list{margin-top:10px;padding:10px;background:#f7f9fc;border-radius:9px;font-size:12px;line-height:1.6}
+.participant-list strong{color:var(--navy)}
+@media(max-width:460px){.room-actions{grid-template-columns:1fr}}
+
 </style>
 </head>
 
@@ -642,7 +653,7 @@ main{padding:0 12px}
 
 <div class="notice">
 <b>Classroom prototype:</b>
-Choose Auto, 720p, 1080p Full HD or 4K for each camera independently. The actual resolution depends on your camera and computer. These are local previews only: students cannot yet see the camera feeds remotely. Live broadcasting requires a real-time video connection.
+Choose Auto, 720p, 1080p Full HD or 4K for each camera independently. The actual resolution depends on your camera and computer. These are local previews only: students cannot yet see the camera feeds remotely. Live broadcasting requires a real-time video connection. Room presence and chat connect through Supabase after its public project settings are added; live camera/audio broadcasting is a separate next stage.
 </div>
 
 <div class="layout">
@@ -860,13 +871,21 @@ Marker selected: Click on the board and type. Press Ctrl + Enter to place your w
 <option>Student</option>
 </select>
 
-<button class="primary" style="width:100%;margin-top:14px" id="enterBtn">
-Prepare classroom
-</button>
+<div class="room-actions">
+<button class="primary" id="createRoomBtn">＋ Create classroom</button>
+<button class="secondary" id="joinRoomBtn">↪ Join classroom</button>
+</div>
 
-<p id="entryMessage" style="font-size:12px;color:#64748b;line-height:1.5;margin-bottom:0">
-Choose a mode and prepare this demo room.
+<div class="room-share" id="roomShare">
+<strong>Share this invitation link with your students</strong>
+<input id="roomLink" readonly aria-label="Classroom invitation link">
+<button class="primary" style="width:100%" id="copyRoomLinkBtn">Copy invitation link</button>
+</div>
+
+<p id="entryMessage" class="room-state">
+Teachers create a room. Students enter its classroom code or open the invitation link.
 </p>
+<div class="participant-list" id="participantList"><strong>Participants:</strong> Not connected yet.</div>
 
 </div>
 </section>
@@ -930,7 +949,121 @@ Choose a mode and prepare this demo room.
 © Bosco English Academy · Founded by Jean Bosco Munezero · Building Confidence in English
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+
+/* =========================================
+   BEA CLASSROOM CONNECTION SETTINGS
+   Add your Supabase Project URL and anon/public key below.
+   Never put a service_role key in this public HTML file.
+========================================= */
+const SUPABASE_URL = 'PASTE_YOUR_SUPABASE_PROJECT_URL_HERE';
+const SUPABASE_ANON_KEY = 'PASTE_YOUR_SUPABASE_ANON_PUBLIC_KEY_HERE';
+let beaSupabase = null;
+let classroomChannel = null;
+let currentRoomCode = '';
+let currentParticipantId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'bea-' + Math.random().toString(36).slice(2);
+let connectedParticipants = {};
+
+function hasSupabaseConfig(){
+  return SUPABASE_URL.startsWith('https://') &&
+    SUPABASE_ANON_KEY.length > 30 &&
+    !SUPABASE_URL.includes('PASTE_') &&
+    !SUPABASE_ANON_KEY.includes('PASTE_');
+}
+
+function makeRoomCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code='BEA-';
+  for(let i=0;i<6;i++) code+=chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+function showRoomLink(code){
+  const box=document.getElementById('roomShare');
+  const input=document.getElementById('roomLink');
+  const url=new URL(window.location.href);
+  url.searchParams.set('room',code);
+  url.searchParams.set('role','Student');
+  input.value=url.toString();
+  box.style.display='block';
+}
+
+function updateParticipantList(){
+  const names=Object.values(connectedParticipants);
+  const target=document.getElementById('participantList');
+  if(!names.length){
+    target.innerHTML='<strong>Participants:</strong> No one is connected yet.';
+    return;
+  }
+  target.innerHTML='<strong>Participants ('+names.length+'):</strong><br>'+names.map(p=>escapeRoomText(p.name)+' — '+escapeRoomText(p.role)).join('<br>');
+}
+
+function escapeRoomText(value){
+  return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function connectToClassroom(code,role,name){
+  currentRoomCode=code.toUpperCase().trim();
+  document.getElementById('roomCode').value=currentRoomCode;
+  document.getElementById('entryMessage').textContent='Preparing classroom '+currentRoomCode+'...';
+  showRoomLink(currentRoomCode);
+
+  if(!hasSupabaseConfig()){
+    document.getElementById('entryMessage').textContent='Room '+currentRoomCode+' is prepared in preview mode. To let students connect from other devices, add the Supabase Project URL and anon/public key in the connection settings near the top of this file.';
+    cameraStatus.textContent='● Room preview ready — live connection not configured';
+    return;
+  }
+
+  try{
+    if(!beaSupabase) beaSupabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    if(classroomChannel){
+      await beaSupabase.removeChannel(classroomChannel);
+      classroomChannel=null;
+    }
+    connectedParticipants={};
+    classroomChannel=beaSupabase.channel('bea-classroom-'+currentRoomCode,{
+      config:{presence:{key:currentParticipantId},broadcast:{self:false}}
+    });
+
+    classroomChannel
+      .on('presence',{event:'sync'},()=>{
+        const state=classroomChannel.presenceState();
+        connectedParticipants={};
+        Object.values(state).flat().forEach(person=>{
+          connectedParticipants[person.id]={name:person.name,role:person.role};
+        });
+        updateParticipantList();
+      })
+      .on('broadcast',{event:'class-chat'},({payload})=>{
+        if(payload && payload.senderId!==currentParticipantId){
+          addClassroomMessage(payload.name,payload.message);
+        }
+      })
+      .subscribe(async status=>{
+        if(status==='SUBSCRIBED'){
+          await classroomChannel.track({id:currentParticipantId,name,role,joinedAt:new Date().toISOString()});
+          document.getElementById('entryMessage').textContent='Connected to classroom '+currentRoomCode+'. Share the invitation link with your students.';
+          cameraStatus.textContent='● Connected to room '+currentRoomCode;
+        }else if(status==='CHANNEL_ERROR' || status==='TIMED_OUT'){
+          document.getElementById('entryMessage').textContent='Could not connect to the room. Check the Supabase URL, public key and Realtime settings.';
+        }
+      });
+  }catch(error){
+    console.error('BEA classroom connection:',error);
+    document.getElementById('entryMessage').textContent='Connection error: '+error.message;
+  }
+}
+
+function addClassroomMessage(name,message){
+  const paragraph=document.createElement('p');
+  paragraph.className='msg';
+  const bold=document.createElement('b');
+  bold.textContent=name+': ';
+  paragraph.append(bold,document.createTextNode(message));
+  messages.appendChild(paragraph);
+  messages.scrollTop=messages.scrollHeight;
+}
 
 /* =========================================
    BEA CAMERA QUALITY SETTINGS
@@ -1400,21 +1533,50 @@ selectedMode=button.dataset.mode;
 
 });
 
-document.getElementById('enterBtn').onclick=()=>{
-
-const name=document.getElementById('displayName').value.trim()||'Guest';
-const code=document.getElementById('roomCode').value.trim();
-const role=document.getElementById('role').value;
-
-document.getElementById('entryMessage').textContent=
-
-`${name}, your ${
-selectedMode==='individual'?'individual learner':'group classroom'
-} room is prepared in demo mode${
-code?' · Code: '+code:''
-}. Role: ${role}. Live joining will be enabled after backend integration.`;
-
+document.getElementById('createRoomBtn').onclick=()=>{
+  const role=document.getElementById('role').value;
+  if(role!=='Teacher'){
+    document.getElementById('entryMessage').textContent='Please choose Teacher to create a classroom. Students should use Join classroom.';
+    return;
+  }
+  const name=document.getElementById('displayName').value.trim()||'Teacher';
+  const code=makeRoomCode();
+  connectToClassroom(code,'Teacher',name);
 };
+
+document.getElementById('joinRoomBtn').onclick=()=>{
+  const name=document.getElementById('displayName').value.trim()||'Guest';
+  const code=document.getElementById('roomCode').value.trim();
+  const role=document.getElementById('role').value;
+  if(!code){
+    document.getElementById('entryMessage').textContent='Enter the classroom code shared by your teacher.';
+    document.getElementById('roomCode').focus();
+    return;
+  }
+  connectToClassroom(code,role,name);
+};
+
+document.getElementById('copyRoomLinkBtn').onclick=async()=>{
+  const input=document.getElementById('roomLink');
+  try{
+    await navigator.clipboard.writeText(input.value);
+    document.getElementById('copyRoomLinkBtn').textContent='Copied!';
+  }catch(error){
+    input.select();
+    document.execCommand('copy');
+    document.getElementById('copyRoomLinkBtn').textContent='Copied!';
+  }
+};
+
+/* Automatically fill the room code when a student opens an invitation link. */
+const invitedRoom=new URLSearchParams(window.location.search).get('room');
+const invitedRole=new URLSearchParams(window.location.search).get('role');
+if(invitedRoom){
+  document.getElementById('roomCode').value=invitedRoom;
+  if(invitedRole) document.getElementById('role').value=invitedRole;
+  document.getElementById('entryMessage').textContent='Invitation detected. Enter your name, then click Join classroom.';
+}
+
 
 
 /* =========================================
@@ -1442,6 +1604,10 @@ paragraph.append(bold,document.createTextNode(value));
 
 messages.appendChild(paragraph);
 messages.scrollTop=messages.scrollHeight;
+
+if(classroomChannel){
+  classroomChannel.send({type:'broadcast',event:'class-chat',payload:{senderId:currentParticipantId,name:bold.textContent.replace(/: $/,''),message:value}});
+}
 
 input.value='';
 
@@ -1811,6 +1977,8 @@ refreshCameras();
 
 window.addEventListener('beforeunload',()=>{
 
+if(classroomChannel && beaSupabase){ beaSupabase.removeChannel(classroomChannel); }
+
 [teacherStream,hallStream,microphoneStream].forEach(stream=>{
 
 if(stream){
@@ -1825,4 +1993,3 @@ stream.getTracks().forEach(track=>track.stop());
 
 </body>
 </html>
-```
