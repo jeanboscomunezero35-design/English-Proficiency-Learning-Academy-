@@ -2833,7 +2833,33 @@ stream.getTracks().forEach(track=>track.stop());
 });
 
 });
+/* BEA QUICK OPEN BUTTON FIX */
 
+document.addEventListener('DOMContentLoaded', function(){
+
+  document.addEventListener('click', function(event){
+
+    const button = event.target.closest(
+      '#quickOpenBtn, #quickOpen, .quick-open-btn, [data-action="quick-open"]'
+    );
+
+    if(!button) return;
+
+    event.preventDefault();
+
+    if(typeof openQuickClassroom === 'function'){
+      openQuickClassroom();
+    }
+    else if(typeof openClassroom === 'function'){
+      openClassroom();
+    }
+    else{
+      console.error('BEA: Quick Open function not found.');
+    }
+
+  });
+
+});
 </script>
 
 </body>
