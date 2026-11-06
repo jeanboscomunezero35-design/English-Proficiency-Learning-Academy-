@@ -40,55 +40,154 @@
   display:block;
   background:#172c47;
 }
+/* BEA CLASSROOM LAYOUT */
+
+.teacher-front-area,
+.student-gallery-area{
+  width:100%;
+  margin-top:20px;
+}
+
+.teacher-front-area h3,
+.student-gallery-area h3{
+  color:white;
+  margin-bottom:12px;
+  font-size:16px;
+}
+
+#teacherFrontStage{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:100%;
+  gap:12px;
+  background:#0b1930;
+  padding:12px;
+  border-radius:12px;
+  min-height:100px;
+}
+
+.teacher-remote-card{
+  width:100%;
+  max-width:950px;
+  background:#102544;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.teacher-remote-card video{
+  width:100%;
+  height:480px;
+  object-fit:contain;
+  display:block;
+  background:#172c47;
+}
+
+.student-gallery-area{
+  background:#0b1930;
+  padding:12px;
+  border-radius:12px;
+}
+
+.remote-video-grid{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+  width:100%;
+}
+
+.student-remote-card{
+  width:100%;
+  max-width:850px;
+  background:#102544;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.student-remote-card video{
+  width:100%;
+  height:280px;
+  object-fit:contain;
+  display:block;
+  background:#172c47;
+}
 
 .remote-video-name{
   padding:10px;
-  font-size:12px;
+  font-size:14px;
   font-weight:bold;
+  color:white;
 }
 
 .remote-video-status{
-  font-size:11px;
+  font-size:12px;
   color:#c5d6eb;
   padding:0 10px 10px;
 }
+/* LOCAL CAMERA POSITIONING */
 
+#teacherFrontStage #teacherCard{
+  width:100%;
+  max-width:950px;
+}
+
+#studentGallery #teacherCard{
+  width:100%;
+  max-width:850px;
+}
 @media(max-width:600px){
-  .remote-video-grid{
-    grid-template-columns:1fr;
+  .teacher-remote-card video{
+    height:260px;
+  }
+
+  .student-remote-card video{
+    height:200px;
   }
 }
-<style>
-:root{
---navy:#102544;
---blue:#1769aa;
---sky:#eaf4ff;
---gold:#f2b544;
---ink:#203047;
---muted:#65758b;
---line:#dce5ef;
---white:#fff;
---green:#16845b
+/* WHOLE HALL REMOTE CAMERA */
+
+.hall-view-area{
+  width:100%;
+  margin-top:20px;
+  background:#0b1930;
+  padding:12px;
+  border-radius:12px;
 }
 
-*{box-sizing:border-box}
-
-body{
-margin:0;
-font-family:Arial,Helvetica,sans-serif;
-background:#f3f6fb;
-color:var(--ink)
+.hall-view-area h3{
+  color:white;
+  margin-bottom:12px;
 }
 
-header{
-background:var(--navy);
-color:white;
-padding:16px 4%;
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:16px;
-flex-wrap:wrap
+#hallRemoteStage{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:100%;
+  gap:12px;
+}
+
+#hallRemoteStage .remote-video-card{
+  width:100%;
+  max-width:950px;
+  background:#102544;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+#hallRemoteStage video{
+  width:100%;
+  height:350px;
+  object-fit:contain;
+  display:block;
+  background:#172c47;
+}
+
+@media(max-width:600px){
+  #hallRemoteStage video{
+    height:220px;
+  }
 }
 
 .brand{font-weight:800;font-size:19px;letter-spacing:.2px}
@@ -826,14 +925,39 @@ Choose Auto, 720p, 1080p Full HD or 4K for each camera independently. The actual
 <div class="live-gallery">
 
   <h3>👥 Live Virtual Classroom — Connected Participants</h3>
+<!-- TEACHER AT THE FRONT -->
+<div class="teacher-front-area">
+  <h3>👨‍🏫 Teacher — Front of Classroom</h3>
 
-  <div class="remote-video-grid" id="remoteVideoGrid">
-
-    <div id="remoteEmptyMessage">
-      Waiting for live video connections...
+  <div id="teacherFrontStage">
+    <div id="teacherEmptyMessage">
+      Waiting for the teacher's live camera...
     </div>
-
   </div>
+</div>
+<!-- WHOLE HALL CAMERA DISPLAY -->
+<div class="hall-view-area">
+
+  <h3>🏫 Whole Hall Camera</h3>
+
+  <div id="hallRemoteStage">
+    <div id="hallEmptyMessage">
+      Waiting for the hall camera...
+    </div>
+  </div>
+
+</div>
+<!-- STUDENTS BELOW THE TEACHER -->
+<div class="student-gallery-area">
+  <h3>👥 Students — Classroom Gallery</h3>
+
+  <div class="remote-video-grid" id="studentGallery">
+    <div id="remoteEmptyMessage">
+      Waiting for students to connect...
+    </div>
+  </div>
+</div>
+ 
 
 </div>
 <div class="camera-global-controls">
@@ -1118,6 +1242,7 @@ if(role.toLowerCase()==='teacher'){
   role='student';
 
 }
+currentParticipantRole=role;
 
 if(!name){
   document.getElementById('entryMessage').textContent=
@@ -1126,7 +1251,34 @@ if(!name){
 }
 
 document.getElementById('displayName').value=name;
-     if(classroomChannel){
+    /* Arrange the local camera according to participant role */
+
+const teacherCard=document.getElementById('teacherCard');
+const teacherFront=document.getElementById('teacherFrontStage');
+const studentGallery=document.getElementById('studentGallery');
+
+if(currentParticipantRole==='teacher'){
+
+  teacherFront.appendChild(teacherCard);
+
+  const empty=document.getElementById('teacherEmptyMessage');
+  if(empty) empty.remove();
+
+}else{
+
+  studentGallery.appendChild(teacherCard);
+
+  const heading=teacherCard.querySelector('.camera-heading span');
+
+  if(heading){
+    heading.textContent='📷 YOUR CAMERA — STUDENT';
+  }
+
+  const empty=document.getElementById('remoteEmptyMessage');
+  if(empty) empty.remove();
+
+}
+    if(classroomChannel){
       await beaSupabase.removeChannel(classroomChannel);
       classroomChannel=null;
     }
@@ -1219,7 +1371,7 @@ const BEA_RTC_CONFIG = {
 
 let peerConnections = {};
 let remoteVideoTiles = {};
-
+let currentParticipantRole = 'student';
 
 /* SEND SIGNALS THROUGH SUPABASE */
 
@@ -1234,28 +1386,59 @@ async function sendRtcSignal(to, signal){
       from:currentParticipantId,
       to:to,
       name:document.getElementById('displayName').value,
+      role:currentParticipantRole,
+
+      streamTypes:{
+        ...(teacherStream ? {
+          [teacherStream.id]:'teacher'
+        } : {}),
+
+        ...(hallStream ? {
+          [hallStream.id]:'hall'
+        } : {})
+      },
+
       signal:signal
     }
   });
 
 }
+  
 
 
 /* DISPLAY REMOTE PARTICIPANTS */
-
-function showRemoteVideo(remoteId,name,stream){
+function showRemoteVideo(remoteId,name,stream,role='student',streamType='student'){
 
   const key=remoteId+'_'+stream.id;
 
   if(remoteVideoTiles[key]) return;
 
-  const gallery=document.getElementById('remoteVideoGrid');
+  let gallery;
+  let empty;
 
-  const empty=document.getElementById('remoteEmptyMessage');
+  if(streamType==='hall'){
+
+    gallery=document.getElementById('hallRemoteStage');
+    empty=document.getElementById('hallEmptyMessage');
+
+  }else if(streamType==='teacher'){
+
+    gallery=document.getElementById('teacherFrontStage');
+    empty=document.getElementById('teacherEmptyMessage');
+
+  }else{
+
+    gallery=document.getElementById('studentGallery');
+    empty=document.getElementById('remoteEmptyMessage');
+
+  }
+
+  if(!gallery) return;
 
   if(empty) empty.remove();
 
   const card=document.createElement('div');
+
   card.className='remote-video-card';
 
   const video=document.createElement('video');
@@ -1266,7 +1449,13 @@ function showRemoteVideo(remoteId,name,stream){
 
   const label=document.createElement('div');
   label.className='remote-video-name';
-  label.textContent=name;
+
+  label.textContent=
+    streamType==='hall'
+    ? '🏫 Whole Hall — '+name
+    : streamType==='teacher'
+    ? '👨‍🏫 Teacher — '+name
+    : '👤 Student — '+name;
 
   const status=document.createElement('div');
   status.className='remote-video-status';
@@ -1280,22 +1469,26 @@ function showRemoteVideo(remoteId,name,stream){
 }
 
 
+
+
+
 /* CREATE CONNECTION WITH A PARTICIPANT */
 
-function createPeerConnection(remoteId,remoteName){
+function createPeerConnection(remoteId,remoteName,remoteRole='student'){
 
   if(peerConnections[remoteId]){
     return peerConnections[remoteId];
   }
 
   const pc=new RTCPeerConnection(BEA_RTC_CONFIG);
-
-  const connection={
-    pc:pc,
-    name:remoteName,
-    pendingCandidates:[]
-  };
-
+const connection={
+  pc:pc,
+  name:remoteName,
+  role:remoteRole,
+  remoteStreamTypes:{},
+  pendingCandidates:[]
+};
+  
   peerConnections[remoteId]=connection;
 
 /* Attach available local cameras and microphone */
@@ -1328,13 +1521,22 @@ pc.ontrack = event => {
 
   const stream = event.streams[0] ||
     new MediaStream([event.track]);
+if(event.track.kind === 'video'){
 
-  if(event.track.kind === 'video'){
+  const streamType=
+    connection.remoteStreamTypes[stream.id] ||
+    (connection.role==='teacher' ? 'teacher' : 'student');
 
-    showRemoteVideo(remoteId,remoteName,stream);
+  showRemoteVideo(
+    remoteId,
+    remoteName,
+    stream,
+    connection.role,
+    streamType
+  );
 
-  }
-
+}
+ 
   if(event.track.kind === 'audio'){
 
     let audio = document.getElementById(
@@ -1468,7 +1670,6 @@ async function addStreamToExistingPeers(stream){
       if(!alreadyAdded){
 
         pc.addTrack(track,stream);
-
         newTrackAdded=true;
 
       }
@@ -1481,7 +1682,7 @@ async function addStreamToExistingPeers(stream){
 
       await pc.setLocalDescription(offer);
 
-      await sendRtcSignal(
+        await sendRtcSignal(
         remoteId,
         {
           type:'offer',
@@ -1496,12 +1697,7 @@ async function addStreamToExistingPeers(stream){
   }
 
 }
-        await sender.replaceTrack(track);
-      }else{
-        pc.addTrack(track,stream);
-      }
-
-    }
+      
 
     if(pc.signalingState==='stable'){
 
@@ -1527,12 +1723,12 @@ async function addStreamToExistingPeers(stream){
 async function startRtcOffer(person){
 
   try{
-
-    const connection=createPeerConnection(
-      person.id,
-      person.name
-    );
-
+const connection=createPeerConnection(
+  person.id,
+  person.name,
+  person.role
+);
+   
     const pc=connection.pc;
 
     const offer=await pc.createOffer();
@@ -1570,8 +1766,9 @@ async function handleRtcSignal(payload){
       return;
     }
 
-    const remoteId=payload.from;
-    const remoteName=payload.name || 'BEA Participant';
+   const remoteId=payload.from;
+const remoteName=payload.name || 'BEA Participant';
+const remoteRole=payload.role || 'student';
 
     let connection=peerConnections[remoteId];
 
@@ -1579,17 +1776,20 @@ async function handleRtcSignal(payload){
     /* CREATE CONNECTION WHEN AN OFFER ARRIVES */
 
     if(!connection){
-
-      connection=createPeerConnection(
-        remoteId,
-        remoteName
-      );
+ connection=createPeerConnection(
+  remoteId,
+  remoteName,
+  remoteRole
+); 
 
     }
 
     const pc=connection.pc;
     const signal=payload.signal;
-
+connection.remoteStreamTypes={
+  ...connection.remoteStreamTypes,
+  ...(payload.streamTypes || {})
+};
 
     /* RECEIVE OFFER */
 
@@ -1687,7 +1887,8 @@ const hallSelect = document.getElementById('hallCameraSelect');
 let teacherStream = null;
 let hallStream = null;
 let microphoneStream = null;
-
+let teacherCameraRequest = 0;
+let hallCameraRequest = 0;
 let selectedMode = 'individual';
 
 const cameraStatus = document.getElementById('connectionStatus');
@@ -1856,11 +2057,39 @@ video:{
 
 /* Request the new camera before stopping the previous one. */
 
-const newStream=await navigator.mediaDevices.getUserMedia(constraints);
+const requestId = isTeacher
+  ? ++teacherCameraRequest
+  : ++hallCameraRequest;
 
-video.srcObject=newStream;
+const newStream = await navigator.mediaDevices.getUserMedia(constraints);
 
-await video.play();
+const latestRequest = isTeacher
+  ? teacherCameraRequest
+  : hallCameraRequest;
+
+if(requestId !== latestRequest){
+  newStream.getTracks().forEach(track=>track.stop());
+  return;
+}
+video.srcObject = newStream;
+
+try {
+  await video.play();
+} catch(error) {
+  if(error.name !== 'AbortError') {
+    throw error;
+  }
+}
+
+const currentRequest = isTeacher
+  ? teacherCameraRequest
+  : hallCameraRequest;
+
+if(requestId !== currentRequest){
+  newStream.getTracks().forEach(track=>track.stop());
+  return;
+}
+
 
 if(oldStream){
 oldStream.getTracks().forEach(track=>track.stop());
@@ -1873,7 +2102,10 @@ hallStream=newStream;
 }
 /* Share the newly started camera with connected participants */
 
-await addStreamToExistingPeers(newStream);
+await addStreamToExistingPeers(
+  newStream,
+  isTeacher ? 'teacher' : 'hall'
+);
 video.style.display='block';
 placeholder.style.display='none';
 liveTag.style.display='block';
