@@ -1318,20 +1318,7 @@ localStreams.forEach(stream => {
   });
 });
 
-  const localStreams=[
-    teacherStream,
-    hallStream,
-    microphoneStream
-  ].filter(Boolean);
-
-  localStreams.forEach(stream=>{
-
-    stream.getTracks().forEach(track=>{
-      pc.addTrack(track,stream);
-    });
-
-  });
-
+  
 
   /* Receive remote video and audio */
 
