@@ -1955,7 +1955,9 @@ microphoneStream=await navigator.mediaDevices.getUserMedia({
 audio:true,
 video:false
 });
+/* Share the microphone with connected participants */
 
+await addStreamToExistingPeers(microphoneStream);
 document.getElementById('startMic').textContent='🎤 Microphone active';
 
 cameraStatus.textContent='● Local microphone active';
