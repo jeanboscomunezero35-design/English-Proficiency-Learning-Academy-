@@ -1134,34 +1134,53 @@ document.getElementById('displayName').value=name;
     classroomChannel=beaSupabase.channel('bea-classroom-'+currentRoomCode,{
       config:{presence:{key:currentParticipantId},broadcast:{self:false}}
     });
+classroomChannel
 
-    classroomChannel
-      .on('presence',{event:'sync'},()=>{
-        const state=classroomChannel.presenceState();
-        connectedParticipants={};
-        Object.values(state).flat().forEach(person=>{
-          connectedParticipants[person.id]={name:person.name,role:person.role};
-        });
-        updateParticipantList();
-      })
-      // Start live connections with other participants
-Object.values(state).flat().forEach(person=>{
-  if(
-    person.id!==currentParticipantId &&
-    currentParticipantId.localeCompare(person.id)<0 &&
-    !peerConnections[person.id]
-  ){
-    startRtcOffer(person);
-  }
-});
-      .on('broadcast',{event:'class-chat'},({payload})=>{
-        if(payload && payload.senderId!==currentParticipantId){
-          addClassroomMessage(payload.name,payload.message);
-        }
-        .on('broadcast',{event:'webrtc-signal'},({payload})=>{
-  handleRtcSignal(payload);
-})
-      })
+  .on('presence',{event:'sync'},()=>{
+
+    const state=classroomChannel.presenceState();
+
+    connectedParticipants={};
+
+    Object.values(state).flat().forEach(person=>{
+      connectedParticipants[person.id]={
+        name:person.name,
+        role:person.role
+      };
+    });
+
+    updateParticipantList();
+
+    /* Start live connections with other participants */
+
+    Object.values(state).flat().forEach(person=>{
+
+      if(
+        person.id!==currentParticipantId &&
+        currentParticipantId.localeCompare(person.id)<0 &&
+        !peerConnections[person.id]
+      ){
+        startRtcOffer(person);
+      }
+
+    });
+
+  })
+
+  .on('broadcast',{event:'class-chat'},({payload})=>{
+
+    if(payload && payload.senderId!==currentParticipantId){
+      addClassroomMessage(payload.name,payload.message);
+    }
+
+  })
+
+  .on('broadcast',{event:'webrtc-signal'},({payload})=>{
+
+    handleRtcSignal(payload);
+
+  })
+  
       .subscribe(async status=>{
         if(status==='SUBSCRIBED'){
           await classroomChannel.track({id:currentParticipantId,name,role,joinedAt:new Date().toISOString()});
