@@ -1144,10 +1144,23 @@ document.getElementById('displayName').value=name;
         });
         updateParticipantList();
       })
+      // Start live connections with other participants
+Object.values(state).flat().forEach(person=>{
+  if(
+    person.id!==currentParticipantId &&
+    currentParticipantId.localeCompare(person.id)<0 &&
+    !peerConnections[person.id]
+  ){
+    startRtcOffer(person);
+  }
+});
       .on('broadcast',{event:'class-chat'},({payload})=>{
         if(payload && payload.senderId!==currentParticipantId){
           addClassroomMessage(payload.name,payload.message);
         }
+        .on('broadcast',{event:'webrtc-signal'},({payload})=>{
+  handleRtcSignal(payload);
+})
       })
       .subscribe(async status=>{
         if(status==='SUBSCRIBED'){
