@@ -1279,8 +1279,25 @@ function createPeerConnection(remoteId,remoteName){
 
   peerConnections[remoteId]=connection;
 
+/* Attach available local cameras and microphone */
 
-  /* Attach available local cameras and microphone */
+const localStreams = [
+  teacherStream,
+  hallStream,
+  microphoneStream
+].filter(Boolean);
+
+localStreams.forEach(stream => {
+  stream.getTracks().forEach(track => {
+    const alreadyAdded = pc.getSenders().some(
+      sender => sender.track === track
+    );
+
+    if (!alreadyAdded) {
+      pc.addTrack(track, stream);
+    }
+  });
+});
 
   const localStreams=[
     teacherStream,
