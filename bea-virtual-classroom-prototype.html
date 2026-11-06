@@ -1380,16 +1380,37 @@ pc.ontrack = event => {
 
   };
 
+pc.onconnectionstatechange = () => {
+  console.log(
+    'BEA CONNECTION:',
+    remoteName,
+    pc.connectionState
+  );
+};
 
-  pc.onconnectionstatechange=()=>{
+pc.oniceconnectionstatechange = () => {
+  console.log(
+    'BEA ICE CONNECTION:',
+    remoteName,
+    pc.iceConnectionState
+  );
+};
 
-    console.log(
-      'BEA connection:',
-      remoteName,
-      pc.connectionState
-    );
+pc.onsignalingstatechange = () => {
+  console.log(
+    'BEA SIGNALING:',
+    remoteName,
+    pc.signalingState
+  );
+};
 
-  };
+pc.onicegatheringstatechange = () => {
+  console.log(
+    'BEA ICE GATHERING:',
+    remoteName,
+    pc.iceGatheringState
+  );
+};
 
   return connection;
 
