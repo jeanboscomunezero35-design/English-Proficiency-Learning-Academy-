@@ -1405,6 +1405,39 @@ pc.onsignalingstatechange = () => {
 };
 
 pc.onicegatheringstatechange = () => {
+ // BEA LIVE VIDEO FRAME MONITOR
+if (pc._beaStatsTimer) {
+  clearInterval(pc._beaStatsTimer);
+}
+
+pc._beaStatsTimer = setInterval(async () => {
+  try {
+    if (pc.connectionState === 'closed') {
+      clearInterval(pc._beaStatsTimer);
+      return;
+    }
+
+    const stats = await pc.getStats();
+
+    stats.forEach(report => {
+      if (
+        report.type === 'inbound-rtp' &&
+        report.kind === 'video'
+      ) {
+        console.log('BEA VIDEO STATS:', remoteName, {
+          framesReceived: report.framesReceived,
+          framesDecoded: report.framesDecoded,
+          bytesReceived: report.bytesReceived,
+          packetsLost: report.packetsLost,
+          jitter: report.jitter
+        });
+      }
+    });
+
+  } catch (error) {
+    console.error('BEA VIDEO MONITOR ERROR:', error);
+  }
+}, 3000);
   console.log(
     'BEA ICE GATHERING:',
     remoteName,
