@@ -1026,15 +1026,37 @@ if(error || !session){
   return;
 }
 
-// Identify the authenticated student
+// Identify the authenticated participant
 const user=session.user;
 
-name=user.user_metadata.full_name ||
-     user.user_metadata.name ||
-     user.user_metadata.display_name ||
-     user.email.split('@')[0];
-
 currentParticipantId=user.id;
+
+// Keep the teacher's academy identity
+if(role.toLowerCase()==='teacher'){
+
+  name=user.user_metadata.full_name ||
+       user.user_metadata.name ||
+       user.email.split('@')[0] ||
+       'Jean Bosco';
+
+  role='teacher';
+
+}else{
+
+  // Preserve the name entered by the student
+  name=(name ||
+        document.getElementById('displayName').value ||
+        '').trim();
+
+  role='student';
+
+}
+
+if(!name){
+  document.getElementById('entryMessage').textContent=
+    'Please enter your name before joining the classroom.';
+  return;
+}
 
 document.getElementById('displayName').value=name;
      if(classroomChannel){
