@@ -1450,7 +1450,6 @@ pc._beaStatsTimer = setInterval(async () => {
 }
 
 /* ADD NEW CAMERA OR MICROPHONE TO CONNECTED PARTICIPANTS */
-
 async function addStreamToExistingPeers(stream){
 
   for(const remoteId of Object.keys(peerConnections)){
@@ -1458,13 +1457,45 @@ async function addStreamToExistingPeers(stream){
     const connection=peerConnections[remoteId];
     const pc=connection.pc;
 
+    let newTrackAdded=false;
+
     for(const track of stream.getTracks()){
 
-      const sender=pc.getSenders().find(
-        item=>item.track && item.track.kind===track.kind
+      const alreadyAdded=pc.getSenders().some(
+        sender=>sender.track===track
       );
 
-      if(sender){
+      if(!alreadyAdded){
+
+        pc.addTrack(track,stream);
+
+        newTrackAdded=true;
+
+      }
+
+    }
+
+    if(newTrackAdded && pc.signalingState==='stable'){
+
+      const offer=await pc.createOffer();
+
+      await pc.setLocalDescription(offer);
+
+      await sendRtcSignal(
+        remoteId,
+        {
+          type:'offer',
+          description:pc.localDescription
+        }
+      );
+
+      console.log('BEA new media stream sent to',remoteId);
+
+    }
+
+  }
+
+}
         await sender.replaceTrack(track);
       }else{
         pc.addTrack(track,stream);
