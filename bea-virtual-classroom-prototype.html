@@ -1316,14 +1316,44 @@ localStreams.forEach(stream => {
 
   /* Receive remote video and audio */
 
-  pc.ontrack=event=>{
+ /* RECEIVE REMOTE VIDEO AND AUDIO */
 
-    const stream=event.streams[0] ||
-      new MediaStream([event.track]);
+pc.ontrack = event => {
+
+  const stream = event.streams[0] ||
+    new MediaStream([event.track]);
+
+  if(event.track.kind === 'video'){
 
     showRemoteVideo(remoteId,remoteName,stream);
 
-  };
+  }
+
+  if(event.track.kind === 'audio'){
+
+    let audio = document.getElementById(
+      'remoteAudio_' + remoteId
+    );
+
+    if(!audio){
+
+      audio = document.createElement('audio');
+      audio.id = 'remoteAudio_' + remoteId;
+      audio.autoplay = true;
+      audio.playsInline = true;
+      document.body.appendChild(audio);
+
+    }
+
+    audio.srcObject = stream;
+
+    audio.play().catch(error=>{
+      console.log('Audio playback requires user interaction:',error);
+    });
+
+  }
+
+};
 
 
   /* Exchange internet connection information */
