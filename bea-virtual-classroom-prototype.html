@@ -1359,7 +1359,48 @@ localStreams.forEach(stream => {
 
 }
 
+/* ADD NEW CAMERA OR MICROPHONE TO CONNECTED PARTICIPANTS */
 
+async function addStreamToExistingPeers(stream){
+
+  for(const remoteId of Object.keys(peerConnections)){
+
+    const connection=peerConnections[remoteId];
+    const pc=connection.pc;
+
+    for(const track of stream.getTracks()){
+
+      const sender=pc.getSenders().find(
+        item=>item.track && item.track.kind===track.kind
+      );
+
+      if(sender){
+        await sender.replaceTrack(track);
+      }else{
+        pc.addTrack(track,stream);
+      }
+
+    }
+
+    if(pc.signalingState==='stable'){
+
+      const offer=await pc.createOffer();
+
+      await pc.setLocalDescription(offer);
+
+      await sendRtcSignal(
+        remoteId,
+        {
+          type:'offer',
+          description:pc.localDescription
+        }
+      );
+
+    }
+
+  }
+
+}
 /* START A NEW VIDEO CONNECTION */
 
 async function startRtcOffer(person){
