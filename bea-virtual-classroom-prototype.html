@@ -1173,7 +1173,315 @@ function addClassroomMessage(name,message){
   messages.appendChild(paragraph);
   messages.scrollTop=messages.scrollHeight;
 }
+/* =========================================
+   BEA LIVE VIDEO AND AUDIO ENGINE
+========================================= */
 
+const BEA_RTC_CONFIG = {
+  iceServers: [
+    {
+      urls: 'stun:stun.l.google.com:19302'
+    }
+  ]
+};
+
+let peerConnections = {};
+let remoteVideoTiles = {};
+
+
+/* SEND SIGNALS THROUGH SUPABASE */
+
+async function sendRtcSignal(to, signal){
+
+  if(!classroomChannel) return;
+
+  await classroomChannel.send({
+    type:'broadcast',
+    event:'webrtc-signal',
+    payload:{
+      from:currentParticipantId,
+      to:to,
+      name:document.getElementById('displayName').value,
+      signal:signal
+    }
+  });
+
+}
+
+
+/* DISPLAY REMOTE PARTICIPANTS */
+
+function showRemoteVideo(remoteId,name,stream){
+
+  const key=remoteId+'_'+stream.id;
+
+  if(remoteVideoTiles[key]) return;
+
+  const gallery=document.getElementById('remoteVideoGrid');
+
+  const empty=document.getElementById('remoteEmptyMessage');
+
+  if(empty) empty.remove();
+
+  const card=document.createElement('div');
+  card.className='remote-video-card';
+
+  const video=document.createElement('video');
+  video.autoplay=true;
+  video.playsInline=true;
+  video.controls=true;
+  video.srcObject=stream;
+
+  const label=document.createElement('div');
+  label.className='remote-video-name';
+  label.textContent=name;
+
+  const status=document.createElement('div');
+  status.className='remote-video-status';
+  status.textContent='● Connected';
+
+  card.append(video,label,status);
+  gallery.appendChild(card);
+
+  remoteVideoTiles[key]=card;
+
+}
+
+
+/* CREATE CONNECTION WITH A PARTICIPANT */
+
+function createPeerConnection(remoteId,remoteName){
+
+  if(peerConnections[remoteId]){
+    return peerConnections[remoteId];
+  }
+
+  const pc=new RTCPeerConnection(BEA_RTC_CONFIG);
+
+  const connection={
+    pc:pc,
+    name:remoteName,
+    pendingCandidates:[]
+  };
+
+  peerConnections[remoteId]=connection;
+
+
+  /* Attach available local cameras and microphone */
+
+  const localStreams=[
+    teacherStream,
+    hallStream,
+    microphoneStream
+  ].filter(Boolean);
+
+  localStreams.forEach(stream=>{
+
+    stream.getTracks().forEach(track=>{
+      pc.addTrack(track,stream);
+    });
+
+  });
+
+
+  /* Receive remote video and audio */
+
+  pc.ontrack=event=>{
+
+    const stream=event.streams[0] ||
+      new MediaStream([event.track]);
+
+    showRemoteVideo(remoteId,remoteName,stream);
+
+  };
+
+
+  /* Exchange internet connection information */
+
+  pc.onicecandidate=event=>{
+
+    if(event.candidate){
+
+      sendRtcSignal(
+        remoteId,
+        {
+          type:'candidate',
+          candidate:event.candidate
+        }
+      );
+
+    }
+
+  };
+
+
+  pc.onconnectionstatechange=()=>{
+
+    console.log(
+      'BEA connection:',
+      remoteName,
+      pc.connectionState
+    );
+
+  };
+
+  return connection;
+
+}
+
+
+/* START A NEW VIDEO CONNECTION */
+
+async function startRtcOffer(person){
+
+  try{
+
+    const connection=createPeerConnection(
+      person.id,
+      person.name
+    );
+
+    const pc=connection.pc;
+
+    const offer=await pc.createOffer();
+
+    await pc.setLocalDescription(offer);
+
+    await sendRtcSignal(
+      person.id,
+      {
+        type:'offer',
+        description:pc.localDescription
+      }
+    );
+
+    console.log('BEA offer sent to',person.name);
+
+  }catch(error){
+
+    console.error('BEA offer error:',error);
+
+  }
+
+}
+
+
+/* PROCESS INCOMING SIGNALS */
+
+async function handleRtcSignal(payload){
+
+  try{
+
+    if(!payload ||
+       payload.to!==currentParticipantId ||
+       !payload.signal){
+      return;
+    }
+
+    const remoteId=payload.from;
+    const remoteName=payload.name || 'BEA Participant';
+
+    let connection=peerConnections[remoteId];
+
+
+    /* CREATE CONNECTION WHEN AN OFFER ARRIVES */
+
+    if(!connection){
+
+      connection=createPeerConnection(
+        remoteId,
+        remoteName
+      );
+
+    }
+
+    const pc=connection.pc;
+    const signal=payload.signal;
+
+
+    /* RECEIVE OFFER */
+
+    if(signal.type==='offer'){
+
+      await pc.setRemoteDescription(
+        new RTCSessionDescription(signal.description)
+      );
+
+      const answer=await pc.createAnswer();
+
+      await pc.setLocalDescription(answer);
+
+      await sendRtcSignal(
+        remoteId,
+        {
+          type:'answer',
+          description:pc.localDescription
+        }
+      );
+
+      /* Process waiting ICE candidates */
+
+      for(const candidate of connection.pendingCandidates){
+
+        await pc.addIceCandidate(
+          new RTCIceCandidate(candidate)
+        );
+
+      }
+
+      connection.pendingCandidates=[];
+
+    }
+
+
+    /* RECEIVE ANSWER */
+
+    else if(signal.type==='answer'){
+
+      await pc.setRemoteDescription(
+        new RTCSessionDescription(signal.description)
+      );
+
+      for(const candidate of connection.pendingCandidates){
+
+        await pc.addIceCandidate(
+          new RTCIceCandidate(candidate)
+        );
+
+      }
+
+      connection.pendingCandidates=[];
+
+    }
+
+
+    /* RECEIVE ICE CANDIDATE */
+
+    else if(signal.type==='candidate'){
+
+      if(pc.remoteDescription){
+
+        await pc.addIceCandidate(
+          new RTCIceCandidate(signal.candidate)
+        );
+
+      }else{
+
+        connection.pendingCandidates.push(
+          signal.candidate
+        );
+
+      }
+
+    }
+
+  }catch(error){
+
+    console.error('BEA signal error:',error);
+
+  }
+
+}
 /* =========================================
    BEA CAMERA QUALITY SETTINGS
 ========================================= */
