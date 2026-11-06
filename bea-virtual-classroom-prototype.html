@@ -1750,7 +1750,9 @@ teacherStream=newStream;
 }else{
 hallStream=newStream;
 }
+/* Share the newly started camera with connected participants */
 
+await addStreamToExistingPeers(newStream);
 video.style.display='block';
 placeholder.style.display='none';
 liveTag.style.display='block';
