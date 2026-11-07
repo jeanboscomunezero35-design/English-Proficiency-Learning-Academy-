@@ -538,6 +538,7 @@ async function handleRtcSignal(payload){
 
 }
  for(const id of Object.keys(peerConnections)){
+  async function addStreamToExistingPeers(stream){
   const pc=peerConnections[id].pc;
   stream.getTracks().forEach(track=>{if(!pc.getSenders().some(s=>s.track===track))pc.addTrack(track,stream);});
  }
