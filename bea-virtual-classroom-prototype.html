@@ -728,15 +728,17 @@ $('createRoomBtn').onclick=()=>{if($('role').value!=='Teacher'){setEntry('Choose
 $('joinRoomBtn').onclick=()=>connectToClassroom($('roomCode').value,$('role').value,$('displayName').value);
 $('quickOpenBtn').onclick=()=>{const room=$('roomCode').value.trim()||new URLSearchParams(location.search).get('room');if(!room){setEntry('Enter a classroom code or open a valid invitation link first.');$('roomCode').focus();return;}connectToClassroom(room,$('role').value,$('displayName').value);};
 $('copyRoomLinkBtn').onclick=async()=>{try{await navigator.clipboard.writeText($('roomLink').value);$('copyRoomLinkBtn').textContent='Copied!';}catch{$('roomLink').select();document.execCommand('copy');$('copyRoomLinkBtn').textContent='Copied!';}};
-const inviteRoom=new URLSearchParams(location.search).get('room'),inviteRole=new URLSearchParams(location.search).get('role');
-if(inviteRoom){$('roomCode').value=inviteRoom;if(inviteRole)$('role').value=inviteRole.toLowerCase()==='teacher'?'Teacher':'Student';setEntry('Invitation detected. Enter your name, then choose Quick Open or Join classroom.');}
-function sendChat(){const v=$('chatInput').value.trim();if(!v)return;const name=$('displayName').value.trim()||'Guest';addMessage(name,v);if(classroomChannel)classroomChannel.send({type:'broadcast',event:'class-chat',payload:{senderId:currentParticipantId,name,message:v}});$('chatInput').value='';}
-$('sendBtn').onclick=sendChat;$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat();});
-async function setHand(raised){
- if(!currentRoomCode||!classroomChannel){
-  addMessage('BEA Assistant','Join a classroom before raising your hand.',true);
-  return;
- }
+// Automatically load classroom details from an invitation link
+const inviteParams = new URLSearchParams(window.location.search);
+const inviteRoom = (inviteParams.get('room') || '').trim().toUpperCase();
+const inviteRole = (inviteParams.get('role') || 'Student').toLowerCase();
+
+if(inviteRoom){
+  $('roomCode').value = inviteRoom;
+  $('role').value = inviteRole === 'teacher' ? 'Teacher' : 'Student';
+
+  setEntry('Invitation detected. Enter your name, then choose Quick Open or Join classroom.');
+}
 
  const name=$('displayName').value.trim()||'Participant';
 
