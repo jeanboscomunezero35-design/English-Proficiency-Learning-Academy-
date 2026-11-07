@@ -269,74 +269,154 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
     gap:8px;
   }
 }
-/* BEA SHARED CLASSROOM SCENE */
+/* =================================
+   BEA REALISTIC VIRTUAL CLASSROOM
+================================= */
 
 .live-gallery{
-  background:#0b1930;
-  border:3px solid #f2b544;
-  border-radius:16px;
-  padding:18px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
+  display:grid;
+  grid-template-columns:35% 65%;
+  grid-template-rows:auto auto auto;
+  gap:12px;
+
+  width:100%;
+  box-sizing:border-box;
+  padding:16px;
+
+  background:
+    linear-gradient(#102544aa,#102544dd),
+    url('https://xndxfz.swu.edu.cn/__local/B/26/62/D7CBD6A475DEA96EFD5D04C7F27_E4538049_FA000.jpg');
+
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+
+  border:4px solid #f2b544;
+  border-radius:18px;
+  overflow:hidden;
 }
 
-/* TEACHER AT THE FRONT */
-.teacher-front-area{
-  order:1;
-  background:transparent;
+/* CLASSROOM TITLE */
+.live-gallery > h3{
+  grid-column:1 / -1;
   text-align:center;
-  border:none;
+  color:white;
+  font-size:20px;
+  margin:5px;
+}
+
+/* TEACHER — LEFT SIDE */
+.teacher-front-area{
+  grid-column:1;
+  grid-row:2;
+  min-width:0;
   padding:8px;
+  text-align:center;
+  background:#102544bb;
+  border:2px solid #f2b544;
+  border-radius:12px;
+}
+
+.teacher-front-area h3{
+  color:#f2b544;
 }
 
 #teacherFrontStage{
   display:flex;
-  justify-content:center;
+  flex-direction:column;
   align-items:center;
   width:100%;
+  gap:10px;
 }
 
-/* MAKE TEACHER PROMINENT */
+/* TEACHER VIDEO */
 #teacherFrontStage .teacher-remote-card{
-  width:65%;
-  max-width:650px;
-  margin:auto;
+  width:100%;
+  max-width:none;
+  border:3px solid #f2b544;
 }
 
-/* STUDENTS BELOW THE TEACHER */
+/* STUDENTS — RIGHT SIDE */
 .student-gallery-area{
-  order:2;
-  background:transparent;
-  border:none;
+  grid-column:2;
+  grid-row:2;
+  min-width:0;
   padding:8px;
+  text-align:center;
+  background:#102544bb;
+  border:2px solid #f2b544;
+  border-radius:12px;
+}
+
+.student-gallery-area h3{
+  color:white;
 }
 
 #studentGallery{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:12px;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
   width:100%;
 }
 
+/* STUDENT VIDEO CARDS */
 #studentGallery .remote-video-card{
   width:100%;
   max-width:none;
+  min-width:0;
+  border:2px solid #f2b544;
 }
 
-/* KEEP WHOLE HALL SEPARATE */
+/* VIDEO DISPLAY */
+.live-gallery .remote-video-card video{
+  display:block;
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  background:#172c47;
+}
+
+/* WHOLE HALL BELOW */
 .hall-view-area{
-  order:3;
+  grid-column:1 / -1;
+  grid-row:3;
+  background:#102544dd;
+  border:2px solid #f2b544;
+  border-radius:12px;
+  padding:10px;
 }
 
-/* MOBILE CLASSROOM */
+.hall-view-area h3{
+  color:#f2b544;
+}
+
+/* MOBILE — KEEP TEACHER LEFT, STUDENTS RIGHT */
 @media(max-width:700px){
-  #teacherFrontStage .teacher-remote-card{
-    width:100%;
+
+  .live-gallery{
+    grid-template-columns:36% 64%;
+    gap:5px;
+    padding:7px;
+  }
+
+  .teacher-front-area,
+  .student-gallery-area{
+    padding:4px;
+    min-width:0;
   }
 
   #studentGallery{
-    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-columns:1fr;
+    gap:6px;
+  }
+
+  .live-gallery > h3{
+    font-size:15px;
+  }
+
+  .teacher-front-area h3,
+  .student-gallery-area h3{
+    font-size:12px;
   }
 }
 </style>
