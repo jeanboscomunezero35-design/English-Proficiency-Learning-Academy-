@@ -599,7 +599,7 @@ async function addStreamToExistingPeers(stream){
 
   for(const id of Object.keys(peerConnections)){
 
-    const pc=peerConnections[id].pc;
+    const pc = peerConnections[id].pc;
 
     stream.getTracks().forEach(track=>{
 
@@ -613,9 +613,14 @@ async function addStreamToExistingPeers(stream){
 
 }
 
+
 async function removeStreamFromPeers(stream){
 
   if(!stream) return;
+
+  for(const id of Object.keys(peerConnections)){
+
+    const pc = peerConnections[id].pc;
 
     for(const track of stream.getTracks()){
 
@@ -626,13 +631,9 @@ async function removeStreamFromPeers(stream){
       if(sender){
 
         try{
-
           await sender.replaceTrack(null);
-
         }catch(error){
-
           console.error('Unable to remove camera track:',error);
-
         }
 
       }
