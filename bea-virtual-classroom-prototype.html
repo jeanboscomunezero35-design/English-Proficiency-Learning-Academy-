@@ -679,21 +679,66 @@ async function handleRtcSignal(payload){
   }
 
 }
- async function addStreamToExistingPeers(stream){
+async function addStreamToExistingPeers(stream){
 
   if(!stream) return;
 
   for(const id of Object.keys(peerConnections)){
 
-    const pc = peerConnections[id].pc;
+    const conn = peerConnections[id];
+    const pc = conn.pc;
+
+    let added = false;
 
     stream.getTracks().forEach(track=>{
 
-      if(!pc.getSenders().some(s=>s.track===track)){
+      const exists = pc.getSenders().some(
+        sender => sender.track === track
+      );
+
+      if(!exists){
         pc.addTrack(track,stream);
+        added = true;
       }
 
     });
+
+    if(added){
+
+      console.log('BEA: New camera tracks added for',id);
+
+      try{
+
+        if(currentParticipantId.localeCompare(id)<0){
+
+          if(pc.signalingState==='stable'){
+
+            const offer = await pc.createOffer();
+
+            await pc.setLocalDescription(offer);
+
+            await sendRtcSignal(id,{
+              type:'offer',
+              description:pc.localDescription
+            });
+
+          }
+
+        }else{
+
+          await sendRtcSignal(id,{
+            type:'renegotiate-request'
+          });
+
+        }
+
+      }catch(error){
+
+        console.error('BEA: Camera renegotiation failed:',error);
+
+      }
+
+    }
 
   }
 
