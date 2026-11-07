@@ -4,2849 +4,431 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BEA Virtual Classroom | Bosco English Academy</title>
-/* BEA LIVE PARTICIPANT GALLERY */
-
-.live-gallery{
-  margin-top:18px;
-  padding:15px;
-  background:#f0f5fb;
-  border:1px solid #dce5ef;
-  border-radius:12px;
-}
-
-.live-gallery h3{
-  margin:0 0 12px;
-  color:#102544;
-  font-size:16px;
-}
-
-.remote-video-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:12px;
-}
-
-.remote-video-card{
-  background:#102544;
-  border-radius:10px;
-  overflow:hidden;
-  color:white;
-}
-
-.remote-video-card video{
-  width:100%;
-  height:180px;
-  object-fit:cover;
-  display:block;
-  background:#172c47;
-}
-/* BEA CLASSROOM LAYOUT */
-
-.teacher-front-area,
-.student-gallery-area{
-  width:100%;
-  margin-top:20px;
-}
-
-.teacher-front-area h3,
-.student-gallery-area h3{
-  color:white;
-  margin-bottom:12px;
-  font-size:16px;
-}
-
-#teacherFrontStage{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  width:100%;
-  gap:12px;
-  background:#0b1930;
-  padding:12px;
-  border-radius:12px;
-  min-height:100px;
-}
-
-.teacher-remote-card{
-  width:100%;
-  max-width:950px;
-  background:#102544;
-  border-radius:12px;
-  overflow:hidden;
-}
-
-.teacher-remote-card video{
-  width:100%;
-  height:480px;
-  object-fit:contain;
-  display:block;
-  background:#172c47;
-}
-
-.student-gallery-area{
-  background:#0b1930;
-  padding:12px;
-  border-radius:12px;
-}
-
-.remote-video-grid{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:14px;
-  width:100%;
-}
-
-.student-remote-card{
-  width:100%;
-  max-width:850px;
-  background:#102544;
-  border-radius:12px;
-  overflow:hidden;
-}
-
-.student-remote-card video{
-  width:100%;
-  height:280px;
-  object-fit:contain;
-  display:block;
-  background:#172c47;
-}
-
-.remote-video-name{
-  padding:10px;
-  font-size:14px;
-  font-weight:bold;
-  color:white;
-}
-
-.remote-video-status{
-  font-size:12px;
-  color:#c5d6eb;
-  padding:0 10px 10px;
-}
-/* LOCAL CAMERA POSITIONING */
-
-#teacherFrontStage #teacherCard{
-  width:100%;
-  max-width:950px;
-}
-
-#studentGallery #teacherCard{
-  width:100%;
-  max-width:850px;
-}
-@media(max-width:600px){
-  .teacher-remote-card video{
-    height:260px;
-  }
-
-  .student-remote-card video{
-    height:200px;
-  }
-}
-/* WHOLE HALL REMOTE CAMERA */
-
-.hall-view-area{
-  width:100%;
-  margin-top:20px;
-  background:#0b1930;
-  padding:12px;
-  border-radius:12px;
-}
-
-.hall-view-area h3{
-  color:white;
-  margin-bottom:12px;
-}
-
-#hallRemoteStage{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  width:100%;
-  gap:12px;
-}
-
-#hallRemoteStage .remote-video-card{
-  width:100%;
-  max-width:950px;
-  background:#102544;
-  border-radius:12px;
-  overflow:hidden;
-}
-
-#hallRemoteStage video{
-  width:100%;
-  height:350px;
-  object-fit:contain;
-  display:block;
-  background:#172c47;
-}
-
-@media(max-width:600px){
-  #hallRemoteStage video{
-    height:220px;
-  }
-}
-
-.brand{font-weight:800;font-size:19px;letter-spacing:.2px}
-
-.brand small{
-display:block;
-font-size:11px;
-color:#c5d6eb;
-font-weight:400;
-margin-top:4px
-}
-
-.badge{
-background:#234568;
-border:1px solid #476486;
-border-radius:20px;
-padding:7px 12px;
-font-size:12px
-}
-
-main{
-max-width:1250px;
-margin:28px auto;
-padding:0 18px
-}
-
-.intro{
-display:flex;
-justify-content:space-between;
-align-items:end;
-gap:16px;
-flex-wrap:wrap;
-margin-bottom:20px
-}
-
-h1{
-margin:0;
-color:var(--navy);
-font-size:clamp(25px,4vw,36px)
-}
-
-.intro p{
-margin:8px 0 0;
-color:var(--muted)
-}
-
-.notice{
-background:#fff8e8;
-border:1px solid #f2d99d;
-color:#73531a;
-padding:12px 15px;
-border-radius:12px;
-margin-bottom:18px;
-font-size:13px;
-line-height:1.5
-}
-
-.layout{
-display:grid;
-grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);
-gap:18px
-}
-
-.panel{
-background:white;
-border:1px solid var(--line);
-border-radius:16px;
-box-shadow:0 5px 18px #17365d0b;
-overflow:hidden
-}
-
-.panel-head{
-padding:15px 18px;
-border-bottom:1px solid var(--line);
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:12px
-}
-
-.panel-head h2{
-font-size:16px;
-margin:0;
-color:var(--navy)
-}
-
-.stage{padding:16px}
-
-/* CAMERA SYSTEM */
-
-.camera-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px
-}
-
-.camera-card{
-background:#102544;
-border-radius:12px;
-overflow:hidden;
-color:white;
-min-width:0;
-transition:all .2s
-}
-
-.camera-heading{
-padding:12px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:8px;
-font-size:12px;
-font-weight:bold
-}
-
-.camera-heading span:last-child{
-color:#c5d6eb;
-font-weight:normal
-}
-
-.camera-screen{
-height:260px;
-position:relative;
-background:linear-gradient(135deg,#172c47,#294c70);
-display:flex;
-align-items:center;
-justify-content:center;
-overflow:hidden
-}
-
-.camera-screen video{
-width:100%;
-height:100%;
-object-fit:cover;
-display:none;
-background:#172c47
-}
-
-/* Show the whole hall with less cropping */
-#hallCamera{
-object-fit:contain;
-background:#101b2b
-}
-
-.camera-placeholder{
-text-align:center;
-padding:15px;
-max-width:300px
-}
-
-.camera-placeholder .icon{font-size:40px}
-
-.camera-placeholder h3{
-font-size:15px;
-margin:10px 0 6px
-}
-
-.camera-placeholder p{
-font-size:12px;
-color:#d8e5f3;
-line-height:1.5
-}
-
-.camera-live-tag{
-position:absolute;
-top:10px;
-left:10px;
-background:#b42318;
-padding:5px 8px;
-border-radius:6px;
-font-size:10px;
-font-weight:bold;
-display:none
-}
-
-.camera-controls{
-padding:12px;
-display:grid;
-gap:9px
-}
-
-.camera-controls label{
-font-size:11px;
-font-weight:bold;
-color:#d8e5f3
-}
-
-.camera-controls select{
-width:100%;
-font-size:12px;
-padding:9px
-}
-
-.camera-actions{
-display:flex;
-gap:7px;
-flex-wrap:wrap
-}
-
-.camera-actions button{
-flex:1;
-min-width:65px;
-font-size:11px;
-padding:10px 7px
-}
-
-.camera-status{
-font-size:11px;
-color:#c5d6eb;
-line-height:1.5
-}
-
-.camera-card.expanded{
-grid-column:1/-1
-}
-
-.camera-card.expanded .camera-screen{
-height:480px
-}
-
-.camera-card.expanded .camera-heading{
-font-size:14px
-}
-
-.camera-card.expanded .camera-actions button{
-font-size:13px
-}
-
-.camera-global-controls{
-display:flex;
-gap:9px;
-flex-wrap:wrap;
-margin-top:13px
-}
-
-.camera-global-controls button{flex:1}
-
-.camera-note{
-font-size:11px;
-color:var(--muted);
-line-height:1.5;
-margin-top:10px
-}
-
-/* BUTTONS */
-
-.controls{
-display:flex;
-gap:9px;
-flex-wrap:wrap;
-margin-top:13px
-}
-
-button,.btn{
-border:0;
-border-radius:9px;
-padding:10px 13px;
-font-weight:700;
-cursor:pointer;
-font-size:13px
-}
-
-.primary{background:var(--blue);color:white}
-.secondary{background:var(--sky);color:#15558a}
-.dark{background:#e9edf3;color:#34445a}
-.danger{background:#fff0ef;color:#b42318}
-
-button:disabled{
-opacity:.45;
-cursor:not-allowed
-}
-
-/* WHITEBOARD */
-
-.board-wrap{
-padding:16px;
-border-top:1px solid var(--line)
-}
-
-.board-title{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:10px
-}
-
-.board-title h3{
-margin:0;
-color:var(--navy);
-font-size:15px
-}
-
-.board-surface{
-position:relative;
-width:100%;
-border-radius:10px;
-overflow:hidden;
-background:white;
-border:1px solid #d9e1ea
-}
-
-canvas{
-width:100%;
-height:245px;
-background:white;
-touch-action:none;
-display:block;
-cursor:text;
-transition:background .2s
-}
-
+<style>
+:root{--navy:#102544;--blue:#1769aa;--sky:#eaf4ff;--gold:#f2b544;--muted:#65758b;--line:#dce5ef;--ink:#23354d;--green:#16834a}
+*{box-sizing:border-box}
+body{margin:0;background:#f4f7fb;color:var(--ink);font-family:Arial,sans-serif}
+header{background:var(--navy);color:white;padding:17px max(18px,calc((100% - 1250px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:19px;letter-spacing:.2px}.brand small{display:block;font-size:11px;color:#c5d6eb;font-weight:400;margin-top:4px}
+.badge{background:#234568;border:1px solid #476486;border-radius:20px;padding:7px 12px;font-size:12px}
+main{max-width:1250px;margin:28px auto;padding:0 18px}
+.intro{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+h1{margin:0;color:var(--navy);font-size:clamp(25px,4vw,36px)}.intro p{margin:8px 0 0;color:var(--muted)}
+.notice{background:#fff8e8;border:1px solid #f2d99d;color:#73531a;padding:12px 15px;border-radius:12px;margin-bottom:18px;font-size:13px;line-height:1.5}
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);gap:18px}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 18px #17365d0b;overflow:hidden}
+.panel-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel-head h2{font-size:16px;margin:0;color:var(--navy)}.stage{padding:16px}
+.camera-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.camera-card{background:#102544;border-radius:12px;overflow:hidden;color:white;min-width:0;transition:all .2s}
+.camera-heading{padding:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;font-weight:bold}
+.camera-heading span:last-child{color:#c5d6eb;font-weight:normal}
+.camera-screen{height:260px;position:relative;background:linear-gradient(135deg,#172c47,#294c70);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.camera-screen video{width:100%;height:100%;object-fit:cover;display:none;background:#172c47}
+#hallCamera{object-fit:contain;background:#101b2b}
+.camera-placeholder{text-align:center;padding:15px;max-width:300px}.camera-placeholder .icon{font-size:40px}
+.camera-placeholder h3{font-size:15px;margin:10px 0 6px}.camera-placeholder p{font-size:12px;color:#d8e5f3;line-height:1.5}
+.camera-live-tag{position:absolute;top:10px;left:10px;background:#b42318;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:bold;display:none}
+.camera-controls{padding:12px;display:grid;gap:9px}.camera-controls label{font-size:11px;font-weight:bold;color:#d8e5f3}
+.camera-controls select{width:100%;font-size:12px;padding:9px}
+.camera-actions{display:flex;gap:7px;flex-wrap:wrap}.camera-actions button{flex:1;min-width:65px;font-size:11px;padding:10px 7px}
+.camera-status{font-size:11px;color:#c5d6eb;line-height:1.5}
+.camera-card.expanded{grid-column:1/-1}.camera-card.expanded .camera-screen{height:480px}
+.camera-global-controls,.controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.camera-global-controls button{flex:1}.camera-note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}
+button,.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:700;cursor:pointer;font-size:13px}
+.primary{background:var(--blue);color:white}.secondary{background:var(--sky);color:#15558a}.dark{background:#e9edf3;color:#34445a}.danger{background:#fff0ef;color:#b42318}
+button:disabled{opacity:.45;cursor:not-allowed}
+.live-gallery{margin-top:18px;padding:15px;background:#f0f5fb;border:1px solid #dce5ef;border-radius:12px}
+.teacher-front-area,.student-gallery-area,.hall-view-area{width:100%;margin-top:16px}
+.teacher-front-area h3,.student-gallery-area h3,.hall-view-area h3{color:var(--navy);margin:0 0 12px;font-size:16px}
+#teacherFrontStage,#hallRemoteStage{display:flex;flex-direction:column;align-items:center;width:100%;gap:12px;background:#0b1930;padding:12px;border-radius:12px;min-height:85px;color:#d8e5f3}
+.student-gallery-area{background:#0b1930;padding:12px;border-radius:12px}
+.remote-video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;width:100%}
+.remote-video-card{background:#102544;border-radius:10px;overflow:hidden;color:white;width:100%}
+.remote-video-card video{width:100%;height:220px;object-fit:contain;display:block;background:#172c47}
+.teacher-remote-card{max-width:950px}.teacher-remote-card video{height:480px}
+.hall-remote-card{max-width:950px}.hall-remote-card video{height:350px}
+.remote-video-name{padding:10px;font-size:14px;font-weight:bold;color:white}.remote-video-status{font-size:12px;color:#c5d6eb;padding:0 10px 10px}
+.board-wrap{padding:16px;border-top:1px solid var(--line)}
+.board-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.board-title h3{margin:0;color:var(--navy);font-size:15px}
+.board-surface{position:relative;width:100%;border-radius:10px;overflow:hidden;background:white;border:1px solid #d9e1ea}
+canvas{width:100%;height:300px;background:white;touch-action:none;display:block;cursor:crosshair}
 .board-surface.chalk-mode canvas{background:#263b32}
-.board-surface.marker-mode canvas{background:#fff}
-
-#textEditor{
-position:absolute;
-display:none;
-z-index:5;
-left:0;
-top:0;
-width:100%;
-height:100%;
-padding:8px;
-border:1px dashed var(--gold);
-outline:none;
-resize:none;
-overflow:auto;
-background:transparent;
-font-size:25px;
-font-weight:bold;
-line-height:1.5;
-color:#173b67;
-font-family:Arial,sans-serif;
-white-space:pre-wrap;
-overflow-wrap:anywhere;
-box-sizing:border-box
-}
-
-#textEditor.chalk-text{
-color:white;
-text-shadow:1px 1px 2px #ffffff88,0 0 5px #ffffff55;
-font-family:"Comic Sans MS",cursive
-}
-
-#textEditor.marker-text{
-color:#173b67;
-font-family:Arial,sans-serif
-}
-
-#textEditor.handwriting-text{
-font-family:"Comic Sans MS",cursive
-}
-
-.board-tools{
-display:flex;
-gap:9px;
-align-items:center;
-flex-wrap:wrap;
-margin-top:12px
-}
-
-.pen-tool{
-display:flex;
-align-items:center;
-gap:9px;
-min-height:43px;
-padding:6px 11px;
-background:#eaf4ff;
-border:1px solid #c5d9ed;
-border-radius:10px
-}
-
-.pen-tool label{
-font-size:12px;
-font-weight:700;
-color:#15558a;
-white-space:nowrap
-}
-
-.color-picker{
-width:38px!important;
-height:30px!important;
-padding:2px!important;
-border:2px solid white!important;
-border-radius:50%!important;
-background:white!important;
-cursor:pointer;
-appearance:none;
--webkit-appearance:none;
-overflow:hidden
-}
-
-.color-picker::-webkit-color-swatch-wrapper{padding:0}
-.color-picker::-webkit-color-swatch{border:0;border-radius:50%}
-.color-picker::-moz-color-swatch{border:0;border-radius:50%}
-
-.thickness-picker{
-width:95px!important;
-height:20px;
-padding:0!important;
-margin:0;
-cursor:pointer;
-accent-color:var(--blue)
-}
-
-.thickness-value{
-background:var(--blue);
-color:white;
-font-size:12px;
-font-weight:bold;
-min-width:25px;
-text-align:center;
-padding:5px 7px;
-border-radius:6px
-}
-
-.board-tools button{min-height:40px}
-
-.tool-button.active{
-background:var(--blue);
-color:white;
-box-shadow:0 0 0 2px #a9d5f5
-}
-
-.board-instruction{
-font-size:12px;
-color:#65758b;
-margin-top:10px;
-line-height:1.5
-}
-
-/* SIDEBAR */
-
-.side{
-display:flex;
-flex-direction:column;
-gap:18px
-}
-
-.entry{padding:16px}
-
-.entry label{
-display:block;
-font-size:12px;
-font-weight:bold;
-color:#52647a;
-margin:12px 0 6px
-}
-
-input,select,textarea{
-border:1px solid #d4deea;
-border-radius:8px;
-padding:10px;
-font:inherit;
-color:var(--ink);
-background:white
-}
-
+#textEditor{position:absolute;display:none;z-index:5;left:0;top:0;width:100%;height:100%;padding:8px;border:1px dashed var(--gold);outline:none;resize:none;overflow:auto;background:transparent;font-size:25px;font-weight:bold;line-height:1.5;color:#173b67;font-family:Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
+.board-tools{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.pen-tool{display:flex;align-items:center;gap:9px;min-height:43px;padding:6px 11px;background:#eaf4ff;border:1px solid #c5d9ed;border-radius:10px}
+.pen-tool label{font-size:12px;font-weight:700;color:#15558a;white-space:nowrap}
+.color-picker{width:38px!important;height:30px!important;padding:2px!important;border:2px solid white!important;border-radius:50%!important}
+.thickness-picker{width:95px!important;height:20px;padding:0!important;cursor:pointer}
+.thickness-value{background:var(--blue);color:white;font-size:12px;font-weight:bold;min-width:25px;text-align:center;padding:5px 7px;border-radius:6px}
+.board-instruction{font-size:12px;color:#65758b;margin-top:10px;line-height:1.5}
+.side{display:flex;flex-direction:column;gap:18px}.entry{padding:16px}
+.entry label{display:block;font-size:12px;font-weight:bold;color:#52647a;margin:12px 0 6px}
+input,select,textarea{border:1px solid #d4deea;border-radius:8px;padding:10px;font:inherit;color:var(--ink);background:white}
 input,select{width:100%}
-
-.mode-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:9px;
-margin-top:10px
-}
-
-.mode{
-border:1px solid var(--line);
-padding:11px;
-border-radius:10px;
-background:#fff;
-text-align:left
-}
-
-.mode.active{
-border:2px solid var(--blue);
-background:#f0f7ff
-}
-
-.mode strong{
-display:block;
-font-size:13px
-}
-
-.mode span{
-font-size:11px;
-color:var(--muted);
-display:block;
-margin-top:5px;
-line-height:1.4
-}
-
-/* CHAT */
-
-.chat{padding:14px}
-
-.messages{
-height:180px;
-overflow:auto;
-background:#f7f9fc;
-border-radius:10px;
-padding:10px;
-font-size:13px
-}
-
-.msg{
-margin:0 0 10px;
-line-height:1.45
-}
-
-.msg b{color:var(--blue)}
-
-.chat-row{
-display:flex;
-gap:7px;
-margin-top:9px
-}
-
-.chat-row input{min-width:0;flex:1}
-
-.features{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:10px;
-margin-top:18px
-}
-
-.feature{
-background:white;
-border:1px solid var(--line);
-border-radius:12px;
-padding:13px
-}
-
-.feature b{
-display:block;
-font-size:13px;
-color:var(--navy)
-}
-
-.feature span{
-font-size:11px;
-color:var(--muted);
-line-height:1.4;
-display:block;
-margin-top:5px
-}
-
-.status{
-font-size:12px;
-color:var(--green);
-font-weight:bold
-}
-
-footer{
-text-align:center;
-color:#7b899b;
-font-size:11px;
-padding:25px
-}
-
-@media(max-width:850px){
-.layout{grid-template-columns:1fr}
-.features{grid-template-columns:repeat(2,1fr)}
-}
-
-@media(max-width:650px){
-.camera-grid{grid-template-columns:1fr}
-.camera-screen{height:230px}
-.camera-card.expanded .camera-screen{height:300px}
-}
-
-@media(max-width:460px){
-main{padding:0 12px}
-.features{grid-template-columns:1fr 1fr}
-.controls button{flex:1}
-.mode-grid{grid-template-columns:1fr}
-.pen-tool{flex:1}
-}
-
-
-/* CLASSROOM ENTRY AND LIVE ROOM */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.mode{border:1px solid var(--line);padding:11px;border-radius:10px;background:#fff;text-align:left}
+.mode.active{border:2px solid var(--blue);background:#f0f7ff}
+.mode strong{display:block;font-size:13px}.mode span{font-size:11px;color:var(--muted);display:block;margin-top:5px;line-height:1.4}
 .room-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
 .room-share{display:none;margin-top:14px;padding:12px;background:#f0f7ff;border:1px solid #c9def2;border-radius:10px}
-.room-share strong{display:block;color:var(--navy);font-size:12px;margin-bottom:6px}
-.room-share input{font-size:12px;margin-bottom:8px}
+.room-share strong{display:block;color:var(--navy);font-size:12px;margin-bottom:6px}.room-share input{font-size:12px;margin-bottom:8px}
 .room-state{font-size:12px;line-height:1.5;margin-top:10px;color:#52647a}
 .participant-list{margin-top:10px;padding:10px;background:#f7f9fc;border-radius:9px;font-size:12px;line-height:1.6}
-.participant-list strong{color:var(--navy)}
-@media(max-width:460px){.room-actions{grid-template-columns:1fr}}
-
+.chat{padding:14px}.messages{height:180px;overflow:auto;background:#f7f9fc;border-radius:10px;padding:10px;font-size:13px}
+.msg{margin:0 0 10px;line-height:1.45}.msg b{color:var(--blue)}
+.chat-row{display:flex;gap:7px;margin-top:9px}.chat-row input{min-width:0;flex:1}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+.feature{background:white;border:1px solid var(--line);border-radius:12px;padding:13px}
+.feature b{display:block;font-size:13px;color:var(--navy)}.feature span{font-size:11px;color:var(--muted);line-height:1.4;display:block;margin-top:5px}
+.status{font-size:12px;color:var(--green);font-weight:bold}
+footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.features{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.camera-grid{grid-template-columns:1fr}.camera-screen{height:230px}.camera-card.expanded .camera-screen{height:300px}.teacher-remote-card video{height:260px}.hall-remote-card video{height:220px}.remote-video-card video{height:200px}}
+@media(max-width:460px){main{padding:0 12px}.features{grid-template-columns:1fr 1fr}.controls button{flex:1}.mode-grid,.room-actions{grid-template-columns:1fr}.pen-tool{flex:1}}
 </style>
 </head>
-
 <body>
-
 <header>
-<div class="brand">
-🎓 BOSCO ENGLISH ACADEMY
-<small>Building Confidence in English</small>
-</div>
-<div class="badge">BEA VIRTUAL CLASSROOM · HD CAMERA EDITION</div>
+  <div class="brand">🎓 BOSCO ENGLISH ACADEMY<small>Building Confidence in English</small></div>
+  <div class="badge">BEA VIRTUAL CLASSROOM · HD CAMERA EDITION</div>
 </header>
-
 <main>
-
-<div class="intro">
-<div>
-<h1>Jean Bosco's Virtual Teaching Room</h1>
-<p>A classroom without walls — learn together from anywhere.</p>
-</div>
-<span class="status" id="connectionStatus">● Demo ready</span>
-</div>
-
-<div class="notice">
-<b>Classroom prototype:</b>
-Choose Auto, 720p, 1080p Full HD or 4K for each camera independently. The actual resolution depends on your camera and computer. These are local previews only: students cannot yet see the camera feeds remotely. Live broadcasting requires a real-time video connection. Room presence and chat connect through Supabase after its public project settings are added; live camera/audio broadcasting is a separate next stage.
-</div>
-
-<div class="layout">
-
-<section class="panel">
-
-<div class="panel-head">
-<h2>Live teaching area</h2>
-<span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Teacher and student views</span>
-</div>
-
-<div class="stage">
-
-<div class="camera-grid">
-
-<!-- TEACHER CAMERA -->
-
-<div class="camera-card" id="teacherCard">
-
-<div class="camera-heading">
-<span>🎥 CAMERA 1 — TEACHER</span>
-<span>Teacher view</span>
-</div>
-
-<div class="camera-screen">
-
-<video id="teacherCamera" autoplay playsinline muted></video>
-
-<div class="camera-placeholder" id="teacherPlaceholder">
-<div class="icon">👨‍🏫</div>
-<h3>Teacher's View</h3>
-<p>Your teaching area will appear here.</p>
-</div>
-
-<span class="camera-live-tag" id="teacherLiveTag">● CAMERA ACTIVE</span>
-
-</div>
-
-<div class="camera-controls">
-
-<label for="teacherCameraSelect">Choose teacher camera</label>
-<select id="teacherCameraSelect">
-<option value="">Detecting cameras...</option>
-</select>
-
-<label for="teacherQuality">Teacher camera quality</label>
-<select id="teacherQuality">
-<option value="auto">Auto — Best available</option>
-<option value="720">HD — 720p</option>
-<option value="1080" selected>Full HD — 1080p</option>
-<option value="4k">Ultra HD — 4K</option>
-</select>
-
-<div class="camera-actions">
-<button class="primary" id="startTeacher">Start camera</button>
-<button class="dark" id="stopTeacher">Stop</button>
-<button class="secondary" id="expandTeacher">Enlarge</button>
-</div>
-
-<div class="camera-status" id="teacherStatus">Camera not started.</div>
-
-</div>
-</div>
-
-<!-- WHOLE HALL CAMERA -->
-
-<div class="camera-card" id="hallCard">
-
-<div class="camera-heading">
-<span>🏫 CAMERA 2 — WHOLE HALL</span>
-<span>Student view</span>
-</div>
-
-<div class="camera-screen">
-
-<video id="hallCamera" autoplay playsinline muted></video>
-
-<div class="camera-placeholder" id="hallPlaceholder">
-<div class="icon">🏫</div>
-<h3>Students' Classroom</h3>
-<p>Position this camera to capture as much of the hall as possible.</p>
-</div>
-
-<span class="camera-live-tag" id="hallLiveTag">● CAMERA ACTIVE</span>
-
-</div>
-
-<div class="camera-controls">
-
-<label for="hallCameraSelect">Choose hall camera</label>
-<select id="hallCameraSelect">
-<option value="">Detecting cameras...</option>
-</select>
-
-<label for="hallQuality">Whole-hall camera quality</label>
-<select id="hallQuality">
-<option value="auto">Auto — Best available</option>
-<option value="720">HD — 720p</option>
-<option value="1080" selected>Full HD — 1080p</option>
-<option value="4k">Ultra HD — 4K</option>
-</select>
-
-<div class="camera-actions">
-<button class="primary" id="startHall">Start camera</button>
-<button class="dark" id="stopHall">Stop</button>
-<button class="secondary" id="expandHall">Enlarge</button>
-</div>
-
-<div class="camera-status" id="hallStatus">Camera not started.</div>
-
-</div>
-</div>
-
-</div>
-<!-- BEA LIVE STUDENT GALLERY -->
-
-<div class="live-gallery">
-
-  <h3>👥 Live Virtual Classroom — Connected Participants</h3>
-<!-- TEACHER AT THE FRONT -->
-<div class="teacher-front-area">
-  <h3>👨‍🏫 Teacher — Front of Classroom</h3>
-
-  <div id="teacherFrontStage">
-    <div id="teacherEmptyMessage">
-      Waiting for the teacher's live camera...
-    </div>
+  <div class="intro"><div><h1>Jean Bosco's Virtual Teaching Room</h1><p>A classroom without walls — learn together from anywhere.</p></div><span class="status" id="connectionStatus">● Ready</span></div>
+  <div class="notice"><b>Live classroom:</b> Sign in to your BEA account, create or join a room, then start your cameras and microphone. Students need to allow camera/microphone permissions. For reliable connections across different networks, configure a TURN relay in addition to the built-in STUN server. The whiteboard is currently local to this browser.</div>
+  <div class="layout">
+    <section class="panel">
+      <div class="panel-head"><h2>Live teaching area</h2><span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Teacher and student views</span></div>
+      <div class="stage">
+        <div class="camera-grid">
+          <div class="camera-card" id="teacherCard">
+            <div class="camera-heading"><span>🎥 CAMERA 1 — TEACHER</span><span>Teacher view</span></div>
+            <div class="camera-screen"><video id="teacherCamera" autoplay playsinline muted></video><div class="camera-placeholder" id="teacherPlaceholder"><div class="icon">👨‍🏫</div><h3>Teacher's View</h3><p>Your teaching area will appear here.</p></div><span class="camera-live-tag" id="teacherLiveTag">● CAMERA ACTIVE</span></div>
+            <div class="camera-controls">
+              <label for="teacherCameraSelect">Choose teacher camera</label><select id="teacherCameraSelect"><option value="">Detecting cameras...</option></select>
+              <label for="teacherQuality">Teacher camera quality</label><select id="teacherQuality"><option value="auto">Auto — Best available</option><option value="720">HD — 720p</option><option value="1080" selected>Full HD — 1080p</option><option value="4k">Ultra HD — 4K</option></select>
+              <div class="camera-actions"><button class="primary" id="startTeacher">Start camera</button><button class="dark" id="stopTeacher">Stop</button><button class="secondary" id="expandTeacher">Enlarge</button></div>
+              <div class="camera-status" id="teacherStatus">Camera not started.</div>
+            </div>
+          </div>
+          <div class="camera-card" id="hallCard">
+            <div class="camera-heading"><span>🏫 CAMERA 2 — WHOLE HALL</span><span>Student view</span></div>
+            <div class="camera-screen"><video id="hallCamera" autoplay playsinline muted></video><div class="camera-placeholder" id="hallPlaceholder"><div class="icon">🏫</div><h3>Students' Classroom</h3><p>Position this camera to capture as much of the hall as possible.</p></div><span class="camera-live-tag" id="hallLiveTag">● CAMERA ACTIVE</span></div>
+            <div class="camera-controls">
+              <label for="hallCameraSelect">Choose hall camera</label><select id="hallCameraSelect"><option value="">Detecting cameras...</option></select>
+              <label for="hallQuality">Whole-hall camera quality</label><select id="hallQuality"><option value="auto">Auto — Best available</option><option value="720">HD — 720p</option><option value="1080" selected>Full HD — 1080p</option><option value="4k">Ultra HD — 4K</option></select>
+              <div class="camera-actions"><button class="primary" id="startHall">Start camera</button><button class="dark" id="stopHall">Stop</button><button class="secondary" id="expandHall">Enlarge</button></div>
+              <div class="camera-status" id="hallStatus">Camera not started.</div>
+            </div>
+          </div>
+        </div>
+        <div class="live-gallery">
+          <h3>👥 Live Virtual Classroom — Connected Participants</h3>
+          <div class="teacher-front-area"><h3>👨‍🏫 Teacher — Front of Classroom</h3><div id="teacherFrontStage"><div id="teacherEmptyMessage">Waiting for the teacher's live camera...</div></div></div>
+          <div class="hall-view-area"><h3>🏫 Whole Hall Camera</h3><div id="hallRemoteStage"><div id="hallEmptyMessage">Waiting for the hall camera...</div></div></div>
+          <div class="student-gallery-area"><h3>👥 Students — Classroom Gallery</h3><div class="remote-video-grid" id="studentGallery"><div id="remoteEmptyMessage">Waiting for students to connect...</div></div></div>
+        </div>
+        <div class="camera-global-controls">
+          <button class="secondary" id="refreshCameras">🔄 Refresh cameras</button><button class="primary" id="startMic">🎤 Start microphone</button><button class="dark" id="stopMic">Stop microphone</button><button class="danger" id="stopAllCameras">Stop all cameras</button>
+        </div>
+        <p class="camera-note">For the best whole-hall view, use a wide-angle USB camera positioned to capture the room. Two physical cameras are needed for two independent views. Keep this page open while teaching.</p>
+      </div>
+      <div class="board-wrap">
+        <div class="board-title"><h3>✍️ Interactive teaching board</h3><span style="font-size:11px;color:#718096">Draw, type and explain</span></div>
+        <div class="board-surface" id="boardSurface"><canvas id="board" width="1100" height="360"></canvas><textarea id="textEditor" spellcheck="false" placeholder="Start typing your lesson here...&#10;Press Ctrl + Enter when finished."></textarea></div>
+        <div class="board-tools">
+          <button class="secondary tool-button active" id="markerBtn">🖊️ Marker</button><button class="secondary tool-button" id="chalkBtn">🖍️ Chalk</button><button class="secondary tool-button" id="handwritingBtn">✍️ Handwriting</button><button class="secondary tool-button" id="textBtn">⌨️ Text</button>
+          <div class="pen-tool"><label for="penColor">🎨 Colour</label><input type="color" class="color-picker" id="penColor" value="#173b67"></div>
+          <div class="pen-tool"><label for="penSize">Thickness</label><input type="range" class="thickness-picker" id="penSize" min="2" max="24" value="4"><span class="thickness-value" id="penSizeValue">4</span></div>
+          <button class="secondary tool-button" id="eraseBtn">Eraser</button><button class="dark" id="clearBtn">Clear board</button>
+        </div>
+        <p class="board-instruction" id="boardInstruction">Marker selected: draw with your mouse, finger or stylus. Choose Text to type.</p>
+      </div>
+    </section>
+    <aside class="side">
+      <section class="panel">
+        <div class="panel-head"><h2>Enter the classroom</h2><span class="badge" id="roomBadge">Not connected</span></div>
+        <div class="entry">
+          <label for="displayName">Your name</label><input id="displayName" value="" placeholder="Enter your name">
+          <label>Choose attendance mode</label>
+          <div class="mode-grid"><button class="mode active" data-mode="individual"><strong>👤 Individual</strong><span>One learner joins from home.</span></button><button class="mode" data-mode="group"><strong>🏫 Group hall</strong><span>Students gather in one classroom.</span></button></div>
+          <label for="roomCode">Classroom code</label><input id="roomCode" placeholder="e.g. BEA-ENGLISH-01">
+          <label for="role">I am joining as</label><select id="role"><option>Teacher</option><option>Student</option></select>
+          <div class="room-actions"><button class="primary" id="createRoomBtn">＋ Create classroom</button><button class="secondary" id="joinRoomBtn">↪ Join classroom</button><button class="secondary" id="quickOpenBtn" style="grid-column:1/-1">⚡ Quick Open classroom</button></div>
+          <div class="room-share" id="roomShare"><strong>Share this invitation link with your students</strong><input id="roomLink" readonly aria-label="Classroom invitation link"><button class="primary" style="width:100%" id="copyRoomLinkBtn">Copy invitation link</button></div>
+          <p id="entryMessage" class="room-state">Teachers create a room. Students enter its classroom code or open the invitation link.</p>
+          <div class="participant-list" id="participantList"><strong>Participants:</strong> Not connected yet.</div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><h2>Class discussion</h2><span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Live chat</span></div>
+        <div class="chat"><div class="messages" id="messages"><p class="msg"><b>BEA Assistant:</b> Welcome! Join a classroom to chat with participants.</p></div><div class="chat-row"><input id="chatInput" placeholder="Write a message..." aria-label="Chat message"><button class="primary" id="sendBtn">Send</button></div><div class="controls"><button class="secondary" id="handBtn">✋ Raise hand</button><button class="dark" id="lowerHandBtn">Lower hand</button></div></div>
+      </section>
+    </aside>
   </div>
-</div>
-<!-- WHOLE HALL CAMERA DISPLAY -->
-<div class="hall-view-area">
-
-  <h3>🏫 Whole Hall Camera</h3>
-
-  <div id="hallRemoteStage">
-    <div id="hallEmptyMessage">
-      Waiting for the hall camera...
-    </div>
+  <div class="features">
+    <div class="feature"><b>🎥 HD two-camera teaching</b><span>Independent camera quality and teacher/hall previews.</span></div>
+    <div class="feature"><b>🧑‍🎓 Student participation</b><span>Individual learners and groups in a hall.</span></div>
+    <div class="feature"><b>📝 Interactive board</b><span>Draw, type and erase with different tools.</span></div>
+    <div class="feature"><b>🔒 Private classroom</b><span>Supabase authentication and room-based presence.</span></div>
   </div>
-
-</div>
-<!-- STUDENTS BELOW THE TEACHER -->
-<div class="student-gallery-area">
-  <h3>👥 Students — Classroom Gallery</h3>
-
-  <div class="remote-video-grid" id="studentGallery">
-    <div id="remoteEmptyMessage">
-      Waiting for students to connect...
-    </div>
-  </div>
-</div>
- 
-
-</div>
-<div class="camera-global-controls">
-<button class="secondary" id="refreshCameras">🔄 Refresh cameras</button>
-<button class="primary" id="startMic">🎤 Start microphone</button>
-<button class="dark" id="stopMic">Stop microphone</button>
-<button class="danger" id="stopAllCameras">Stop all cameras</button>
-</div>
-
-<p class="camera-note">
-For the best whole-hall view, use a wide-angle USB camera positioned at the back or front of the classroom. Two different physical cameras are required for two different views. The microphone preview is also local and does not transmit audio to students yet.
-</p>
-
-</div>
-
-<!-- WHITEBOARD -->
-
-<div class="board-wrap">
-
-<div class="board-title">
-<h3>✍️ Interactive teaching board</h3>
-<span style="font-size:11px;color:#718096">Write, type and explain</span>
-</div>
-
-<div class="board-surface marker-mode" id="boardSurface">
-
-<canvas id="board" width="1100" height="360"></canvas>
-
-<textarea id="textEditor" spellcheck="false"
-placeholder="Start typing your lesson here...&#10;Press Ctrl + Enter when finished."></textarea>
-
-</div>
-
-<div class="board-tools">
-
-<button class="secondary tool-button" id="chalkBtn">🖍️ Chalk</button>
-<button class="secondary tool-button active" id="markerBtn">🖊️ Marker</button>
-<button class="secondary tool-button" id="textBtn">⌨️ Text</button>
-<button class="secondary tool-button" id="handwritingBtn">✍️ Handwriting</button>
-
-<div class="pen-tool">
-<label for="penColor">🎨 Colour</label>
-<input type="color" class="color-picker" id="penColor" value="#173b67">
-</div>
-
-<div class="pen-tool">
-<label for="penSize">Thickness</label>
-<input type="range" class="thickness-picker" id="penSize" min="2" max="14" value="4">
-<span class="thickness-value" id="penSizeValue">4</span>
-</div>
-
-<button class="secondary" id="eraseBtn">Eraser</button>
-<button class="dark" id="clearBtn">Clear board</button>
-
-</div>
-
-<p class="board-instruction" id="boardInstruction">
-Marker selected: Click on the board and type. Press Ctrl + Enter to place your writing on the board.
-</p>
-
-</div>
-
-</section>
-
-<!-- SIDEBAR -->
-
-<aside class="side">
-
-<section class="panel">
-
-<div class="panel-head">
-<h2>Enter the classroom</h2>
-</div>
-
-<div class="entry">
-
-<label for="displayName">Your name</label>
-<input id="displayName" value="Jean Bosco" placeholder="Enter your name">
-
-<label>Choose attendance mode</label>
-
-<div class="mode-grid">
-
-<button class="mode active" data-mode="individual">
-<strong>👤 Individual</strong>
-<span>One learner joins from home.</span>
-</button>
-
-<button class="mode" data-mode="group">
-<strong>🏫 Group hall</strong>
-<span>Students gather in one classroom.</span>
-</button>
-
-</div>
-
-<label for="roomCode">Classroom code</label>
-<input id="roomCode" placeholder="e.g. BEA-ENGLISH-01">
-
-<label for="role">I am joining as</label>
-<select id="role">
-<option>Teacher</option>
-<option>Student</option>
-</select>
-
-<div class="room-actions">
-<button class="primary" id="createRoomBtn">＋ Create classroom</button>
-<button class="secondary" id="joinRoomBtn">↪ Join classroom</button>
-</div>
-
-<div class="room-share" id="roomShare">
-<strong>Share this invitation link with your students</strong>
-<input id="roomLink" readonly aria-label="Classroom invitation link">
-<button class="primary" style="width:100%" id="copyRoomLinkBtn">Copy invitation link</button>
-</div>
-
-<p id="entryMessage" class="room-state">
-Teachers create a room. Students enter its classroom code or open the invitation link.
-</p>
-<div class="participant-list" id="participantList"><strong>Participants:</strong> Not connected yet.</div>
-
-</div>
-</section>
-
-<section class="panel">
-
-<div class="panel-head">
-<h2>Class discussion</h2>
-<span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Demo chat</span>
-</div>
-
-<div class="chat">
-
-<div class="messages" id="messages">
-<p class="msg"><b>BEA Assistant:</b> Welcome! Type a question or greeting to test the classroom chat layout.</p>
-</div>
-
-<div class="chat-row">
-<input id="chatInput" placeholder="Write a message..." aria-label="Chat message">
-<button class="primary" id="sendBtn">Send</button>
-</div>
-
-<div class="controls">
-<button class="secondary" id="handBtn">✋ Raise hand</button>
-<button class="dark" id="lowerHandBtn">Lower hand</button>
-</div>
-
-</div>
-</section>
-
-</aside>
-</div>
-
-<div class="features">
-
-<div class="feature">
-<b>🎥 HD two-camera teaching</b>
-<span>Independent camera quality and teacher/hall previews.</span>
-</div>
-
-<div class="feature">
-<b>🧑‍🎓 Student participation</b>
-<span>Designed for home learners and groups in a hall.</span>
-</div>
-
-<div class="feature">
-<b>📝 Interactive board</b>
-<span>Type explanations and use different writing styles.</span>
-</div>
-
-<div class="feature">
-<b>🔒 Private classroom</b>
-<span>Room access and privacy controls will be added with the backend.</span>
-</div>
-
-</div>
-
 </main>
-
-<footer>
-© Bosco English Academy · Founded by Jean Bosco Munezero · Building Confidence in English
-</footer>
+<footer>© Bosco English Academy · Founded by Jean Bosco Munezero · Building Confidence in English</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-
-/* =========================================
-   BEA CLASSROOM CONNECTION SETTINGS
-   Add your Supabase Project URL and anon/public key below.
-   Never put a service_role key in this public HTML file.
-========================================= */
+/* IMPORTANT: Keep your real Supabase project URL and anon/public key here.
+   Never use the service_role key in a public HTML file. */
 const SUPABASE_URL = 'https://arnlcdpncwuruacaqjko.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_G8P0TF0s0GD-vTcvaghAOg_HtIzVxp-';
-let beaSupabase = null;
-let classroomChannel = null;
-let currentRoomCode = '';
-let currentParticipantId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'bea-' + Math.random().toString(36).slice(2);
-let connectedParticipants = {};
+
+let beaSupabase=null, classroomChannel=null, currentRoomCode='';
+let currentParticipantId=(crypto.randomUUID?crypto.randomUUID():'bea-'+Math.random().toString(36).slice(2));
+let currentParticipantRole='student', connectedParticipants={}, peerConnections={}, remoteVideoTiles={};
+let teacherStream=null, hallStream=null, microphoneStream=null;
+let teacherCameraRequest=0, hallCameraRequest=0, selectedMode='individual';
+const $=id=>document.getElementById(id);
+const teacherCamera=$('teacherCamera'), hallCamera=$('hallCamera');
+const teacherSelect=$('teacherCameraSelect'), hallSelect=$('hallCameraSelect');
+const cameraStatus=$('connectionStatus'), messages=$('messages');
+const RTC_CONFIG={iceServers:[{urls:'stun:stun.l.google.com:19302'}]};
 
 function hasSupabaseConfig(){
-  return SUPABASE_URL.startsWith('https://') &&
-    SUPABASE_ANON_KEY.length > 30 &&
-    !SUPABASE_URL.includes('PASTE_') &&
-    !SUPABASE_ANON_KEY.includes('PASTE_');
+ return /^https:\/\/.+/.test(SUPABASE_URL) && SUPABASE_ANON_KEY.length>30 &&
+ !SUPABASE_URL.includes('PASTE_') && !SUPABASE_ANON_KEY.includes('PASTE_');
 }
-
-function makeRoomCode(){
-  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code='BEA-';
-  for(let i=0;i<6;i++) code+=chars[Math.floor(Math.random()*chars.length)];
-  return code;
-}
-
-function showRoomLink(code){
-  const box=document.getElementById('roomShare');
-  const input=document.getElementById('roomLink');
-  const url=new URL(window.location.href);
-  url.searchParams.set('room',code);
-  url.searchParams.set('role','Student');
-  input.value=url.toString();
-  box.style.display='block';
-}
-
+function escapeText(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function makeRoomCode(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let c='BEA-';for(let i=0;i<6;i++)c+=chars[Math.floor(Math.random()*chars.length)];return c;}
+function setEntry(message){$('entryMessage').textContent=message;}
+function showRoomLink(code){const u=new URL(location.href);u.searchParams.set('room',code);u.searchParams.set('role','Student');$('roomLink').value=u.href;$('roomShare').style.display='block';}
+function addMessage(name,message,system=false){const p=document.createElement('p');p.className='msg';const b=document.createElement('b');b.textContent=(system?'BEA Assistant':name)+': ';p.append(b,document.createTextNode(message));messages.appendChild(p);messages.scrollTop=messages.scrollHeight;}
 function updateParticipantList(){
-  const names=Object.values(connectedParticipants);
-  const target=document.getElementById('participantList');
-  if(!names.length){
-    target.innerHTML='<strong>Participants:</strong> No one is connected yet.';
-    return;
-  }
-  target.innerHTML='<strong>Participants ('+names.length+'):</strong><br>'+names.map(p=>escapeRoomText(p.name)+' — '+escapeRoomText(p.role)).join('<br>');
+ const people=Object.values(connectedParticipants),target=$('participantList');
+ if(!people.length){target.innerHTML='<strong>Participants:</strong> No one is connected yet.';return;}
+ target.innerHTML='<strong>Participants ('+people.length+'):</strong><br>'+people.map(p=>escapeText(p.name)+' — '+escapeText(p.role)+(p.hand?' ✋':'')).join('<br>');
 }
-
-function escapeRoomText(value){
-  return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function removeRemoteParticipant(id){
+ Object.keys(remoteVideoTiles).filter(k=>k.startsWith(id+'_')).forEach(k=>{remoteVideoTiles[k].remove();delete remoteVideoTiles[k];});
+ const audio=$('remoteAudio_'+id);if(audio)audio.remove();
+ if(peerConnections[id]){clearInterval(peerConnections[id].statsTimer);peerConnections[id].pc.close();delete peerConnections[id];}
 }
-
+function updateEmptyMessages(){
+ if(!$('teacherFrontStage').querySelector('.remote-video-card'))$('teacherFrontStage').innerHTML='<div id="teacherEmptyMessage">Waiting for the teacher\\'s live camera...</div>';
+ if(!$('hallRemoteStage').querySelector('.remote-video-card'))$('hallRemoteStage').innerHTML='<div id="hallEmptyMessage">Waiting for the hall camera...</div>';
+ if(!$('studentGallery').querySelector('.remote-video-card'))$('studentGallery').innerHTML='<div id="remoteEmptyMessage">Waiting for students to connect...</div>';
+}
+function updatePresence(state){
+ const next={};Object.values(state).flat().forEach(p=>{if(p.id)next[p.id]={id:p.id,name:p.name||'BEA participant',role:p.role||'student',hand:!!p.hand};});
+ Object.keys(connectedParticipants).forEach(id=>{if(!next[id])removeRemoteParticipant(id);});
+ connectedParticipants=next;updateParticipantList();
+ Object.values(next).forEach(p=>{if(p.id!==currentParticipantId && currentParticipantId.localeCompare(p.id)<0 && !peerConnections[p.id])startRtcOffer(p);});
+}
 async function connectToClassroom(code,role,name){
-  currentRoomCode=code.toUpperCase().trim();
-  document.getElementById('roomCode').value=currentRoomCode;
-  document.getElementById('entryMessage').textContent='Preparing classroom '+currentRoomCode+'...';
-  showRoomLink(currentRoomCode);
-
-  if(!hasSupabaseConfig()){
-    document.getElementById('entryMessage').textContent='Room '+currentRoomCode+' is prepared in preview mode. To let students connect from other devices, add the Supabase Project URL and anon/public key in the connection settings near the top of this file.';
-    cameraStatus.textContent='● Room preview ready — live connection not configured';
-    return;
-  }
-
-  try{
-    if(!beaSupabase) beaSupabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-   // Get the student's existing BEA academy login
-const {data:{session},error}=await beaSupabase.auth.getSession();
-
-if(error || !session){
-  document.getElementById('entryMessage').textContent=
-    'Please log in to your Bosco English Academy account first.';
-  return;
+ code=String(code||'').toUpperCase().trim();name=String(name||'').trim();role=String(role||'Student').toLowerCase();
+ if(!code){setEntry('Enter a classroom code first.');return;}
+ if(!name){setEntry('Enter your name first.');$('displayName').focus();return;}
+ if(!hasSupabaseConfig()){setEntry('Supabase settings are not configured in this file. Add your existing Project URL and anon/public key in the two settings near the beginning of the script.');return;}
+ try{
+  if(!beaSupabase)beaSupabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  const {data:{session},error}=await beaSupabase.auth.getSession();
+  if(error)throw error;
+  if(!session){setEntry('Please log in to your Bosco English Academy account first.');return;}
+  const user=session.user;currentParticipantId=user.id;
+  if(role==='teacher'){name=user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||name;role='teacher';}else role='student';
+  currentParticipantRole=role;$('displayName').value=name;$('role').value=role==='teacher'?'Teacher':'Student';
+  if(classroomChannel){await beaSupabase.removeChannel(classroomChannel);classroomChannel=null;}
+  Object.keys(peerConnections).forEach(removeRemoteParticipant);connectedParticipants={};currentRoomCode=code;$('roomCode').value=code;showRoomLink(code);
+  setEntry('Connecting to classroom '+code+'...');
+  classroomChannel=beaSupabase.channel('bea-classroom-'+code,{config:{presence:{key:currentParticipantId},broadcast:{self:false}}});
+  classroomChannel
+   .on('presence',{event:'sync'},()=>updatePresence(classroomChannel.presenceState()))
+   .on('broadcast',{event:'class-chat'},({payload})=>{if(payload?.senderId!==currentParticipantId)addMessage(payload?.name||'Participant',payload?.message||'');})
+   .on('broadcast',{event:'webrtc-signal'},({payload})=>handleRtcSignal(payload))
+   .on('broadcast',{event:'class-hand'},({payload})=>{if(payload?.senderId!==currentParticipantId){if(connectedParticipants[payload.senderId])connectedParticipants[payload.senderId].hand=!!payload.raised;updateParticipantList();addMessage('BEA Assistant',(payload.name||'A participant')+(payload.raised?' raised a hand.':' lowered a hand.'),true);}})
+   .on('broadcast',{event:'board-op'},({payload})=>{if(payload?.senderId!==currentParticipantId)applyRemoteBoardOperation(payload.op);})
+   .subscribe(async status=>{
+    if(status==='SUBSCRIBED'){
+     await classroomChannel.track({id:currentParticipantId,name,role,hand:false,joinedAt:new Date().toISOString()});
+     setEntry('Connected to '+code+'. Share the invitation link with your students.');$('roomBadge').textContent='Connected · '+code;cameraStatus.textContent='● Connected to '+code;
+    }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){setEntry('Could not connect. Check Supabase URL, anon key and Realtime settings.');}
+   });
+ }catch(e){console.error('BEA classroom connection:',e);setEntry('Connection error: '+e.message);}
 }
-
-// Identify the authenticated participant
-const user=session.user;
-
-currentParticipantId=user.id;
-
-// Keep the teacher's academy identity
-if(role.toLowerCase()==='teacher'){
-
-  name=user.user_metadata.full_name ||
-       user.user_metadata.name ||
-       user.email.split('@')[0] ||
-       'Jean Bosco';
-
-  role='teacher';
-
-}else{
-
-  // Preserve the name entered by the student
-  name=(name ||
-        document.getElementById('displayName').value ||
-        '').trim();
-
-  role='student';
-
+async function sendRtcSignal(to,signal){
+ if(!classroomChannel)return;
+ const streamTypes={};[teacherStream,hallStream,microphoneStream].filter(Boolean).forEach(s=>{streamTypes[s.id]=s===teacherStream?'teacher':s===hallStream?'hall':'audio';});
+ await classroomChannel.send({type:'broadcast',event:'webrtc-signal',payload:{from:currentParticipantId,to,name:$('displayName').value,role:currentParticipantRole,streamTypes,signal}});
 }
-currentParticipantRole=role;
-
-if(!name){
-  document.getElementById('entryMessage').textContent=
-    'Please enter your name before joining the classroom.';
-  return;
+function destinationFor(type){return type==='teacher'?'teacherFrontStage':type==='hall'?'hallRemoteStage':'studentGallery';}
+function showRemoteVideo(id,name,stream,role,type){
+ const key=id+'_'+stream.id;if(remoteVideoTiles[key])return;
+ const target=$(destinationFor(type));if(!target)return;
+ const empty=target.querySelector('[id$="EmptyMessage"]');if(empty)empty.remove();
+ const card=document.createElement('div');card.className='remote-video-card '+(type==='teacher'?'teacher-remote-card':type==='hall'?'hall-remote-card':'student-remote-card');
+ const video=document.createElement('video');video.autoplay=true;video.playsInline=true;video.controls=true;video.srcObject=stream;
+ const label=document.createElement('div');label.className='remote-video-name';label.textContent=type==='teacher'?'👨‍🏫 Teacher — '+name:type==='hall'?'🏫 Whole Hall — '+name:'👤 Student — '+name;
+ const status=document.createElement('div');status.className='remote-video-status';status.textContent='● Live connection';
+ card.append(video,label,status);target.appendChild(card);remoteVideoTiles[key]=card;
 }
-
-document.getElementById('displayName').value=name;
-    /* Arrange the local camera according to participant role */
-
-const teacherCard=document.getElementById('teacherCard');
-const teacherFront=document.getElementById('teacherFrontStage');
-const studentGallery=document.getElementById('studentGallery');
-
-if(currentParticipantRole==='teacher'){
-
-  teacherFront.appendChild(teacherCard);
-
-  const empty=document.getElementById('teacherEmptyMessage');
-  if(empty) empty.remove();
-
-}else{
-
-  studentGallery.appendChild(teacherCard);
-
-  const heading=teacherCard.querySelector('.camera-heading span');
-
-  if(heading){
-    heading.textContent='📷 YOUR CAMERA — STUDENT';
-  }
-
-  const empty=document.getElementById('remoteEmptyMessage');
-  if(empty) empty.remove();
-
+function createPeerConnection(id,name,role='student'){
+ if(peerConnections[id])return peerConnections[id];
+ const pc=new RTCPeerConnection(RTC_CONFIG),conn={pc,name,role,remoteStreamTypes:{},pendingCandidates:[],makingOffer:false,statsTimer:null};
+ peerConnections[id]=conn;
+ [teacherStream,hallStream,microphoneStream].filter(Boolean).forEach(s=>s.getTracks().forEach(t=>{if(!pc.getSenders().some(x=>x.track===t))pc.addTrack(t,s);}));
+ pc.ontrack=e=>{
+  const stream=e.streams[0]||new MediaStream([e.track]);
+  if(e.track.kind==='video'){const type=conn.remoteStreamTypes[stream.id]||(conn.role==='teacher'?'teacher':'student');showRemoteVideo(id,name,stream,conn.role,type);}
+  if(e.track.kind==='audio'){let a=$('remoteAudio_'+id);if(!a){a=document.createElement('audio');a.id='remoteAudio_'+id;a.autoplay=true;a.playsInline=true;document.body.appendChild(a);}a.srcObject=stream;a.play().catch(()=>{});}
+ };
+ pc.onicecandidate=e=>{if(e.candidate)sendRtcSignal(id,{type:'candidate',candidate:e.candidate.toJSON()});};
+ pc.onconnectionstatechange=()=>{console.log('BEA connection',name,pc.connectionState);if(pc.connectionState==='failed')pc.restartIce();};
+ pc.oniceconnectionstatechange=()=>console.log('BEA ICE',name,pc.iceConnectionState);
+ pc.onnegotiationneeded=async()=>{
+  try{if(pc.signalingState!=='stable')return;const offer=await pc.createOffer();await pc.setLocalDescription(offer);await sendRtcSignal(id,{type:'offer',description:pc.localDescription});}catch(e){console.error('BEA negotiation:',e);}
+ };
+ conn.statsTimer=setInterval(async()=>{try{if(pc.connectionState==='closed'){clearInterval(conn.statsTimer);return;}const stats=await pc.getStats();stats.forEach(r=>{if(r.type==='inbound-rtp'&&r.kind==='video')console.log('BEA VIDEO',name,{frames:r.framesDecoded,bytes:r.bytesReceived,lost:r.packetsLost,jitter:r.jitter});});}catch{}},5000);
+ return conn;
 }
-    if(classroomChannel){
-      await beaSupabase.removeChannel(classroomChannel);
-      classroomChannel=null;
-    }
-    connectedParticipants={};
-    classroomChannel=beaSupabase.channel('bea-classroom-'+currentRoomCode,{
-      config:{presence:{key:currentParticipantId},broadcast:{self:false}}
-    });
-classroomChannel
-
-  .on('presence',{event:'sync'},()=>{
-
-    const state=classroomChannel.presenceState();
-
-    connectedParticipants={};
-
-    Object.values(state).flat().forEach(person=>{
-      connectedParticipants[person.id]={
-        name:person.name,
-        role:person.role
-      };
-    });
-
-    updateParticipantList();
-
-    /* Start live connections with other participants */
-
-    Object.values(state).flat().forEach(person=>{
-
-      if(
-        person.id!==currentParticipantId &&
-        currentParticipantId.localeCompare(person.id)<0 &&
-        !peerConnections[person.id]
-      ){
-        startRtcOffer(person);
-      }
-
-    });
-
-  })
-
-  .on('broadcast',{event:'class-chat'},({payload})=>{
-
-    if(payload && payload.senderId!==currentParticipantId){
-      addClassroomMessage(payload.name,payload.message);
-    }
-
-  })
-
-  .on('broadcast',{event:'webrtc-signal'},({payload})=>{
-
-    handleRtcSignal(payload);
-
-  })
-  
-      .subscribe(async status=>{
-        if(status==='SUBSCRIBED'){
-          await classroomChannel.track({id:currentParticipantId,name,role,joinedAt:new Date().toISOString()});
-          document.getElementById('entryMessage').textContent='Connected to classroom '+currentRoomCode+'. Share the invitation link with your students.';
-          cameraStatus.textContent='● Connected to room '+currentRoomCode;
-        }else if(status==='CHANNEL_ERROR' || status==='TIMED_OUT'){
-          document.getElementById('entryMessage').textContent='Could not connect to the room. Check the Supabase URL, public key and Realtime settings.';
-        }
-      });
-  }catch(error){
-    console.error('BEA classroom connection:',error);
-    document.getElementById('entryMessage').textContent='Connection error: '+error.message;
-  }
-}
-
-function addClassroomMessage(name,message){
-  const paragraph=document.createElement('p');
-  paragraph.className='msg';
-  const bold=document.createElement('b');
-  bold.textContent=name+': ';
-  paragraph.append(bold,document.createTextNode(message));
-  messages.appendChild(paragraph);
-  messages.scrollTop=messages.scrollHeight;
-}
-/* =========================================
-   BEA LIVE VIDEO AND AUDIO ENGINE
-========================================= */
-
-const BEA_RTC_CONFIG = {
-  iceServers: [
-    {
-      urls: 'stun:stun.l.google.com:19302'
-    }
-  ]
-};
-
-let peerConnections = {};
-let remoteVideoTiles = {};
-let currentParticipantRole = 'student';
-
-/* SEND SIGNALS THROUGH SUPABASE */
-
-async function sendRtcSignal(to, signal){
-
-  if(!classroomChannel) return;
-
-  await classroomChannel.send({
-    type:'broadcast',
-    event:'webrtc-signal',
-    payload:{
-      from:currentParticipantId,
-      to:to,
-      name:document.getElementById('displayName').value,
-      role:currentParticipantRole,
-
-      streamTypes:{
-        ...(teacherStream ? {
-          [teacherStream.id]:'teacher'
-        } : {}),
-
-        ...(hallStream ? {
-          [hallStream.id]:'hall'
-        } : {})
-      },
-
-      signal:signal
-    }
-  });
-
-}
-  
-
-
-/* DISPLAY REMOTE PARTICIPANTS */
-function showRemoteVideo(remoteId,name,stream,role='student',streamType='student'){
-
-  const key=remoteId+'_'+stream.id;
-
-  if(remoteVideoTiles[key]) return;
-
-  let gallery;
-  let empty;
-
-  if(streamType==='hall'){
-
-    gallery=document.getElementById('hallRemoteStage');
-    empty=document.getElementById('hallEmptyMessage');
-
-  }else if(streamType==='teacher'){
-
-    gallery=document.getElementById('teacherFrontStage');
-    empty=document.getElementById('teacherEmptyMessage');
-
-  }else{
-
-    gallery=document.getElementById('studentGallery');
-    empty=document.getElementById('remoteEmptyMessage');
-
-  }
-
-  if(!gallery) return;
-
-  if(empty) empty.remove();
-
-  const card=document.createElement('div');
-
-  card.className='remote-video-card';
-
-  const video=document.createElement('video');
-  video.autoplay=true;
-  video.playsInline=true;
-  video.controls=true;
-  video.srcObject=stream;
-
-  const label=document.createElement('div');
-  label.className='remote-video-name';
-
-  label.textContent=
-    streamType==='hall'
-    ? '🏫 Whole Hall — '+name
-    : streamType==='teacher'
-    ? '👨‍🏫 Teacher — '+name
-    : '👤 Student — '+name;
-
-  const status=document.createElement('div');
-  status.className='remote-video-status';
-  status.textContent='● Connected';
-
-  card.append(video,label,status);
-  gallery.appendChild(card);
-
-  remoteVideoTiles[key]=card;
-
-}
-
-
-
-
-
-/* CREATE CONNECTION WITH A PARTICIPANT */
-
-function createPeerConnection(remoteId,remoteName,remoteRole='student'){
-
-  if(peerConnections[remoteId]){
-    return peerConnections[remoteId];
-  }
-
-  const pc=new RTCPeerConnection(BEA_RTC_CONFIG);
-const connection={
-  pc:pc,
-  name:remoteName,
-  role:remoteRole,
-  remoteStreamTypes:{},
-  pendingCandidates:[]
-};
-  
-  peerConnections[remoteId]=connection;
-
-/* Attach available local cameras and microphone */
-
-const localStreams = [
-  teacherStream,
-  hallStream,
-  microphoneStream
-].filter(Boolean);
-
-localStreams.forEach(stream => {
-  stream.getTracks().forEach(track => {
-    const alreadyAdded = pc.getSenders().some(
-      sender => sender.track === track
-    );
-
-    if (!alreadyAdded) {
-      pc.addTrack(track, stream);
-    }
-  });
-});
-
-  
-
-  /* Receive remote video and audio */
-
- /* RECEIVE REMOTE VIDEO AND AUDIO */
-
-pc.ontrack = event => {
-
-  const stream = event.streams[0] ||
-    new MediaStream([event.track]);
-if(event.track.kind === 'video'){
-
-  const streamType=
-    connection.remoteStreamTypes[stream.id] ||
-    (connection.role==='teacher' ? 'teacher' : 'student');
-
-  showRemoteVideo(
-    remoteId,
-    remoteName,
-    stream,
-    connection.role,
-    streamType
-  );
-
-}
- 
-  if(event.track.kind === 'audio'){
-
-    let audio = document.getElementById(
-      'remoteAudio_' + remoteId
-    );
-
-    if(!audio){
-
-      audio = document.createElement('audio');
-      audio.id = 'remoteAudio_' + remoteId;
-      audio.autoplay = true;
-      audio.playsInline = true;
-      document.body.appendChild(audio);
-
-    }
-
-    audio.srcObject = stream;
-
-    audio.play().catch(error=>{
-      console.log('Audio playback requires user interaction:',error);
-    });
-
-  }
-
-};
-
-
-  /* Exchange internet connection information */
-
-  pc.onicecandidate=event=>{
-
-    if(event.candidate){
-
-      sendRtcSignal(
-        remoteId,
-        {
-          type:'candidate',
-          candidate:event.candidate
-        }
-      );
-
-    }
-
-  };
-
-pc.onconnectionstatechange = () => {
-  console.log(
-    'BEA CONNECTION:',
-    remoteName,
-    pc.connectionState
-  );
-};
-
-pc.oniceconnectionstatechange = () => {
-  console.log(
-    'BEA ICE CONNECTION:',
-    remoteName,
-    pc.iceConnectionState
-  );
-};
-
-pc.onsignalingstatechange = () => {
-  console.log(
-    'BEA SIGNALING:',
-    remoteName,
-    pc.signalingState
-  );
-};
-
-pc.onicegatheringstatechange = () => {
- // BEA LIVE VIDEO FRAME MONITOR
-if (pc._beaStatsTimer) {
-  clearInterval(pc._beaStatsTimer);
-}
-
-pc._beaStatsTimer = setInterval(async () => {
-  try {
-    if (pc.connectionState === 'closed') {
-      clearInterval(pc._beaStatsTimer);
-      return;
-    }
-
-    const stats = await pc.getStats();
-
-    stats.forEach(report => {
-      if (
-        report.type === 'inbound-rtp' &&
-        report.kind === 'video'
-      ) {
-        console.log('BEA VIDEO STATS:', remoteName, {
-          framesReceived: report.framesReceived,
-          framesDecoded: report.framesDecoded,
-          bytesReceived: report.bytesReceived,
-          packetsLost: report.packetsLost,
-          jitter: report.jitter
-        });
-      }
-    });
-
-  } catch (error) {
-    console.error('BEA VIDEO MONITOR ERROR:', error);
-  }
-}, 3000);
-  console.log(
-    'BEA ICE GATHERING:',
-    remoteName,
-    pc.iceGatheringState
-  );
-};
-
-  return connection;
-
-}
-
-/* ADD NEW CAMERA OR MICROPHONE TO CONNECTED PARTICIPANTS */
-async function addStreamToExistingPeers(stream){
-
-  for(const remoteId of Object.keys(peerConnections)){
-
-    const connection=peerConnections[remoteId];
-    const pc=connection.pc;
-
-    let newTrackAdded=false;
-
-    for(const track of stream.getTracks()){
-
-      const alreadyAdded=pc.getSenders().some(
-        sender=>sender.track===track
-      );
-
-      if(!alreadyAdded){
-
-        pc.addTrack(track,stream);
-        newTrackAdded=true;
-
-      }
-
-    }
-
-    if(newTrackAdded && pc.signalingState==='stable'){
-
-      const offer=await pc.createOffer();
-
-      await pc.setLocalDescription(offer);
-
-        await sendRtcSignal(
-        remoteId,
-        {
-          type:'offer',
-          description:pc.localDescription
-        }
-      );
-
-      console.log('BEA new media stream sent to',remoteId);
-
-    }
-
-  }
-
-}
-      
-
-    if(pc.signalingState==='stable'){
-
-      const offer=await pc.createOffer();
-
-      await pc.setLocalDescription(offer);
-
-      await sendRtcSignal(
-        remoteId,
-        {
-          type:'offer',
-          description:pc.localDescription
-        }
-      );
-
-    }
-
-  }
-
-}
-/* START A NEW VIDEO CONNECTION */
-
 async function startRtcOffer(person){
-
-  try{
-const connection=createPeerConnection(
-  person.id,
-  person.name,
-  person.role
-);
-   
-    const pc=connection.pc;
-
-    const offer=await pc.createOffer();
-
-    await pc.setLocalDescription(offer);
-
-    await sendRtcSignal(
-      person.id,
-      {
-        type:'offer',
-        description:pc.localDescription
-      }
-    );
-
-    console.log('BEA offer sent to',person.name);
-
-  }catch(error){
-
-    console.error('BEA offer error:',error);
-
-  }
-
+ try{const conn=createPeerConnection(person.id,person.name,person.role);const pc=conn.pc;if(pc.signalingState!=='stable')return;const offer=await pc.createOffer();await pc.setLocalDescription(offer);await sendRtcSignal(person.id,{type:'offer',description:pc.localDescription});}
+ catch(e){console.error('BEA offer:',e);}
 }
-
-
-/* PROCESS INCOMING SIGNALS */
-
 async function handleRtcSignal(payload){
-
-  try{
-
-    if(!payload ||
-       payload.to!==currentParticipantId ||
-       !payload.signal){
-      return;
-    }
-
-   const remoteId=payload.from;
-const remoteName=payload.name || 'BEA Participant';
-const remoteRole=payload.role || 'student';
-
-    let connection=peerConnections[remoteId];
-
-
-    /* CREATE CONNECTION WHEN AN OFFER ARRIVES */
-
-    if(!connection){
- connection=createPeerConnection(
-  remoteId,
-  remoteName,
-  remoteRole
-); 
-
-    }
-
-    const pc=connection.pc;
-    const signal=payload.signal;
-connection.remoteStreamTypes={
-  ...connection.remoteStreamTypes,
-  ...(payload.streamTypes || {})
-};
-
-    /* RECEIVE OFFER */
-
-    if(signal.type==='offer'){
-
-      await pc.setRemoteDescription(
-        new RTCSessionDescription(signal.description)
-      );
-
-      const answer=await pc.createAnswer();
-
-      await pc.setLocalDescription(answer);
-
-      await sendRtcSignal(
-        remoteId,
-        {
-          type:'answer',
-          description:pc.localDescription
-        }
-      );
-
-      /* Process waiting ICE candidates */
-
-      for(const candidate of connection.pendingCandidates){
-
-        await pc.addIceCandidate(
-          new RTCIceCandidate(candidate)
-        );
-
-      }
-
-      connection.pendingCandidates=[];
-
-    }
-
-
-    /* RECEIVE ANSWER */
-
-    else if(signal.type==='answer'){
-
-      await pc.setRemoteDescription(
-        new RTCSessionDescription(signal.description)
-      );
-
-      for(const candidate of connection.pendingCandidates){
-
-        await pc.addIceCandidate(
-          new RTCIceCandidate(candidate)
-        );
-
-      }
-
-      connection.pendingCandidates=[];
-
-    }
-
-
-    /* RECEIVE ICE CANDIDATE */
-
-    else if(signal.type==='candidate'){
-
-      if(pc.remoteDescription){
-
-        await pc.addIceCandidate(
-          new RTCIceCandidate(signal.candidate)
-        );
-
-      }else{
-
-        connection.pendingCandidates.push(
-          signal.candidate
-        );
-
-      }
-
-    }
-
-  }catch(error){
-
-    console.error('BEA signal error:',error);
-
+ if(!payload||payload.to!==currentParticipantId||!payload.signal)return;
+ const id=payload.from,name=payload.name||'BEA Participant',role=payload.role||'student';
+ try{
+  const conn=createPeerConnection(id,name,role),pc=conn.pc,s=payload.signal;
+  conn.remoteStreamTypes={...conn.remoteStreamTypes,...(payload.streamTypes||{})};
+  if(s.type==='offer'){
+   if(pc.signalingState!=='stable')return;
+   await pc.setRemoteDescription(new RTCSessionDescription(s.description));
+   for(const c of conn.pendingCandidates.splice(0))await pc.addIceCandidate(new RTCIceCandidate(c));
+   const answer=await pc.createAnswer();await pc.setLocalDescription(answer);await sendRtcSignal(id,{type:'answer',description:pc.localDescription});
+  }else if(s.type==='answer'){
+   if(pc.signalingState==='have-local-offer'){await pc.setRemoteDescription(new RTCSessionDescription(s.description));for(const c of conn.pendingCandidates.splice(0))await pc.addIceCandidate(new RTCIceCandidate(c));}
+  }else if(s.type==='candidate'){
+   if(pc.remoteDescription)await pc.addIceCandidate(new RTCIceCandidate(s.candidate));else conn.pendingCandidates.push(s.candidate);
   }
-
+ }catch(e){console.error('BEA signal error:',e);}
 }
-/* =========================================
-   BEA CAMERA QUALITY SETTINGS
-========================================= */
-
-const teacherCamera = document.getElementById('teacherCamera');
-const hallCamera = document.getElementById('hallCamera');
-
-const teacherSelect = document.getElementById('teacherCameraSelect');
-const hallSelect = document.getElementById('hallCameraSelect');
-
-let teacherStream = null;
-let hallStream = null;
-let microphoneStream = null;
-let teacherCameraRequest = 0;
-let hallCameraRequest = 0;
-let selectedMode = 'individual';
-
-const cameraStatus = document.getElementById('connectionStatus');
-
-function getQualityConstraints(quality){
-
-let width = 1920;
-let height = 1080;
-
-if(quality === '720'){
-width = 1280;
-height = 720;
+async function addStreamToExistingPeers(stream){
+ for(const id of Object.keys(peerConnections)){
+  const pc=peerConnections[id].pc;
+  stream.getTracks().forEach(track=>{if(!pc.getSenders().some(s=>s.track===track))pc.addTrack(track,stream);});
+ }
 }
-
-if(quality === '1080'){
-width = 1920;
-height = 1080;
+async function removeStreamFromPeers(stream){
+ for(const id of Object.keys(peerConnections)){
+  const pc=peerConnections[id].pc;
+  for(const sender of pc.getSenders()){if(stream.getTracks().includes(sender.track)){try{await sender.replaceTrack(null);}catch{}}}
+ }
 }
-
-if(quality === '4k'){
-width = 3840;
-height = 2160;
-}
-
-/* Auto requests Full HD as a sensible starting point.
-   The browser can select the best supported resolution. */
-
-return {
-width:{ideal:width},
-height:{ideal:height},
-frameRate:{ideal:30,max:30}
-};
-
-}
-
-
-/* DETECT CAMERAS */
-
+function qualityConstraints(q){let w=1920,h=1080;if(q==='720'){w=1280;h=720;}if(q==='4k'){w=3840;h=2160;}return {width:{ideal:w},height:{ideal:h},frameRate:{ideal:30,max:30}};}
 async function refreshCameras(){
-
-if(!navigator.mediaDevices ||
-!navigator.mediaDevices.enumerateDevices){
-return;
+ if(!navigator.mediaDevices?.enumerateDevices)return;
+ try{
+  const cams=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');
+  [teacherSelect,hallSelect].forEach((sel,i)=>{const old=sel.value;sel.innerHTML='';cams.forEach((d,n)=>{const o=document.createElement('option');o.value=d.deviceId;o.textContent=d.label||'Camera '+(n+1);sel.appendChild(o);});if(cams.some(d=>d.deviceId===old))sel.value=old;else if(cams.length)sel.value=cams[Math.min(i,cams.length-1)].deviceId;if(!cams.length){const o=document.createElement('option');o.textContent='No camera detected';sel.appendChild(o);}});
+  if(cams.length===1)$('hallStatus').textContent='One camera detected. Connect a second camera for a separate hall view.';
+ }catch(e){console.error('Camera detection:',e);}
 }
-
-try{
-
-const devices = await navigator.mediaDevices.enumerateDevices();
-
-const cameras = devices.filter(device=>device.kind==='videoinput');
-
-function populate(select){
-
-const previous = select.value;
-
-select.innerHTML='';
-
-if(cameras.length===0){
-
-const option=document.createElement('option');
-option.value='';
-option.textContent='No camera detected';
-select.appendChild(option);
-return;
-
-}
-
-cameras.forEach((device,index)=>{
-
-const option=document.createElement('option');
-
-option.value=device.deviceId;
-option.textContent=device.label || `Camera ${index+1}`;
-
-select.appendChild(option);
-
-});
-
-if(cameras.some(device=>device.deviceId===previous)){
-select.value=previous;
-}
-
-}
-
-populate(teacherSelect);
-populate(hallSelect);
-
-/* Choose default cameras only when no selection exists. */
-
-if(!teacherSelect.value && cameras.length){
-teacherSelect.value=cameras[0].deviceId;
-}
-
-if(!hallSelect.value && cameras.length){
-hallSelect.value=cameras.length>=2
-? cameras[1].deviceId
-: cameras[0].deviceId;
-}
-
-if(cameras.length===1){
-
-document.getElementById('hallStatus').textContent =
-'One camera detected. Connect a second camera for a separate hall view.';
-
-}
-
-}catch(error){
-
-console.error('Camera detection:',error);
-
-}
-
-}
-
-document.getElementById('refreshCameras').onclick=refreshCameras;
-
-
-/* START CAMERA */
-
 async function startVideo(which){
-
-const isTeacher=which==='teacher';
-
-const video=isTeacher?teacherCamera:hallCamera;
-
-const select=isTeacher?teacherSelect:hallSelect;
-
-const qualitySelect=document.getElementById(
-isTeacher?'teacherQuality':'hallQuality'
-);
-
-const placeholder=document.getElementById(
-isTeacher?'teacherPlaceholder':'hallPlaceholder'
-);
-
-const liveTag=document.getElementById(
-isTeacher?'teacherLiveTag':'hallLiveTag'
-);
-
-const status=document.getElementById(
-isTeacher?'teacherStatus':'hallStatus'
-);
-
-const oldStream=isTeacher?teacherStream:hallStream;
-
-status.textContent='Starting camera...';
-
-try{
-
-if(!navigator.mediaDevices ||
-!navigator.mediaDevices.getUserMedia){
-
-throw new Error('Camera access requires a supported browser and HTTPS.');
-
+ const teacher=which==='teacher',video=teacher?teacherCamera:hallCamera,select=teacher?teacherSelect:hallSelect;
+ const quality=$(teacher?'teacherQuality':'hallQuality'),placeholder=$(teacher?'teacherPlaceholder':'hallPlaceholder'),tag=$(teacher?'teacherLiveTag':'hallLiveTag'),status=$(teacher?'teacherStatus':'hallStatus');
+ const request=teacher?++teacherCameraRequest:++hallCameraRequest;status.textContent='Starting camera...';
+ try{
+  if(!navigator.mediaDevices?.getUserMedia)throw new Error('Camera access requires HTTPS and a supported browser.');
+  const constraints={audio:false,video:{...qualityConstraints(quality.value),...(select.value?{deviceId:{exact:select.value}}:{})}};
+  const fresh=await navigator.mediaDevices.getUserMedia(constraints);
+  if(request!==(teacher?teacherCameraRequest:hallCameraRequest)){fresh.getTracks().forEach(t=>t.stop());return;}
+  const old=teacher?teacherStream:hallStream;video.srcObject=fresh;await video.play().catch(()=>{});
+  if(old){await removeStreamFromPeers(old);old.getTracks().forEach(t=>t.stop());}
+  if(teacher)teacherStream=fresh;else hallStream=fresh;
+  await addStreamToExistingPeers(fresh);
+  video.style.display='block';placeholder.style.display='none';tag.style.display='block';
+  const s=fresh.getVideoTracks()[0].getSettings();status.textContent='Camera active: '+(s.width||'?')+' × '+(s.height||'?')+(s.frameRate?' · '+Math.round(s.frameRate)+' FPS':'');
+  updateOverallStatus();refreshCameras();
+ }catch(e){console.error(e);status.textContent='Camera could not start.';alert('Unable to start '+which+' camera: '+(e.name==='NotAllowedError'?'Allow camera permission.':e.name==='OverconstrainedError'?'Try Auto or 720p.':e.message));}
 }
-
-const selectedId=select.value;
-
-const constraints={
-audio:false,
-video:{
-...getQualityConstraints(qualitySelect.value),
-...(selectedId?{deviceId:{exact:selectedId}}:{})
+async function stopVideo(which){
+ const teacher=which==='teacher',video=teacher?teacherCamera:hallCamera,stream=teacher?teacherStream:hallStream;
+ if(stream){await removeStreamFromPeers(stream);stream.getTracks().forEach(t=>t.stop());}
+ video.pause();video.srcObject=null;video.style.display='none';$(teacher?'teacherPlaceholder':'hallPlaceholder').style.display='block';$(teacher?'teacherLiveTag':'hallLiveTag').style.display='none';
+ if(teacher)teacherStream=null;else hallStream=null;$(teacher?'teacherStatus':'hallStatus').textContent='Camera stopped.';updateOverallStatus();
 }
-};
-
-/* Request the new camera before stopping the previous one. */
-
-const requestId = isTeacher
-  ? ++teacherCameraRequest
-  : ++hallCameraRequest;
-
-const newStream = await navigator.mediaDevices.getUserMedia(constraints);
-
-const latestRequest = isTeacher
-  ? teacherCameraRequest
-  : hallCameraRequest;
-
-if(requestId !== latestRequest){
-  newStream.getTracks().forEach(track=>track.stop());
-  return;
-}
-video.srcObject = newStream;
-
-try {
-  await video.play();
-} catch(error) {
-  if(error.name !== 'AbortError') {
-    throw error;
-  }
-}
-
-const currentRequest = isTeacher
-  ? teacherCameraRequest
-  : hallCameraRequest;
-
-if(requestId !== currentRequest){
-  newStream.getTracks().forEach(track=>track.stop());
-  return;
-}
-
-
-if(oldStream){
-oldStream.getTracks().forEach(track=>track.stop());
-}
-
-if(isTeacher){
-teacherStream=newStream;
-}else{
-hallStream=newStream;
-}
-/* Share the newly started camera with connected participants */
-
-await addStreamToExistingPeers(
-  newStream,
-  isTeacher ? 'teacher' : 'hall'
-);
-video.style.display='block';
-placeholder.style.display='none';
-liveTag.style.display='block';
-
-/* Read the real resolution provided by the camera. */
-
-const track=newStream.getVideoTracks()[0];
-const settings=track.getSettings();
-
-const actualWidth=settings.width || 'Unknown';
-const actualHeight=settings.height || 'Unknown';
-
-const actualFPS=settings.frameRate
-? ` · ${Math.round(settings.frameRate)} FPS`
-: '';
-
-status.textContent=
-`Camera active: ${actualWidth} × ${actualHeight}${actualFPS}.`;
-
-updateOverallStatus();
-
-await refreshCameras();
-
-}catch(error){
-
-console.error(error);
-
-status.textContent='Camera could not start.';
-
-let explanation=error.message;
-
-if(error.name==='OverconstrainedError'){
-explanation='The selected camera cannot meet the requested settings. Try Auto or 1080p.';
-}
-
-if(error.name==='NotAllowedError'){
-explanation='Camera permission was denied. Allow camera access in your browser settings.';
-}
-
-if(error.name==='NotReadableError'){
-explanation='The camera may already be in use by another application.';
-}
-
-alert(
-'Unable to start '+
-(isTeacher?'teacher':'hall')+
-' camera: '+explanation
-);
-
-}
-
-}
-
-
-/* STOP ONE CAMERA */
-
-function stopVideo(which){
-
-const isTeacher=which==='teacher';
-
-const video=isTeacher?teacherCamera:hallCamera;
-
-const placeholder=document.getElementById(
-isTeacher?'teacherPlaceholder':'hallPlaceholder'
-);
-
-const liveTag=document.getElementById(
-isTeacher?'teacherLiveTag':'hallLiveTag'
-);
-
-const status=document.getElementById(
-isTeacher?'teacherStatus':'hallStatus'
-);
-
-const stream=isTeacher?teacherStream:hallStream;
-
-if(stream){
-stream.getTracks().forEach(track=>track.stop());
-}
-
-video.pause();
-video.srcObject=null;
-video.style.display='none';
-
-placeholder.style.display='block';
-liveTag.style.display='none';
-
-if(isTeacher){
-teacherStream=null;
-}else{
-hallStream=null;
-}
-
-status.textContent='Camera stopped.';
-
-updateOverallStatus();
-
-}
-
-
-/* CAMERA BUTTONS */
-
-document.getElementById('startTeacher').onclick=()=>startVideo('teacher');
-document.getElementById('startHall').onclick=()=>startVideo('hall');
-
-document.getElementById('stopTeacher').onclick=()=>stopVideo('teacher');
-document.getElementById('stopHall').onclick=()=>stopVideo('hall');
-
-
-/* QUALITY CHANGE */
-
-document.getElementById('teacherQuality').addEventListener('change',()=>{
-if(teacherStream){
-startVideo('teacher');
-}
-});
-
-document.getElementById('hallQuality').addEventListener('change',()=>{
-if(hallStream){
-startVideo('hall');
-}
-});
-
-
-/* CAMERA SELECTION CHANGE */
-
-teacherSelect.addEventListener('change',()=>{
-if(teacherStream){
-startVideo('teacher');
-}
-});
-
-hallSelect.addEventListener('change',()=>{
-if(hallStream){
-startVideo('hall');
-}
-});
-
-
-/* ENLARGE CAMERA */
-
-function toggleExpand(cardId,buttonId){
-
-const card=document.getElementById(cardId);
-const button=document.getElementById(buttonId);
-
-const expanded=card.classList.toggle('expanded');
-
-button.textContent=expanded?'Minimize':'Enlarge';
-
-}
-
-document.getElementById('expandTeacher').onclick=
-()=>toggleExpand('teacherCard','expandTeacher');
-
-document.getElementById('expandHall').onclick=
-()=>toggleExpand('hallCard','expandHall');
-
-
-/* STOP ALL CAMERAS */
-
-document.getElementById('stopAllCameras').onclick=()=>{
-
-stopVideo('teacher');
-stopVideo('hall');
-
-};
-
-
-/* CAMERA DEVICE CHANGES */
-
-if(navigator.mediaDevices){
-
-navigator.mediaDevices.addEventListener?.(
-'devicechange',
-refreshCameras
-);
-
-}
-
-
-/* =========================================
-   MICROPHONE CONTROLS
-========================================= */
-
+$('startTeacher').onclick=()=>startVideo('teacher');$('startHall').onclick=()=>startVideo('hall');
+$('stopTeacher').onclick=()=>stopVideo('teacher');$('stopHall').onclick=()=>stopVideo('hall');
+$('refreshCameras').onclick=refreshCameras;
+$('teacherQuality').onchange=()=>{if(teacherStream)startVideo('teacher');};$('hallQuality').onchange=()=>{if(hallStream)startVideo('hall');};
+teacherSelect.onchange=()=>{if(teacherStream)startVideo('teacher');};hallSelect.onchange=()=>{if(hallStream)startVideo('hall');};
+function toggleExpand(card,btn){const yes=$(card).classList.toggle('expanded');$(btn).textContent=yes?'Minimize':'Enlarge';}
+$('expandTeacher').onclick=()=>toggleExpand('teacherCard','expandTeacher');$('expandHall').onclick=()=>toggleExpand('hallCard','expandHall');
+$('stopAllCameras').onclick=()=>{stopVideo('teacher');stopVideo('hall');};
+navigator.mediaDevices?.addEventListener?.('devicechange',refreshCameras);
 async function startMic(){
-
-try{
-
-if(!navigator.mediaDevices ||
-!navigator.mediaDevices.getUserMedia){
-throw new Error('Microphone access is not supported.');
+ try{if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone not supported.');const fresh=await navigator.mediaDevices.getUserMedia({audio:true,video:false});if(microphoneStream)microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=fresh;await addStreamToExistingPeers(fresh);$('startMic').textContent='🎤 Microphone active';updateOverallStatus();}
+ catch(e){alert('Unable to start microphone: '+e.message);}
 }
-
-if(microphoneStream){
-microphoneStream.getTracks().forEach(track=>track.stop());
+async function stopMic(){if(microphoneStream){await removeStreamFromPeers(microphoneStream);microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=null;}$('startMic').textContent='🎤 Start microphone';updateOverallStatus();}
+$('startMic').onclick=startMic;$('stopMic').onclick=stopMic;
+function updateOverallStatus(){cameraStatus.textContent=(currentRoomCode?'● Connected · ':'● ')+(teacherStream?'Teacher camera · ':'')+(hallStream?'Hall camera · ':'')+(microphoneStream?'Microphone':'Ready');}
+document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedMode=b.dataset.mode;});
+$('createRoomBtn').onclick=()=>{if($('role').value!=='Teacher'){setEntry('Choose Teacher to create a classroom.');return;}connectToClassroom(makeRoomCode(),'Teacher',$('displayName').value);};
+$('joinRoomBtn').onclick=()=>connectToClassroom($('roomCode').value,$('role').value,$('displayName').value);
+$('quickOpenBtn').onclick=()=>{const room=$('roomCode').value.trim()||new URLSearchParams(location.search).get('room');if(!room){setEntry('Enter a classroom code or open a valid invitation link first.');$('roomCode').focus();return;}connectToClassroom(room,$('role').value,$('displayName').value);};
+$('copyRoomLinkBtn').onclick=async()=>{try{await navigator.clipboard.writeText($('roomLink').value);$('copyRoomLinkBtn').textContent='Copied!';}catch{$('roomLink').select();document.execCommand('copy');$('copyRoomLinkBtn').textContent='Copied!';}};
+const inviteRoom=new URLSearchParams(location.search).get('room'),inviteRole=new URLSearchParams(location.search).get('role');
+if(inviteRoom){$('roomCode').value=inviteRoom;if(inviteRole)$('role').value=inviteRole.toLowerCase()==='teacher'?'Teacher':'Student';setEntry('Invitation detected. Enter your name, then choose Quick Open or Join classroom.');}
+function sendChat(){const v=$('chatInput').value.trim();if(!v)return;const name=$('displayName').value.trim()||'Guest';addMessage(name,v);if(classroomChannel)classroomChannel.send({type:'broadcast',event:'class-chat',payload:{senderId:currentParticipantId,name,message:v}});$('chatInput').value='';}
+$('sendBtn').onclick=sendChat;$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat();});
+async function setHand(raised){
+ if(!currentRoomCode||!classroomChannel){addMessage('BEA Assistant','Join a classroom before raising your hand.',true);return;}
+ const name=$('displayName').value.trim()||'Participant';await classroomChannel.track({id:currentParticipantId,name,role:currentParticipantRole,hand:raised,joinedAt:new Date().toISOString()});
+ classroomChannel.send({type:'broadcast',event:'class-hand',payload:{senderId:currentParticipantId,name,raised}});
+ addMessage('BEA Assistant',raised?'You raised your hand.':'You lowered your hand.',true);
 }
+$('handBtn').onclick=()=>setHand(true);$('lowerHandBtn').onclick=()=>setHand(false);
 
-microphoneStream=await navigator.mediaDevices.getUserMedia({
-audio:true,
-video:false
+/* Whiteboard: Marker, chalk, handwriting, text and eraser. */
+const canvas=$('board'),ctx=canvas.getContext('2d'),surface=$('boardSurface'),editor=$('textEditor');
+let activeTool='marker',drawing=false,lastPoint=null,editorPoint=null;
+function canvasPoint(e){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height};}
+function chooseTool(tool){
+ if(editor.style.display==='block')commitText();
+ activeTool=tool;document.querySelectorAll('.tool-button').forEach(b=>b.classList.remove('active'));
+ const map={marker:'markerBtn',chalk:'chalkBtn',handwriting:'handwritingBtn',text:'textBtn',eraser:'eraseBtn'};$(map[tool]).classList.add('active');
+ surface.classList.toggle('chalk-mode',tool==='chalk');
+ $('boardInstruction').textContent=tool==='text'?'Text selected: click the board, type, then press Ctrl + Enter.':tool==='eraser'?'Eraser selected: drag over writing to erase it.':' '+tool.toUpperCase()+' selected: draw with mouse, finger or stylus.';
+ canvas.style.cursor=tool==='text'?'text':tool==='eraser'?'cell':'crosshair';
+}
+$('markerBtn').onclick=()=>chooseTool('marker');$('chalkBtn').onclick=()=>chooseTool('chalk');$('handwritingBtn').onclick=()=>chooseTool('handwriting');$('textBtn').onclick=()=>chooseTool('text');$('eraseBtn').onclick=()=>chooseTool('eraser');
+function drawSegment(a,b){
+ ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=Number($('penSize').value);ctx.strokeStyle=$('penColor').value;
+ if(activeTool==='eraser'){ctx.globalCompositeOperation='destination-out';ctx.lineWidth=Number($('penSize').value)*4;}
+ else if(activeTool==='chalk'){ctx.globalAlpha=.72;ctx.shadowColor=$('penColor').value;ctx.shadowBlur=4;ctx.lineWidth=Number($('penSize').value)*1.5;}
+ else if(activeTool==='handwriting'){ctx.lineWidth=Number($('penSize').value)*.8;}
+ ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.restore();
+}
+canvas.addEventListener('pointerdown',e=>{
+ e.preventDefault();if(activeTool==='text'){openEditor(canvasPoint(e));return;}
+ drawing=true;lastPoint=canvasPoint(e);canvas.setPointerCapture(e.pointerId);drawSegment(lastPoint,{x:lastPoint.x+.1,y:lastPoint.y+.1});
 });
-/* Share the microphone with connected participants */
-
-await addStreamToExistingPeers(microphoneStream);
-document.getElementById('startMic').textContent='🎤 Microphone active';
-
-cameraStatus.textContent='● Local microphone active';
-
-}catch(error){
-
-alert('Unable to start microphone: '+error.message);
-
+canvas.addEventListener('pointermove',e=>{if(!drawing)return;const p=canvasPoint(e);drawSegment(lastPoint,p);lastPoint=p;});
+function stopDrawing(){drawing=false;lastPoint=null;}
+canvas.addEventListener('pointerup',stopDrawing);canvas.addEventListener('pointercancel',stopDrawing);canvas.addEventListener('pointerleave',()=>{if(drawing)stopDrawing();});
+function openEditor(p){editorPoint=p;editor.value='';editor.style.display='block';editor.style.paddingLeft=Math.max(8,p.x*canvas.clientWidth/canvas.width)+'px';editor.style.paddingTop=Math.max(8,p.y*canvas.clientHeight/canvas.height)+'px';editor.style.color=$('penColor').value;editor.style.fontFamily=activeTool==='handwriting'?'"Comic Sans MS",cursive':'Arial,sans-serif';editor.focus();}
+function commitText(){if(editor.style.display!=='block')return;const value=editor.value.trim();if(value&&editorPoint){ctx.save();ctx.fillStyle=$('penColor').value;ctx.font=(activeTool==='handwriting'?'italic ':'bold ')+(Number($('penSize').value)*5)+'px '+(activeTool==='handwriting'?'cursive':'Arial');ctx.textBaseline='top';const max=canvas.width-editorPoint.x-12,lineH=Number($('penSize').value)*7;let y=editorPoint.y;value.split('\\n').forEach(par=>{let line='';par.split(/\\s+/).forEach(word=>{const test=line?line+' '+word:word;if(ctx.measureText(test).width>max&&line){ctx.fillText(line,editorPoint.x,y);y+=lineH;line=word;}else line=test;});if(line){ctx.fillText(line,editorPoint.x,y);y+=lineH;}});ctx.restore();}editor.style.display='none';editor.value='';editorPoint=null;}
+editor.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey){e.preventDefault();commitText();}if(e.key==='Escape'){editor.value='';commitText();}});
+$('penSize').addEventListener('input',e=>$('penSizeValue').textContent=e.target.value);
+$('clearBtn').onclick=()=>{if(confirm('Are you sure you want to clear the entire board?')){editor.style.display='none';editor.value='';editorPoint=null;ctx.clearRect(0,0,canvas.width,canvas.height);$('boardInstruction').textContent='Board cleared. Select a tool to continue.';}};
+async function cleanup(){
+ if(classroomChannel&&beaSupabase)await beaSupabase.removeChannel(classroomChannel);
+ Object.keys(peerConnections).forEach(id=>{const c=peerConnections[id];clearInterval(c.statsTimer);c.pc.close();});
+ [teacherStream,hallStream,microphoneStream].forEach(s=>s?.getTracks().forEach(t=>t.stop()));
 }
-
-}
-
-function stopMic(){
-
-if(microphoneStream){
-microphoneStream.getTracks().forEach(track=>track.stop());
-microphoneStream=null;
-}
-
-document.getElementById('startMic').textContent='🎤 Start microphone';
-
-updateOverallStatus();
-
-}
-
-document.getElementById('startMic').onclick=startMic;
-document.getElementById('stopMic').onclick=stopMic;
-
-
-/* OVERALL STATUS */
-
-function updateOverallStatus(){
-
-if(teacherStream && hallStream){
-cameraStatus.textContent='● Both camera previews active';
-}else if(teacherStream){
-cameraStatus.textContent='● Teacher camera active';
-}else if(hallStream){
-cameraStatus.textContent='● Hall camera active';
-}else if(microphoneStream){
-cameraStatus.textContent='● Microphone active';
-}else{
-cameraStatus.textContent='● Cameras stopped';
-}
-
-}
-
-
-/* =========================================
-   CLASSROOM MODE
-========================================= */
-
-document.querySelectorAll('.mode').forEach(button=>{
-
-button.onclick=()=>{
-
-document.querySelectorAll('.mode').forEach(item=>
-item.classList.remove('active'));
-
-button.classList.add('active');
-
-selectedMode=button.dataset.mode;
-
-};
-
-});
-
-document.getElementById('createRoomBtn').onclick=()=>{
-  const role=document.getElementById('role').value;
-  if(role!=='Teacher'){
-    document.getElementById('entryMessage').textContent='Please choose Teacher to create a classroom. Students should use Join classroom.';
-    return;
-  }
-  const name=document.getElementById('displayName').value.trim()||'Teacher';
-  const code=makeRoomCode();
-  connectToClassroom(code,'Teacher',name);
-};
-
-document.getElementById('joinRoomBtn').onclick=()=>{
-  const name=document.getElementById('displayName').value.trim()||'Guest';
-  const code=document.getElementById('roomCode').value.trim();
-  const role=document.getElementById('role').value;
-  if(!code){
-    document.getElementById('entryMessage').textContent='Enter the classroom code shared by your teacher.';
-    document.getElementById('roomCode').focus();
-    return;
-  }
-  connectToClassroom(code,role,name);
-};
-
-document.getElementById('copyRoomLinkBtn').onclick=async()=>{
-  const input=document.getElementById('roomLink');
-  try{
-    await navigator.clipboard.writeText(input.value);
-    document.getElementById('copyRoomLinkBtn').textContent='Copied!';
-  }catch(error){
-    input.select();
-    document.execCommand('copy');
-    document.getElementById('copyRoomLinkBtn').textContent='Copied!';
-  }
-};
-
-/* Automatically fill the room code when a student opens an invitation link. */
-const invitedRoom=new URLSearchParams(window.location.search).get('room');
-const invitedRole=new URLSearchParams(window.location.search).get('role');
-if(invitedRoom){
-  document.getElementById('roomCode').value=invitedRoom;
-  if(invitedRole) document.getElementById('role').value=invitedRole;
-  document.getElementById('entryMessage').textContent='Invitation detected. Enter your name, then click Join classroom.';
-}
-
-
-
-/* =========================================
-   CLASS DISCUSSION
-========================================= */
-
-const messages=document.getElementById('messages');
-
-function send(){
-
-const input=document.getElementById('chatInput');
-const value=input.value.trim();
-
-if(!value)return;
-
-const paragraph=document.createElement('p');
-paragraph.className='msg';
-
-const bold=document.createElement('b');
-
-bold.textContent=
-(document.getElementById('displayName').value.trim()||'Guest')+': ';
-
-paragraph.append(bold,document.createTextNode(value));
-
-messages.appendChild(paragraph);
-messages.scrollTop=messages.scrollHeight;
-
-if(classroomChannel){
-  classroomChannel.send({type:'broadcast',event:'class-chat',payload:{senderId:currentParticipantId,name:bold.textContent.replace(/: $/,''),message:value}});
-}
-
-input.value='';
-
-}
-
-document.getElementById('sendBtn').onclick=send;
-
-document.getElementById('chatInput').addEventListener('keydown',event=>{
-if(event.key==='Enter')send();
-});
-
-document.getElementById('handBtn').onclick=()=>{
-addSystemMessage('✋ Hand raised (demo).');
-};
-
-document.getElementById('lowerHandBtn').onclick=()=>{
-addSystemMessage('Hand lowered (demo).');
-};
-
-function addSystemMessage(message){
-
-const paragraph=document.createElement('p');
-paragraph.className='msg';
-
-const bold=document.createElement('b');
-bold.textContent='BEA Assistant: ';
-
-paragraph.append(bold,document.createTextNode(message));
-
-messages.appendChild(paragraph);
-messages.scrollTop=messages.scrollHeight;
-
-}
-
-
-/* =========================================
-   INTERACTIVE WHITEBOARD
-========================================= */
-
-const canvas=document.getElementById('board');
-const ctx=canvas.getContext('2d');
-
-const boardSurface=document.getElementById('boardSurface');
-const textEditor=document.getElementById('textEditor');
-
-const penColor=document.getElementById('penColor');
-const penSize=document.getElementById('penSize');
-
-let activeTool='marker';
-let editorStyle=null;
-
-
-function selectTool(tool){
-
-commitText();
-
-activeTool=tool;
-
-document.querySelectorAll('.tool-button').forEach(button=>{
-button.classList.remove('active');
-});
-
-const buttons={
-chalk:'chalkBtn',
-marker:'markerBtn',
-text:'textBtn',
-handwriting:'handwritingBtn'
-};
-
-document.getElementById(buttons[tool]).classList.add('active');
-
-if(tool==='chalk'){
-
-boardSurface.className='board-surface chalk-mode';
-penColor.value='#ffffff';
-
-document.getElementById('boardInstruction').textContent=
-'CHALK selected: Click on the board and type. Press Ctrl + Enter to finish.';
-
-}else if(tool==='marker'){
-
-boardSurface.className='board-surface marker-mode';
-penColor.value='#173b67';
-
-document.getElementById('boardInstruction').textContent=
-'MARKER selected: Click on the board and type. Press Ctrl + Enter to finish.';
-
-}else if(tool==='text'){
-
-boardSurface.className='board-surface marker-mode';
-
-document.getElementById('boardInstruction').textContent=
-'TEXT selected: Click anywhere on the board and type clear text.';
-
-}else if(tool==='handwriting'){
-
-boardSurface.className='board-surface marker-mode';
-
-document.getElementById('boardInstruction').textContent=
-'HANDWRITING selected: Click on the board and type in handwriting style.';
-
-}
-
-}
-
-document.getElementById('chalkBtn').onclick=()=>selectTool('chalk');
-document.getElementById('markerBtn').onclick=()=>selectTool('marker');
-document.getElementById('textBtn').onclick=()=>selectTool('text');
-document.getElementById('handwritingBtn').onclick=()=>selectTool('handwriting');
-
-
-/* OPEN TEXT EDITOR */
-
-canvas.addEventListener('pointerdown',event=>{
-
-event.preventDefault();
-
-commitText();
-
-const rect=canvas.getBoundingClientRect();
-
-const x=event.clientX-rect.left;
-const y=event.clientY-rect.top;
-
-openTextEditor(x,y);
-
-});
-
-
-function openTextEditor(x,y){
-
-const rect=canvas.getBoundingClientRect();
-
-editorStyle={
-
-tool:activeTool,
-color:penColor.value,
-size:Math.max(20,Number(penSize.value)*3),
-x:x*canvas.width/rect.width,
-y:y*canvas.height/rect.height
-
-};
-
-textEditor.style.left='0px';
-textEditor.style.top='0px';
-textEditor.style.width='100%';
-textEditor.style.height='100%';
-
-textEditor.style.paddingLeft=Math.max(8,x)+'px';
-textEditor.style.paddingTop=Math.max(8,y)+'px';
-
-textEditor.style.display='block';
-textEditor.value='';
-
-textEditor.style.fontSize=editorStyle.size+'px';
-textEditor.style.fontWeight='bold';
-
-if(activeTool==='chalk'){
-
-textEditor.className='chalk-text';
-textEditor.style.color='#ffffff';
-
-}else if(activeTool==='handwriting'){
-
-textEditor.className='handwriting-text';
-textEditor.style.color=editorStyle.color;
-
-}else{
-
-textEditor.className='marker-text';
-textEditor.style.color=editorStyle.color;
-
-}
-
-textEditor.focus();
-
-}
-
-
-/* PLACE TEXT ON BOARD */
-
-function commitText(){
-
-if(textEditor.style.display!=='block'||!editorStyle)return;
-
-const value=textEditor.value.trim();
-
-if(value){
-
-const rect=canvas.getBoundingClientRect();
-
-const scaleX=canvas.width/rect.width;
-
-const x=editorStyle.x;
-const y=editorStyle.y;
-
-const fontSize=editorStyle.size*scaleX;
-
-ctx.save();
-
-ctx.font=`bold ${fontSize}px ${
-editorStyle.tool==='chalk'||
-editorStyle.tool==='handwriting'
-?'"Comic Sans MS",cursive'
-:'Arial,sans-serif'
-}`;
-
-ctx.fillStyle=editorStyle.color;
-ctx.textBaseline='top';
-
-if(editorStyle.tool==='chalk'){
-
-ctx.shadowColor='#ffffff';
-ctx.shadowBlur=3;
-ctx.globalAlpha=.9;
-
-}
-
-const maxWidth=canvas.width-x-15;
-const lineHeight=fontSize*1.5;
-
-let currentY=y;
-
-value.split('\n').forEach(paragraph=>{
-
-const words=paragraph.split(/\s+/);
-let line='';
-
-words.forEach(word=>{
-
-const testLine=line?line+' '+word:word;
-
-if(ctx.measureText(testLine).width>maxWidth&&line){
-
-ctx.fillText(line,x,currentY);
-currentY+=lineHeight;
-line=word;
-
-}else{
-
-line=testLine;
-
-}
-
-});
-
-if(line){
-ctx.fillText(line,x,currentY);
-currentY+=lineHeight;
-}
-
-});
-
-ctx.restore();
-
-}
-
-textEditor.style.display='none';
-textEditor.value='';
-editorStyle=null;
-
-}
-
-
-/* KEYBOARD CONTROLS */
-
-textEditor.addEventListener('keydown',event=>{
-
-if(event.key==='Enter'&&event.ctrlKey){
-
-event.preventDefault();
-
-commitText();
-
-document.getElementById('boardInstruction').textContent=
-'Your writing has been placed on the board successfully.';
-
-}
-
-if(event.key==='Escape'){
-
-textEditor.value='';
-commitText();
-
-}
-
-});
-
-
-/* CLICK OUTSIDE EDITOR */
-
-document.addEventListener('pointerdown',event=>{
-
-if(
-textEditor.style.display==='block'&&
-!textEditor.contains(event.target)&&
-event.target!==canvas
-){
-
-commitText();
-
-}
-
-});
-
-
-/* COLOUR */
-
-penColor.addEventListener('input',function(){
-
-if(textEditor.style.display==='block'&&editorStyle){
-
-editorStyle.color=this.value;
-textEditor.style.color=this.value;
-
-}
-
-});
-
-
-/* THICKNESS */
-
-penSize.addEventListener('input',function(){
-
-document.getElementById('penSizeValue').textContent=this.value;
-
-});
-
-
-/* ERASER */
-
-document.getElementById('eraseBtn').onclick=()=>{
-
-commitText();
-
-alert('For typed writing, use Clear board to remove all writing.');
-
-};
-
-
-/* CLEAR BOARD */
-
-document.getElementById('clearBtn').onclick=()=>{
-
-commitText();
-
-const answer=confirm('Are you sure you want to clear the entire board?');
-
-if(answer){
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-document.getElementById('boardInstruction').textContent=
-'Board cleared successfully. Select a writing tool to continue.';
-
-}
-
-};
-
-
-/* INITIALISE CAMERAS */
-
+window.addEventListener('beforeunload',()=>{cleanup();});
 refreshCameras();
-
-
-/* CLEAN UP WHEN LEAVING */
-
-window.addEventListener('beforeunload',()=>{
-
-if(classroomChannel && beaSupabase){ beaSupabase.removeChannel(classroomChannel); }
-
-[teacherStream,hallStream,microphoneStream].forEach(stream=>{
-
-if(stream){
-stream.getTracks().forEach(track=>track.stop());
-}
-
-});
-
-});
-/* BEA QUICK OPEN BUTTON FIX */
-
-document.addEventListener('DOMContentLoaded', function(){
-
-  document.addEventListener('click', function(event){
-
-    const button = event.target.closest(
-      '#quickOpenBtn, #quickOpen, .quick-open-btn, [data-action="quick-open"]'
-    );
-
-    if(!button) return;
-
-   
 </script>
-
 </body>
 </html>
