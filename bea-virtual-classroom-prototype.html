@@ -219,6 +219,24 @@ function updateEmptyMessages(){
  if(!$('hallRemoteStage').querySelector('.remote-video-card'))$('hallRemoteStage').innerHTML='<div id="hallEmptyMessage">Waiting for the hall camera...</div>';
  if(!$('studentGallery').querySelector('.remote-video-card'))$('studentGallery').innerHTML='<div id="remoteEmptyMessage">Waiting for students to connect...</div>';
 }
+ function removeRemoteMedia(id,type){
+
+  Object.keys(remoteVideoTiles).forEach(function(key){
+
+    const card = remoteVideoTiles[key];
+
+    if(
+      card.dataset.participant === id &&
+      card.dataset.streamType === type
+    ){
+      card.remove();
+      delete remoteVideoTiles[key];
+    }
+
+  });
+
+  updateEmptyMessages();
+} 
 function updatePresence(state){
  const next={};Object.values(state).flat().forEach(p=>{if(p.id)next[p.id]={id:p.id,name:p.name||'BEA participant',role:p.role||'student',hand:!!p.hand};});
  Object.keys(connectedParticipants).forEach(id=>{if(!next[id])removeRemoteParticipant(id);});
@@ -262,14 +280,72 @@ async function sendRtcSignal(to,signal){
 }
 function destinationFor(type){return type==='teacher'?'teacherFrontStage':type==='hall'?'hallRemoteStage':'studentGallery';}
 function showRemoteVideo(id,name,stream,role,type){
- const key=id+'_'+stream.id;if(remoteVideoTiles[key])return;
- const target=$(destinationFor(type));if(!target)return;
- const empty=target.querySelector('[id$="EmptyMessage"]');if(empty)empty.remove();
- const card=document.createElement('div');card.className='remote-video-card '+(type==='teacher'?'teacher-remote-card':type==='hall'?'hall-remote-card':'student-remote-card');
- const video=document.createElement('video');video.autoplay=true;video.playsInline=true;video.muted=true;video.controls=true;video.srcObject=stream;video.play().catch(()=>{status.textContent='Live video received. Press Play on the video.';});
- const label=document.createElement('div');label.className='remote-video-name';label.textContent=type==='teacher'?'👨‍🏫 Teacher — '+name:type==='hall'?'🏫 Whole Hall — '+name:'👤 Student — '+name;
- const status=document.createElement('div');status.className='remote-video-status';status.textContent='● Live connection';
- card.append(video,label,status);target.appendChild(card);remoteVideoTiles[key]=card;
+
+  const key = id + '_' + stream.id;
+
+  if(remoteVideoTiles[key]) return;
+
+  const target = $(destinationFor(type));
+
+  if(!target) return;
+
+  const empty = target.querySelector('[id$="EmptyMessage"]');
+
+  if(empty) empty.remove();
+
+  const card = document.createElement('div');
+
+  card.className = 'remote-video-card ' +
+    (type === 'teacher' ? 'teacher-remote-card' :
+     type === 'hall' ? 'hall-remote-card' :
+     'student-remote-card');
+
+  card.dataset.participant = id;
+  card.dataset.streamType = type;
+
+  const video = document.createElement('video');
+
+  video.autoplay = true;
+  video.playsInline = true;
+  video.muted = true;
+  video.controls = false;
+  video.srcObject = stream;
+
+  video.onloadedmetadata = function(){
+    video.play().catch(function(error){
+      console.log('Video playback waiting:', error);
+    });
+  };
+
+  stream.getVideoTracks().forEach(function(track){
+    track.onended = function(){
+      card.remove();
+      delete remoteVideoTiles[key];
+      updateEmptyMessages();
+    };
+  });
+
+  const label = document.createElement('div');
+
+  label.className = 'remote-video-name';
+
+  label.textContent =
+    type === 'teacher' ? '👨‍🏫 Teacher — ' + name :
+    type === 'hall' ? '🏫 Whole Hall — ' + name :
+    '👤 Student — ' + name;
+
+  const status = document.createElement('div');
+
+  status.className = 'remote-video-status';
+  status.textContent = '● Live connection';
+
+  card.appendChild(video);
+  card.appendChild(label);
+  card.appendChild(status);
+
+  target.appendChild(card);
+
+  remoteVideoTiles[key] = card;
 }
 function createPeerConnection(id,name,role='student'){
  if(peerConnections[id])return peerConnections[id];
@@ -305,6 +381,17 @@ async function startRtcOffer(person){
 }
 async function handleRtcSignal(payload){
  if(!payload||payload.to!==currentParticipantId||!payload.signal)return;
+  const incomingSignal = payload.signal;
+
+if(incomingSignal.type === 'media-stopped'){
+
+  removeRemoteMedia(
+    payload.from,
+    incomingSignal.streamType
+  );
+
+  return;
+}
  const id=payload.from,name=payload.name||'BEA Participant',role=payload.role||'student';
  try{
   const conn=createPeerConnection(id,name,role),pc=conn.pc,s=payload.signal;
@@ -367,10 +454,73 @@ async function startVideo(which){
  }catch(e){console.error(e);status.textContent='Camera could not start.';alert('Unable to start '+which+' camera: '+(e.name==='NotAllowedError'?'Allow camera permission.':e.name==='OverconstrainedError'?'Try Auto or 720p.':e.message));}
 }
 async function stopVideo(which){
- const teacher=which==='teacher',video=teacher?teacherCamera:hallCamera,stream=teacher?teacherStream:hallStream;
- if(stream){await removeStreamFromPeers(stream);stream.getTracks().forEach(t=>t.stop());}
- video.pause();video.srcObject=null;video.style.display='none';$(teacher?'teacherPlaceholder':'hallPlaceholder').style.display='block';$(teacher?'teacherLiveTag':'hallLiveTag').style.display='none';
- if(teacher)teacherStream=null;else hallStream=null;$(teacher?'teacherStatus':'hallStatus').textContent='Camera stopped.';updateOverallStatus();
+
+  const teacher = which === 'teacher';
+
+  const video = teacher ? teacherCamera : hallCamera;
+
+  const stream = teacher ? teacherStream : hallStream;
+
+  const type = teacher ? 'teacher' : 'hall';
+
+  // Cancel any camera request still in progress
+  if(teacher){
+    teacherCameraRequest++;
+  }else{
+    hallCameraRequest++;
+  }
+
+  // Notify other participants that this camera has stopped
+  if(stream && classroomChannel){
+
+    for(const id of Object.keys(peerConnections)){
+
+      try{
+
+        await sendRtcSignal(id,{
+          type:'media-stopped',
+          streamType:type
+        });
+
+      }catch(error){
+
+        console.error('Camera stop notification:',error);
+
+      }
+
+    }
+
+  }
+
+  // Remove the camera tracks from connections
+  if(stream){
+
+    await removeStreamFromPeers(stream);
+
+    stream.getTracks().forEach(function(track){
+      track.stop();
+    });
+
+  }
+
+  video.pause();
+  video.srcObject = null;
+  video.style.display = 'none';
+
+  $(teacher ? 'teacherPlaceholder' : 'hallPlaceholder').style.display = 'block';
+
+  $(teacher ? 'teacherLiveTag' : 'hallLiveTag').style.display = 'none';
+
+  if(teacher){
+    teacherStream = null;
+  }else{
+    hallStream = null;
+  }
+
+  $(teacher ? 'teacherStatus' : 'hallStatus').textContent = 'Camera stopped.';
+
+  updateOverallStatus();
+
 }
 $('startTeacher').onclick=()=>startVideo('teacher');$('startHall').onclick=()=>startVideo('hall');
 $('stopTeacher').onclick=()=>stopVideo('teacher');$('stopHall').onclick=()=>stopVideo('hall');
