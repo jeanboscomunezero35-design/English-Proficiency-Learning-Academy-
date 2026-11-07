@@ -186,6 +186,89 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
 @media(max-width:850px){.layout{grid-template-columns:1fr}.features{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:650px){.camera-grid{grid-template-columns:1fr}.camera-screen{height:230px}.camera-card.expanded .camera-screen{height:300px}.teacher-remote-card video{height:260px}.hall-remote-card video{height:220px}.remote-video-card video{height:200px}}
 @media(max-width:460px){main{padding:0 12px}.features{grid-template-columns:1fr 1fr}.controls button{flex:1}.mode-grid,.room-actions{grid-template-columns:1fr}.pen-tool{flex:1}}
+/* BEA — ONE SHARED LIVE CLASSROOM */
+.live-gallery{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  width:100%;
+  padding:20px;
+  background:#0b1930;
+  border:3px solid #f2b544;
+  border-radius:16px;
+  overflow:hidden;
+}
+
+/* TEACHER STANDS AT THE FRONT */
+.teacher-front-area,
+#teacherFrontStage{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:100%;
+  background:transparent;
+  border:0;
+  padding:8px;
+}
+
+.teacher-remote-card{
+  width:100%;
+  max-width:480px;
+  border:3px solid #f2b544;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.teacher-remote-card video{
+  width:100%;
+  aspect-ratio:3 / 4;
+  object-fit:cover;
+}
+
+/* STUDENTS SIT BELOW THE TEACHER */
+.student-gallery-area{
+  width:100%;
+  background:transparent;
+  border:0;
+  padding:15px 5px;
+}
+
+#studentGallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+  width:100%;
+}
+
+.student-remote-card{
+  width:100%;
+  max-width:none;
+  border:1px solid #54708f;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.student-remote-card video{
+  width:100%;
+  aspect-ratio:16 / 9;
+  object-fit:cover;
+}
+
+/* MOBILE CLASSROOM */
+@media(max-width:600px){
+  .live-gallery{
+    padding:8px;
+  }
+
+  .teacher-remote-card{
+    max-width:100%;
+  }
+
+  #studentGallery{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+}
 </style>
 </head>
 <body>
@@ -198,7 +281,8 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
   <div class="notice"><b>Live classroom:</b> Sign in to your BEA account, create or join a room, then start your cameras and microphone. Students need to allow camera/microphone permissions. For reliable connections across different networks, configure a TURN relay in addition to the built-in STUN server. The teacher camera is displayed at the front of each student's classroom; student cameras appear in the teacher's student gallery. The whiteboard is currently local to this browser.</div>
   <div class="layout">
     <section class="panel">
-      <div class="panel-head"><h2>Live teaching area</h2><span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Teacher and student views</span></div>
+      <div class="panel-head"><h2>Live teaching area</h2><span class="badge" style="background:#eef5fc
+      ;color:#28547c;border-color:#d5e5f5">Teacher and student views</span></div>
       <div class="stage">
         <div class="camera-grid">
           <div class="camera-card" id="teacherCard">
