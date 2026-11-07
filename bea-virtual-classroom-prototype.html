@@ -394,7 +394,10 @@ async function connectToClassroom(code,role,name){
   classroomChannel
    .on('presence',{event:'sync'},()=>updatePresence(classroomChannel.presenceState()))
    .on('broadcast',{event:'class-chat'},({payload})=>{if(payload?.senderId!==currentParticipantId)addMessage(payload?.name||'Participant',payload?.message||'');})
-   .on('broadcast',{event:'webrtc-signal'},({payload})=>handleRtcSignal(payload))
+   .on('broadcast',{event:'webrtc-signal'},({payload})=>{
+ console.log('BEA SIGNAL RECEIVED:',payload);
+ handleRtcSignal(payload);
+})
    .on('broadcast',{event:'class-hand'},({payload})=>{if(payload?.senderId!==currentParticipantId){if(connectedParticipants[payload.senderId])connectedParticipants[payload.senderId].hand=!!payload.raised;updateParticipantList();addMessage('BEA Assistant',(payload.name||'A participant')+(payload.raised?' raised a hand.':' lowered a hand.'),true);}})
    .subscribe(async status=>{
     if(status==='SUBSCRIBED'){
