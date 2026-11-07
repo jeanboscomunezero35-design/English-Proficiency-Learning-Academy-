@@ -635,16 +635,14 @@ async function removeStreamFromPeers(stream){
         }catch(error){
           console.error('Unable to remove camera track:',error);
         }
-
       }
 
     }
 
   }
 
-}
-
-function qualityConstraints(q){let w=1920,h=1080;if(q==='720'){w=1280;h=720;}if(q==='4k'){w=3840;h=2160;}return {width:{ideal:w},height:{ideal:h},frameRate:{ideal:30,max:30}};}
+function qualityConstraints(q){
+      let w=1920,h=1080;if(q==='720'){w=1280;h=720;}if(q==='4k'){w=3840;h=2160;}return {width:{ideal:w},height:{ideal:h},frameRate:{ideal:30,max:30}};}
 async function refreshCameras(){
  if(!navigator.mediaDevices?.enumerateDevices)return;
  try{
