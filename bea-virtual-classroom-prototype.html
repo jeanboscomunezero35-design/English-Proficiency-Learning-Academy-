@@ -269,6 +269,76 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
     gap:8px;
   }
 }
+/* BEA SHARED CLASSROOM SCENE */
+
+.live-gallery{
+  background:#0b1930;
+  border:3px solid #f2b544;
+  border-radius:16px;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+/* TEACHER AT THE FRONT */
+.teacher-front-area{
+  order:1;
+  background:transparent;
+  text-align:center;
+  border:none;
+  padding:8px;
+}
+
+#teacherFrontStage{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+}
+
+/* MAKE TEACHER PROMINENT */
+#teacherFrontStage .teacher-remote-card{
+  width:65%;
+  max-width:650px;
+  margin:auto;
+}
+
+/* STUDENTS BELOW THE TEACHER */
+.student-gallery-area{
+  order:2;
+  background:transparent;
+  border:none;
+  padding:8px;
+}
+
+#studentGallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+  width:100%;
+}
+
+#studentGallery .remote-video-card{
+  width:100%;
+  max-width:none;
+}
+
+/* KEEP WHOLE HALL SEPARATE */
+.hall-view-area{
+  order:3;
+}
+
+/* MOBILE CLASSROOM */
+@media(max-width:700px){
+  #teacherFrontStage .teacher-remote-card{
+    width:100%;
+  }
+
+  #studentGallery{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
 </style>
 </head>
 <body>
