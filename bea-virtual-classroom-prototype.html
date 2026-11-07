@@ -904,6 +904,39 @@ async function refreshCameras(){
   if(cams.length===1)$('hallStatus').textContent='One camera detected. Connect a second camera for a separate hall view.';
  }catch(e){console.error('Camera detection:',e);}
 }
+function showLocalTeacherAtFront(stream){
+
+  if(currentParticipantRole !== 'teacher') return;
+
+  const stage = $('teacherFrontStage');
+  if(!stage) return;
+
+  const old = stage.querySelector('[data-local-teacher="true"]');
+  if(old) old.remove();
+
+  const empty = stage.querySelector('[id$="EmptyMessage"]');
+  if(empty) empty.remove();
+
+  const card = document.createElement('div');
+  card.className = 'remote-video-card teacher-remote-card';
+  card.dataset.localTeacher = 'true';
+
+  const video = document.createElement('video');
+  video.autoplay = true;
+  video.playsInline = true;
+  video.muted = true;
+  video.srcObject = stream;
+
+  const label = document.createElement('div');
+  label.className = 'remote-video-name';
+  label.textContent = '👨‍🏫 Teacher — Jean Bosco';
+
+  card.appendChild(video);
+  card.appendChild(label);
+  stage.prepend(card);
+
+  video.play().catch(()=>{});
+}  
 async function startVideo(which){
  const teacher=which==='teacher',video=teacher?teacherCamera:hallCamera,select=teacher?teacherSelect:hallSelect;
  const quality=$(teacher?'teacherQuality':'hallQuality'),placeholder=$(teacher?'teacherPlaceholder':'hallPlaceholder'),tag=$(teacher?'teacherLiveTag':'hallLiveTag'),status=$(teacher?'teacherStatus':'hallStatus');
@@ -916,12 +949,46 @@ async function startVideo(which){
   const old=teacher?teacherStream:hallStream;video.srcObject=fresh;await video.play().catch(()=>{});
   if(old){await removeStreamFromPeers(old);old.getTracks().forEach(t=>t.stop());}
   if(teacher)teacherStream=fresh;else hallStream=fresh;
-  await addStreamToExistingPeers(fresh);
+  if(teacher && currentParticipantRole === 'teacher'){
+  showLocalTeacherAtFront(fresh);
+}
+   if(teacher && currentParticipantRole === 'teacher'){
+  showLocalTeacherAtFront(fresh);
+}
+   await addStreamToExistingPeers(fresh);
   video.style.display='block';placeholder.style.display='none';tag.style.display='block';
   const s=fresh.getVideoTracks()[0].getSettings();status.textContent='Camera active: '+(s.width||'?')+' × '+(s.height||'?')+(s.frameRate?' · '+Math.round(s.frameRate)+' FPS':'');
   updateOverallStatus();refreshCameras();
  }catch(e){console.error(e);status.textContent='Camera could not start.';alert('Unable to start '+which+' camera: '+(e.name==='NotAllowedError'?'Allow camera permission.':e.name==='OverconstrainedError'?'Try Auto or 720p.':e.message));}
 }
+function showLocalTeacherAtFront(stream){
+
+  if(currentParticipantRole !== 'teacher') return;
+
+  const stage = $('teacherFrontStage');
+  if(!stage) return;
+
+  const old = stage.querySelector('[data-local-teacher="true"]');
+  if(old) old.remove();
+
+  const empty = stage.querySelector('[id$="EmptyMessage"]');
+  if(empty) empty.remove();
+
+  const card = document.createElement('div');
+  card.className = 'remote-video-card teacher-remote-card';
+  card.dataset.localTeacher = 'true';
+
+  const video = document.createElement('video');
+  video.autoplay = true;
+  video.playsInline = true;
+  video.muted = true;
+  video.srcObject = stream;
+
+  card.appendChild(video);
+  stage.prepend(card);
+
+  video.play().catch(()=>{});
+}  
 async function stopVideo(which){
 
   const teacher = which === 'teacher';
