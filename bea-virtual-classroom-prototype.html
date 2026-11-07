@@ -400,6 +400,7 @@ async function connectToClassroom(code,role,name){
 })
    .on('broadcast',{event:'class-hand'},({payload})=>{if(payload?.senderId!==currentParticipantId){if(connectedParticipants[payload.senderId])connectedParticipants[payload.senderId].hand=!!payload.raised;updateParticipantList();addMessage('BEA Assistant',(payload.name||'A participant')+(payload.raised?' raised a hand.':' lowered a hand.'),true);}})
    .subscribe(async status=>{
+    console.log('BEA SUPABASE CHANNEL STATUS:',status);
     if(status==='SUBSCRIBED'){
     await classroomChannel.track({
   id:currentParticipantId,
