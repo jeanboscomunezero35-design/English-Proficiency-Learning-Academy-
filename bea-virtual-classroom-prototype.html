@@ -380,41 +380,124 @@ async function startRtcOffer(person){
  catch(e){console.error('BEA peer setup:',e);}
 }
 async function handleRtcSignal(payload){
- if(!payload||payload.to!==currentParticipantId||!payload.signal)return;
-  const incomingSignal = payload.signal;
 
-if(incomingSignal.type === 'media-stopped'){
+  if(!payload || payload.to !== currentParticipantId || !payload.signal) return;
 
-  removeRemoteMedia(
-    payload.from,
-    incomingSignal.streamType
-  );
+  const id = payload.from;
+  const name = payload.name || 'BEA Participant';
+  const role = payload.role || 'student';
+  const s = payload.signal;
 
-  return;
-}
- const id=payload.from,name=payload.name||'BEA Participant',role=payload.role||'student';
- try{
-  const conn=createPeerConnection(id,name,role),pc=conn.pc,s=payload.signal;
-  conn.remoteStreamTypes={...conn.remoteStreamTypes,...(payload.streamTypes||{})};
-  if(s.type==='renegotiate-request'){
-   if(currentParticipantId.localeCompare(id)<0 && pc.signalingState==='stable'){
-    const offer=await pc.createOffer();
-    await pc.setLocalDescription(offer);
-    await sendRtcSignal(id,{type:'offer',description:pc.localDescription});
-   }
-  }else if(s.type==='offer'){
-   if(pc.signalingState!=='stable')return;
-   await pc.setRemoteDescription(new RTCSessionDescription(s.description));
-   for(const c of conn.pendingCandidates.splice(0))await pc.addIceCandidate(new RTCIceCandidate(c));
-   const answer=await pc.createAnswer();await pc.setLocalDescription(answer);await sendRtcSignal(id,{type:'answer',description:pc.localDescription});
-  }else if(s.type==='answer'){
-   if(pc.signalingState==='have-local-offer'){await pc.setRemoteDescription(new RTCSessionDescription(s.description));for(const c of conn.pendingCandidates.splice(0))await pc.addIceCandidate(new RTCIceCandidate(c));}
-  }else if(s.type==='candidate'){
-   if(pc.remoteDescription)await pc.addIceCandidate(new RTCIceCandidate(s.candidate));else conn.pendingCandidates.push(s.candidate);
+  if(s.type === 'media-stopped'){
+    removeRemoteMedia(id, s.streamType);
+    return;
   }
- }catch(e){console.error('BEA signal error:',e);}
+
+  try{
+
+    const conn = createPeerConnection(id, name, role);
+    const pc = conn.pc;
+
+    conn.remoteStreamTypes = {
+      ...conn.remoteStreamTypes,
+      ...(payload.streamTypes || {})
+    };
+
+    if(s.type === 'renegotiate-request'){
+
+      if(currentParticipantId.localeCompare(id) < 0 &&
+         pc.signalingState === 'stable'){
+
+        const offer = await pc.createOffer();
+
+        await pc.setLocalDescription(offer);
+
+        await sendRtcSignal(id,{
+          type:'offer',
+          description:pc.localDescription
+        });
+      }
+
+    }
+
+    else if(s.type === 'offer'){
+
+      const offerCollision =
+        pc.signalingState !== 'stable';
+
+      const polite =
+        currentParticipantId.localeCompare(id) > 0;
+
+      if(offerCollision && !polite){
+        console.log('BEA: Ignoring conflicting offer');
+        return;
+      }
+
+      if(offerCollision && polite){
+        await pc.setLocalDescription({type:'rollback'});
+      }
+
+      await pc.setRemoteDescription(
+        new RTCSessionDescription(s.description)
+      );
+
+      for(const candidate of conn.pendingCandidates.splice(0)){
+        await pc.addIceCandidate(
+          new RTCIceCandidate(candidate)
+        );
+      }
+
+      const answer = await pc.createAnswer();
+
+      await pc.setLocalDescription(answer);
+
+      await sendRtcSignal(id,{
+        type:'answer',
+        description:pc.localDescription
+      });
+
+    }
+
+    else if(s.type === 'answer'){
+
+      if(pc.signalingState === 'have-local-offer'){
+
+        await pc.setRemoteDescription(
+          new RTCSessionDescription(s.description)
+        );
+
+        for(const candidate of conn.pendingCandidates.splice(0)){
+          await pc.addIceCandidate(
+            new RTCIceCandidate(candidate)
+          );
+        }
+      }
+
+    }
+
+    else if(s.type === 'candidate'){
+
+      if(pc.remoteDescription){
+
+        await pc.addIceCandidate(
+          new RTCIceCandidate(s.candidate)
+        );
+
+      }else{
+
+        conn.pendingCandidates.push(s.candidate);
+
+      }
+
+    }
+
+  }catch(error){
+
+    console.error('BEA signal error:', error);
+
+  }
+
 }
-async function addStreamToExistingPeers(stream){
  for(const id of Object.keys(peerConnections)){
   const pc=peerConnections[id].pc;
   stream.getTracks().forEach(track=>{if(!pc.getSenders().some(s=>s.track===track))pc.addTrack(track,stream);});
