@@ -699,17 +699,37 @@ if(inviteRoom){$('roomCode').value=inviteRoom;if(inviteRole)$('role').value=invi
 function sendChat(){const v=$('chatInput').value.trim();if(!v)return;const name=$('displayName').value.trim()||'Guest';addMessage(name,v);if(classroomChannel)classroomChannel.send({type:'broadcast',event:'class-chat',payload:{senderId:currentParticipantId,name,message:v}});$('chatInput').value='';}
 $('sendBtn').onclick=sendChat;$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat();});
 async function setHand(raised){
- if(!currentRoomCode||!classroomChannel){addMessage('BEA Assistant','Join a classroom before raising your hand.',true);return;}
- const name=$('displayName').value.trim()||'Participant';await classroomChannel.track({
+ if(!currentRoomCode||!classroomChannel){
+  addMessage('BEA Assistant','Join a classroom before raising your hand.',true);
+  return;
+ }
+
+ const name=$('displayName').value.trim()||'Participant';
+
+ await classroomChannel.track({
   id:currentParticipantId,
   name,
-  role,
+  role:currentParticipantRole,
   mode:selectedMode,
-  hand:false,
+  hand:raised,
   joinedAt:new Date().toISOString()
-});
- classroomChannel.send({type:'broadcast',event:'class-hand',payload:{senderId:currentParticipantId,name,raised}});
- addMessage('BEA Assistant',raised?'You raised your hand.':'You lowered your hand.',true);
+ });
+
+ await classroomChannel.send({
+  type:'broadcast',
+  event:'class-hand',
+  payload:{
+   senderId:currentParticipantId,
+   name,
+   raised
+  }
+ });
+
+ addMessage(
+  'BEA Assistant',
+  raised?'You raised your hand.':'You lowered your hand.',
+  true
+ );
 }
 $('handBtn').onclick=()=>setHand(true);$('lowerHandBtn').onclick=()=>setHand(false);
 
