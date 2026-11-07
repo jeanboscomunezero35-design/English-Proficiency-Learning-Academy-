@@ -238,10 +238,42 @@ function updateEmptyMessages(){
   updateEmptyMessages();
 } 
 function updatePresence(state){
- const next={};Object.values(state).flat().forEach(p=>{if(p.id)next[p.id]={id:p.id,name:p.name||'BEA participant',role:p.role||'student',hand:!!p.hand};});
- Object.keys(connectedParticipants).forEach(id=>{if(!next[id])removeRemoteParticipant(id);});
- connectedParticipants=next;updateParticipantList();
- Object.values(next).forEach(p=>{if(p.id!==currentParticipantId && currentParticipantId.localeCompare(p.id)<0 && !peerConnections[p.id])startRtcOffer(p);});
+ const next={};
+
+ Object.values(state).flat().forEach(p=>{
+  if(p.id){
+   next[p.id]={
+    id:p.id,
+    name:p.name||'BEA participant',
+    role:p.role||'student',
+    mode:p.mode||'individual',
+    hand:!!p.hand
+   };
+  }
+ });
+
+ Object.keys(connectedParticipants).forEach(id=>{
+  if(!next[id])removeRemoteParticipant(id);
+ });
+
+ connectedParticipants=next;
+ updateParticipantList();
+
+ const groupStudents=Object.values(next).filter(
+  p=>p.role==='student' && p.mode==='group'
+ );
+
+ console.log('BEA Group hall students:',groupStudents);
+
+ Object.values(next).forEach(p=>{
+  if(
+   p.id!==currentParticipantId &&
+   currentParticipantId.localeCompare(p.id)<0 &&
+   !peerConnections[p.id]
+  ){
+   startRtcOffer(p);
+  }
+ });
 }
 async function connectToClassroom(code,role,name){
  code=String(code||'').toUpperCase().trim();name=String(name||'').trim();role=String(role||'Student').toLowerCase();
@@ -267,7 +299,14 @@ async function connectToClassroom(code,role,name){
    .on('broadcast',{event:'class-hand'},({payload})=>{if(payload?.senderId!==currentParticipantId){if(connectedParticipants[payload.senderId])connectedParticipants[payload.senderId].hand=!!payload.raised;updateParticipantList();addMessage('BEA Assistant',(payload.name||'A participant')+(payload.raised?' raised a hand.':' lowered a hand.'),true);}})
    .subscribe(async status=>{
     if(status==='SUBSCRIBED'){
-     await classroomChannel.track({id:currentParticipantId,name,role,hand:false,joinedAt:new Date().toISOString()});
+    await classroomChannel.track({
+  id:currentParticipantId,
+  name,
+  role:currentParticipantRole,
+  mode:selectedMode,
+  hand:raised,
+  joinedAt:new Date().toISOString()
+});
      setEntry('Connected to '+code+'. Share the invitation link with your students.');$('roomBadge').textContent='Connected · '+code;cameraStatus.textContent='● Connected to '+code;
     }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){setEntry('Could not connect. Check Supabase URL, anon key and Realtime settings.');}
    });
@@ -660,7 +699,14 @@ function sendChat(){const v=$('chatInput').value.trim();if(!v)return;const name=
 $('sendBtn').onclick=sendChat;$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat();});
 async function setHand(raised){
  if(!currentRoomCode||!classroomChannel){addMessage('BEA Assistant','Join a classroom before raising your hand.',true);return;}
- const name=$('displayName').value.trim()||'Participant';await classroomChannel.track({id:currentParticipantId,name,role:currentParticipantRole,hand:raised,joinedAt:new Date().toISOString()});
+ const name=$('displayName').value.trim()||'Participant';await classroomChannel.track({
+  id:currentParticipantId,
+  name,
+  role,
+  mode:selectedMode,
+  hand:false,
+  joinedAt:new Date().toISOString()
+});
  classroomChannel.send({type:'broadcast',event:'class-hand',payload:{senderId:currentParticipantId,name,raised}});
  addMessage('BEA Assistant',raised?'You raised your hand.':'You lowered your hand.',true);
 }
