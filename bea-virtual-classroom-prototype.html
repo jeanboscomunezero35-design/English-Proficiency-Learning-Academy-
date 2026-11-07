@@ -781,6 +781,7 @@ async function addStreamToExistingPeers(stream){
       );
 
       if(!exists){
+        
         pc.addTrack(track,stream);
         added = true;
       }
@@ -862,27 +863,6 @@ async function removeStreamFromPeers(stream){
   }
 
 } 
-
-
-async function addStreamToExistingPeers(stream){
-
-  if(!stream) return;
-
-  for(const id of Object.keys(peerConnections)){
-
-    const pc = peerConnections[id].pc;
-
-    stream.getTracks().forEach(track=>{
-
-      if(!pc.getSenders().some(s=>s.track===track)){
-        pc.addTrack(track,stream);
-      }
-
-    });
-
-  }
-
-}
 
 
 async function removeStreamFromPeers(stream){
