@@ -416,9 +416,48 @@ async function connectToClassroom(code,role,name){
  }catch(e){console.error('BEA classroom connection:',e);setEntry('Connection error: '+e.message);}
 }
 async function sendRtcSignal(to,signal){
- if(!classroomChannel)return;
- const streamTypes={};[teacherStream,hallStream,microphoneStream].filter(Boolean).forEach(s=>{const hasVideo=s.getVideoTracks().length>0;streamTypes[s.id]=!hasVideo?'audio':(currentParticipantRole==='teacher'?(s===teacherStream?'teacher':'hall'):'student');});
- await classroomChannel.send({type:'broadcast',event:'webrtc-signal',payload:{from:currentParticipantId,to,name:$('displayName').value,role:currentParticipantRole,streamTypes,signal}});
+  if(!classroomChannel){
+    console.error('BEA SIGNAL NOT SENT: No classroom channel.');
+    return;
+  }
+
+  const streamTypes={};
+
+  [teacherStream,hallStream,microphoneStream]
+    .filter(Boolean)
+    .forEach(s=>{
+      const hasVideo=s.getVideoTracks().length>0;
+
+      streamTypes[s.id]=!hasVideo
+        ? 'audio'
+        : (currentParticipantRole==='teacher'
+            ? (s===teacherStream?'teacher':'hall')
+            : 'student');
+    });
+
+  try{
+    const result=await classroomChannel.send({
+      type:'broadcast',
+      event:'webrtc-signal',
+      payload:{
+        from:currentParticipantId,
+        to,
+        name:$('displayName').value,
+        role:currentParticipantRole,
+        streamTypes,
+        signal
+      }
+    });
+
+    console.log('BEA SIGNAL SENT:',{
+      to,
+      type:signal.type,
+      result
+    });
+
+  }catch(error){
+    console.error('BEA SIGNAL SEND ERROR:',error);
+  }
 }
 function destinationFor(type){return type==='teacher'?'teacherFrontStage':type==='hall'?'hallRemoteStage':'studentGallery';}
 function showRemoteVideo(id,name,stream,role,type){
