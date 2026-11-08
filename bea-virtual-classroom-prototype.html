@@ -183,6 +183,137 @@
     height: 130px !important;
   }
 }
+/* BEA — ONE SHARED CLASSROOM SCENE */
+
+.live-gallery{
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  min-height:570px!important;
+  padding:16px!important;
+  overflow:hidden!important;
+  background:#172c47!important;
+  border:3px solid #f2b544!important;
+  border-radius:15px!important;
+  color:#fff!important;
+}
+
+.live-gallery>h3{
+  position:relative;
+  z-index:5;
+  margin:0 0 12px;
+  text-align:center;
+}
+
+/* Students behind the teacher */
+.student-gallery-area{
+  position:absolute!important;
+  top:85px!important;
+  left:12px!important;
+  right:12px!important;
+  height:175px!important;
+  z-index:2!important;
+}
+
+.student-gallery-area h3{
+  text-align:center;
+  margin-bottom:8px;
+}
+
+#studentGallery{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:12px!important;
+  width:100%!important;
+  height:135px!important;
+  padding:8px!important;
+  overflow-x:auto!important;
+  background:transparent!important;
+  border:0!important;
+}
+
+#studentGallery .remote-video-card{
+  flex:0 0 145px!important;
+  height:115px!important;
+  min-height:115px!important;
+}
+
+/* Teacher in the foreground */
+.teacher-front-area{
+  position:absolute!important;
+  bottom:15px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:min(48%,480px)!important;
+  height:310px!important;
+  z-index:4!important;
+}
+
+.teacher-front-area h3{
+  text-align:center;
+  margin-bottom:6px;
+}
+
+#teacherFrontStage{
+  width:100%!important;
+  height:275px!important;
+  min-height:275px!important;
+  background:#203c5c!important;
+  border:2px solid #f2b544!important;
+  border-radius:12px!important;
+  overflow:hidden!important;
+}
+
+#teacherFrontStage .remote-video-card{
+  width:100%!important;
+  height:100%!important;
+}
+
+#teacherFrontStage video{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+}
+
+/* Hall feed does not create a separate classroom section */
+#hallRemoteStage{
+  display:none!important;
+}
+
+/* One shared waiting message */
+#beaClassroomWaiting{
+  position:absolute;
+  top:48%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:90%;
+  text-align:center;
+  color:#fff;
+  font-size:17px;
+  z-index:6;
+}
+
+@media(max-width:600px){
+  .live-gallery{min-height:490px!important}
+  .student-gallery-area{top:75px!important}
+  .student-gallery-area h3{font-size:12px}
+  #studentGallery .remote-video-card{
+    flex-basis:105px!important;
+    height:95px!important;
+    min-height:95px!important;
+  }
+  .teacher-front-area{
+    width:75%!important;
+    height:250px!important;
+  }
+  #teacherFrontStage{
+    height:220px!important;
+    min-height:220px!important;
+  }
+}   
 </style>
 </head>
 <body>
@@ -351,9 +482,33 @@ function removeRemoteParticipant(id){
  updateEmptyMessages();
 }
 function updateEmptyMessages(){
- if(!$('teacherFrontStage').querySelector('.remote-video-card'))$('teacherFrontStage').innerHTML="<div id='teacherEmptyMessage'>Waiting for the teacher's live camera...</div>";
- if(!$('hallRemoteStage').querySelector('.remote-video-card'))$('hallRemoteStage').innerHTML='<div id="hallEmptyMessage">Waiting for the hall camera...</div>';
- if(!$('studentGallery').querySelector('.remote-video-card'))$('studentGallery').innerHTML='<div id="remoteEmptyMessage">Waiting for students to connect...</div>';
+  const teacher = $('teacherFrontStage');
+  const students = $('studentGallery');
+  const classroom = document.querySelector('.live-gallery');
+
+  if(!teacher || !students || !classroom) return;
+
+  teacher.querySelectorAll('[id$="EmptyMessage"]').forEach(e=>e.remove());
+  students.querySelectorAll('[id$="EmptyMessage"]').forEach(e=>e.remove());
+
+  const teacherConnected =
+    !!teacher.querySelector('.remote-video-card');
+
+  const studentsConnected =
+    !!students.querySelector('.remote-video-card');
+
+  let waiting = $('beaClassroomWaiting');
+
+  if(!teacherConnected && !studentsConnected){
+    if(!waiting){
+      waiting = document.createElement('div');
+      waiting.id = 'beaClassroomWaiting';
+      waiting.textContent = 'Welcome to Bosco English Academy. Waiting for the class to connect...';
+      classroom.appendChild(waiting);
+    }
+  }else if(waiting){
+    waiting.remove();
+  }
 }
  function removeRemoteMedia(id,type){
 
