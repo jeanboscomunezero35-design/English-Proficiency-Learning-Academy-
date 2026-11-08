@@ -16,12 +16,53 @@
   max-width:100%;
 }
 
+/* BEA FULL CLASSROOM PEOPLE VIEW */
+
+#teacherFrontStage .teacher-remote-card{
+  width:100%;
+  max-width:100%;
+  background:transparent;
+  border:none;
+}
+
 #teacherFrontStage .teacher-remote-card video{
   width:100%;
   height:520px !important;
   aspect-ratio:3 / 4;
   object-fit:contain;
-  background:#172c47;
+  background:transparent;
+}
+
+#studentGallery{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  width:100%;
+}
+
+#studentGallery .remote-video-card{
+  width:100%;
+  max-width:none;
+  background:transparent;
+  border:none;
+}
+
+#studentGallery .remote-video-card video{
+  width:100%;
+  height:350px !important;
+  aspect-ratio:3 / 4;
+  object-fit:contain;
+  background:transparent;
+}
+
+@media(max-width:700px){
+  #teacherFrontStage .teacher-remote-card video{
+    height:380px !important;
+  }
+
+  #studentGallery .remote-video-card video{
+    height:260px !important;
+  }
 }
 
 @media(max-width:700px){
