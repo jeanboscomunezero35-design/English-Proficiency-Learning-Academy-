@@ -100,7 +100,24 @@
   opacity:1 !important;
   pointer-events:auto !important;
 }
-   
+  /* BEA LIVE CAMERA DISPLAY FIX */
+#teacherCamera,
+#hallCamera {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 10 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+.camera-screen {
+  position: relative !important;
+  min-height: 260px !important;
+  overflow: hidden !important;
+} 
    
  <style>
 /* BEA FULL-BODY TEACHER DISPLAY */
