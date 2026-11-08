@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js"></script>
+  <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BEA Virtual Classroom | Bosco English Academy</title>
@@ -584,72 +585,147 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
 <footer>© Bosco English Academy · Founded by Jean Bosco Munezero · Building Confidence in English</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-/* BEA LIVE HORIZONTAL CLASSROOM COMPOSER */
+/* BEA LIVE CLASSROOM - BACKGROUND REMOVAL */
 
 (function(){
 
   const canvas = document.getElementById('beaClassroomCanvas');
-  if(!canvas) return;
+  if(!canvas || typeof SelfieSegmentation === 'undefined') return;
 
   const ctx = canvas.getContext('2d');
 
   canvas.width = 1600;
   canvas.height = 900;
 
-  function drawPerson(video,x,y,w,h){
+  const feeds = new Map();
 
-    if(!video || video.readyState < 2 || !video.videoWidth) return;
+  function createFeed(video){
+
+    const personCanvas = document.createElement('canvas');
+    personCanvas.width = 640;
+    personCanvas.height = 480;
+
+    const personCtx = personCanvas.getContext('2d');
+
+    const segmentation = new SelfieSegmentation({
+      locateFile: file =>
+        'https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/' + file
+    });
+
+    const feed = {
+      video,
+      canvas: personCanvas,
+      busy:false,
+      segmentation
+    };
+
+    segmentation.setOptions({
+      modelSelection:0
+    });
+
+    segmentation.onResults(results => {
+
+      personCtx.clearRect(0,0,640,480);
+
+      personCtx.drawImage(results.image,0,0,640,480);
+
+      personCtx.globalCompositeOperation = 'destination-in';
+
+      personCtx.drawImage(
+        results.segmentationMask,0,0,640,480
+      );
+
+      personCtx.globalCompositeOperation = 'source-over';
+
+      feed.ready = true;
+      feed.busy = false;
+
+    });
+
+    feeds.set(video,feed);
+
+    return feed;
+  }
+
+  async function processFeed(feed){
+
+    if(feed.busy || feed.video.readyState < 2) return;
+
+    feed.busy = true;
+
+    try{
+      await feed.segmentation.send({
+        image:feed.video
+      });
+    }catch(error){
+      feed.busy = false;
+      console.error('BEA segmentation error:',error);
+    }
+  }
+
+  function drawPerson(feed,x,y,w,h){
+
+    if(!feed || !feed.ready) return;
+
+    const video = feed.canvas;
 
     const scale = Math.min(
-      w / video.videoWidth,
-      h / video.videoHeight
+      w/video.width,
+      h/video.height
     );
 
-    const width = video.videoWidth * scale;
-    const height = video.videoHeight * scale;
+    const width = video.width*scale;
+    const height = video.height*scale;
 
-    const dx = x + (w-width)/2;
-    const dy = y + (h-height)/2;
-
-    ctx.drawImage(video,dx,dy,width,height);
+    ctx.drawImage(
+      video,
+      x+(w-width)/2,
+      y+(h-height)/2,
+      width,
+      height
+    );
   }
 
   function drawClassroom(){
 
-    ctx.fillStyle = '#172c47';
-    ctx.fillRect(0,0,1600,900);
+    ctx.clearRect(0,0,1600,900);
 
-    ctx.fillStyle = '#f2b544';
-    ctx.font = 'bold 34px Arial';
-    ctx.fillText('BEA LIVE CLASSROOM',35,45);
+    const teacherVideo =
+      document.querySelector('#teacherFrontStage video');
 
-    const teacher = document.querySelector(
-      '#teacherFrontStage video'
-    );
+    const studentVideos =
+      Array.from(document.querySelectorAll('#studentGallery video'));
 
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 25px Arial';
-    ctx.fillText('TEACHER',35,90);
-
-    drawPerson(teacher,20,110,500,760);
-
-    const students = Array.from(
-      document.querySelectorAll('#studentGallery video')
-    );
-
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText('STUDENTS',550,90);
-
-    const positions = [
-      [550,110],[1070,110],
-      [550,495],[1070,495]
+    const activeVideos = [
+      ...(teacherVideo ? [teacherVideo] : []),
+      ...studentVideos
     ];
 
-    students.slice(0,4).forEach(function(video,index){
+    activeVideos.forEach(video => {
 
+      let feed = feeds.get(video);
+
+      if(!feed) feed = createFeed(video);
+
+      processFeed(feed);
+
+    });
+
+    const teacherFeed = teacherVideo ? feeds.get(teacherVideo) : null;
+
+    drawPerson(teacherFeed,20,70,500,800);
+
+    const positions = [
+      [550,70],[1070,70],
+      [550,470],[1070,470]
+    ];
+
+    studentVideos.slice(0,4).forEach((video,index) => {
+
+      const feed = feeds.get(video);
       const p = positions[index];
 
-      drawPerson(video,p[0],p[1],500,370);
+      drawPerson(feed,p[0],p[1],500,390);
 
     });
 
