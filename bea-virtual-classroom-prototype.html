@@ -1349,79 +1349,178 @@ function showLocalTeacherAtFront(stream){
   video.play().catch(()=>{});
 }  
 async function startVideo(which){
- const teacher=which==='teacher',video=teacher?teacherCamera:hallCamera,select=teacher?teacherSelect:hallSelect;
- const quality=$(teacher?'teacherQuality':'hallQuality'),placeholder=$(teacher?'teacherPlaceholder':'hallPlaceholder'),tag=$(teacher?'teacherLiveTag':'hallLiveTag'),status=$(teacher?'teacherStatus':'hallStatus');
- const request=teacher?++teacherCameraRequest:++hallCameraRequest;status.textContent='Starting camera...';
- try{
-  if(!navigator.mediaDevices?.getUserMedia)throw new Error('Camera access requires HTTPS and a supported browser.');
-  const constraints={audio:false,video:{...qualityConstraints(quality.value),...(select.value?{deviceId:{exact:select.value}}:{})}};
-  const fresh=await navigator.mediaDevices.getUserMedia(constraints);
-  if(request!==(teacher?teacherCameraRequest:hallCameraRequest)){fresh.getTracks().forEach(t=>t.stop());return;}
-  const old=teacher?teacherStream:hallStream;
-video.srcObject=fresh;
-video.muted=true;
-video.autoplay=true;
-video.playsInline=true;
-video.style.display='block';
-video.style.visibility='visible';
-video.style.opacity='1';
-await video.play();
-await new Promise(resolve => {
-  video.addEventListener('loadeddata', resolve, {once:true});
-  setTimeout(resolve, 3000);
-});
 
-alert('Video dimensions: ' + video.videoWidth + ' × ' + video.videoHeight);
-console.log('BEA VIDEO:', video.videoWidth, video.videoHeight, video.readyState);  
-   if(old){await removeStreamFromPeers(old);old.getTracks().forEach(t=>t.stop());}
-  if(teacher)teacherStream=fresh;else hallStream=fresh;
+ const teacher = which === 'teacher';
+ const video = teacher ? teacherCamera : hallCamera;
+ const select = teacher ? teacherSelect : hallSelect;
+
+ const quality = $(teacher?'teacherQuality':'hallQuality');
+ const placeholder = $(teacher?'teacherPlaceholder':'hallPlaceholder');
+ const tag = $(teacher?'teacherLiveTag':'hallLiveTag');
+ const status = $(teacher?'teacherStatus':'hallStatus');
+
+ const request = teacher ? ++teacherCameraRequest : ++hallCameraRequest;
+
+ status.textContent = 'Starting camera...';
+
+ try{
+
+  if(!navigator.mediaDevices?.getUserMedia){
+   throw new Error('Camera requires HTTPS.');
+  }
+
+  const constraints = {
+   audio:false,
+   video:{
+    ...qualityConstraints(quality.value),
+    ...(select.value ? {deviceId:{exact:select.value}} : {})
+   }
+  };
+
+  const fresh = await navigator.mediaDevices.getUserMedia(constraints);
+
+  if(request !== (teacher ? teacherCameraRequest : hallCameraRequest)){
+   fresh.getTracks().forEach(t=>t.stop());
+   return;
+  }
+
+  const old = teacher ? teacherStream : hallStream;
+
+  video.srcObject = fresh;
+  video.muted = true;
+  video.autoplay = true;
+  video.playsInline = true;
+
+  Object.assign(video.style,{
+   display:'block',
+   visibility:'visible',
+   opacity:'1',
+   width:'100%',
+   height:'100%',
+   objectFit:'contain',
+   zIndex:'10'
+  });
+
+  await video.play();
+
+  await new Promise(resolve=>{
+   if(video.videoWidth > 0){
+    resolve();
+    return;
+   }
+
+   video.addEventListener('loadeddata',resolve,{once:true});
+   setTimeout(resolve,4000);
+  });
+
+  if(!video.videoWidth || !video.videoHeight){
+   throw new Error('Camera started but no video picture was received.');
+  }
+
+  if(old){
+   await removeStreamFromPeers(old);
+   old.getTracks().forEach(t=>t.stop());
+  }
+
+  if(teacher){
+   teacherStream = fresh;
+  }else{
+   hallStream = fresh;
+  }
+
   if(teacher && currentParticipantRole === 'teacher'){
-  showLocalTeacherAtFront(fresh);
-}
-   if(teacher && currentParticipantRole === 'teacher'){
-  showLocalTeacherAtFront(fresh);
-}
-   await addStreamToExistingPeers(fresh);
-  video.style.display='block';
-video.style.visibility='visible';
-video.style.opacity='1';
-video.style.zIndex='5';
-placeholder.style.display='none';
-placeholder.style.visibility='hidden';
-placeholder.style.opacity='0';
-tag.style.display='block';
-  const s=fresh.getVideoTracks()[0].getSettings();status.textContent='Camera active: '+(s.width||'?')+' × '+(s.height||'?')+(s.frameRate?' · '+Math.round(s.frameRate)+' FPS':'');
-  updateOverallStatus();refreshCameras();
- }catch(e){console.error(e);status.textContent='Camera could not start.';alert('Unable to start '+which+' camera: '+(e.name==='NotAllowedError'?'Allow camera permission.':e.name==='OverconstrainedError'?'Try Auto or 720p.':e.message));}
+   showLocalTeacherAtFront(fresh);
+  }
+
+  await addStreamToExistingPeers(fresh);
+
+  video.style.display = 'block';
+  placeholder.style.display = 'none';
+  tag.style.display = 'block';
+
+  const s = fresh.getVideoTracks()[0].getSettings();
+
+  status.textContent =
+   'Camera active: '+(s.width||'?')+' × '+(s.height||'?');
+
+  console.log('BEA CAMERA SUCCESS:',video.videoWidth,video.videoHeight);
+
+  updateOverallStatus();
+  refreshCameras();
+
+ }catch(e){
+
+  console.error('BEA CAMERA ERROR:',e);
+
+  status.textContent = 'Camera could not start.';
+
+  alert('Camera error: '+e.message);
+
+ }
+
 }
 function showLocalTeacherAtFront(stream){
 
-  if(currentParticipantRole !== 'teacher') return;
+ if(currentParticipantRole !== 'teacher') return;
 
-  const stage = $('teacherFrontStage');
-  if(!stage) return;
+ const stage = $('teacherFrontStage');
 
-  const old = stage.querySelector('[data-local-teacher="true"]');
-  if(old) old.remove();
+ if(!stage){
+  console.error('Teacher front stage not found.');
+  return;
+ }
 
-  const empty = stage.querySelector('[id$="EmptyMessage"]');
-  if(empty) empty.remove();
+ const old = stage.querySelector('[data-local-teacher="true"]');
 
-  const card = document.createElement('div');
-  card.className = 'remote-video-card teacher-remote-card';
-  card.dataset.localTeacher = 'true';
+ if(old) old.remove();
 
-  const video = document.createElement('video');
-  video.autoplay = true;
-  video.playsInline = true;
-  video.muted = true;
-  video.srcObject = stream;
+ const empty = stage.querySelector('[id$="EmptyMessage"]');
 
-  card.appendChild(video);
-  stage.prepend(card);
+ if(empty) empty.remove();
 
-  video.play().catch(()=>{});
-}  
+ const card = document.createElement('div');
+
+ card.className = 'remote-video-card teacher-remote-card';
+ card.dataset.localTeacher = 'true';
+
+ Object.assign(card.style,{
+  width:'100%',
+  height:'100%',
+  minHeight:'300px',
+  position:'relative',
+  display:'flex',
+  alignItems:'center',
+  justifyContent:'center',
+  overflow:'hidden'
+ });
+
+ const video = document.createElement('video');
+
+ video.autoplay = true;
+ video.playsInline = true;
+ video.muted = true;
+ video.srcObject = stream;
+
+ Object.assign(video.style,{
+  display:'block',
+  width:'100%',
+  height:'100%',
+  objectFit:'contain',
+  visibility:'visible',
+  opacity:'1'
+ });
+
+ card.appendChild(video);
+
+ stage.prepend(card);
+
+ video.play().catch(error=>{
+  console.error('Teacher front video error:',error);
+ });
+
+ console.log('BEA TEACHER FRONT VIDEO CREATED');
+
+}
 async function stopVideo(which){
 
   const teacher = which === 'teacher';
