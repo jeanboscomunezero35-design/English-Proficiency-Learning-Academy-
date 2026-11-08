@@ -5,237 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BEA Virtual Classroom | Bosco English Academy</title>
 <!-- Updated with the requested horizontal one-scene classroom design; existing BEA classroom JavaScript preserved. -->
-/* ==========================================
-   BEA STADIUM — TEACHER FACES THE STUDENTS
-========================================== */
-
-.live-gallery {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: stretch !important;
-  justify-content: flex-start !important;
-  gap: 18px !important;
-  min-height: 680px !important;
-  padding: 30px !important;
-  background: radial-gradient(ellipse at center, #345d80, #102544) !important;
-  border: 6px solid #f2b544 !important;
-  border-radius: 100px / 55px !important;
-  overflow: hidden !important;
-}
-
-/* Classroom title */
-.live-gallery > h3 {
-  order: 0 !important;
-  text-align: center !important;
-  color: white !important;
-}
-
-/* TEACHER — FRONT OF THE STADIUM */
-.teacher-front-area {
-  order: 1 !important;
-  width: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: transparent !important;
-  border: none !important;
-  padding: 8px !important;
-}
-
-/* Teacher's camera at the front */
-#teacherFrontStage {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  min-height: 280px !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-/* STUDENTS — SEATED IN FRONT OF THE TEACHER */
-.student-gallery-area {
-  order: 2 !important;
-  width: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: stretch !important;
-  background: transparent !important;
-  border: none !important;
-  padding: 10px !important;
-}
-
-/* Student seats in rows */
-#studentGallery {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  align-items: flex-start !important;
-  gap: 18px !important;
-  width: 100% !important;
-  min-height: 170px !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-/* One shared stadium — no separate panels */
-.teacher-front-area,
-.student-gallery-area,
-#teacherFrontStage,
-#studentGallery {
-  box-shadow: none !important;
-  border-radius: 0 !important;
-}
-
-/* Teacher video */
-.teacher-remote-card,
-.bea-local-teacher-card {
-  width: min(100%, 480px) !important;
-  max-width: 480px !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-.teacher-remote-card video,
-.bea-local-teacher-card video {
-  width: 100% !important;
-  height: 280px !important;
-  object-fit: cover !important;
-  border: 3px solid #f2b544 !important;
-  border-radius: 18px !important;
-}
-
-/* Student video seats */
-.student-remote-card {
-  flex: 0 1 180px !important;
-  width: 180px !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-.student-remote-card video {
-  width: 100% !important;
-  height: 130px !important;
-  object-fit: cover !important;
-  border: 2px solid #d5e4f3 !important;
-  border-radius: 12px !important;
-}
-
-.teacher-front-area h3,
-.student-gallery-area h3 {
-  color: #ffe0a0 !important;
-  text-align: center !important;
-}
-
-.remote-video-name {
-  color: white !important;
-  text-align: center !important;
-}
-
-/* Hide separate hall display */
-.hall-view-area,
-#hallRemoteStage {
-  display: none !important;
-}
-
-@media(max-width:650px) {
-  .live-gallery {
-    border-radius: 35px !important;
-    padding: 15px !important;
-  }
-
-  .teacher-remote-card video,
-  .bea-local-teacher-card video {
-    height: 220px !important;
-  }
-
-  .student-remote-card {
-    flex-basis: 145px !important;
-  }
-}
-/* BEA — FACE-TO-FACE STADIUM CLASSROOM */
-
-.live-gallery {
-  display: grid !important;
-  grid-template-columns: 35% 65% !important;
-  grid-template-rows: auto 1fr !important;
-  grid-template-areas:
-    "heading heading"
-    "teacher students" !important;
-
-  width: 100% !important;
-  min-height: 650px !important;
-  align-items: center !important;
-  gap: 15px !important;
-}
-
-/* Stadium heading */
-.live-gallery > h3 {
-  grid-area: heading !important;
-  text-align: center !important;
-}
-
-/* Teacher at one end */
-.live-gallery .teacher-front-area {
-  grid-area: teacher !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-/* Students opposite the teacher */
-.live-gallery .student-gallery-area {
-  grid-area: students !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-/* Teacher camera */
-#teacherFrontStage {
-  width: 100% !important;
-  min-height: 300px !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-/* Students face the teacher */
-#studentGallery {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 12px !important;
-  width: 100% !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-/* Hide separate hall display, preserve its HTML ID */
-.live-gallery .hall-view-area {
-  display: none !important;
-}
-
-@media(max-width:650px) {
-  .live-gallery {
-    grid-template-columns: 1fr !important;
-    grid-template-areas:
-      "heading"
-      "teacher"
-      "students" !important;
-  }
-}
 <style>
 :root{--navy:#102544;--blue:#1769aa;--sky:#eaf4ff;--gold:#f2b544;--muted:#65758b;--line:#dce5ef;--ink:#23354d;--green:#16834a}
 *{box-sizing:border-box}
@@ -334,104 +103,166 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
 @media(max-width:650px){.camera-grid{grid-template-columns:1fr}.camera-screen{height:230px}.camera-card.expanded .camera-screen{height:300px}.teacher-remote-card video{height:260px}.hall-remote-card video{height:220px}.remote-video-card video{height:200px}}
 @media(max-width:460px){main{padding:0 12px}.features{grid-template-columns:1fr 1fr}.controls button{flex:1}.mode-grid,.room-actions{grid-template-columns:1fr}.pen-tool{flex:1}}
 
-/* =====================================================
-   BEA ONE-SCENE HORIZONTAL CLASSROOM
-   Students behind; teacher in front; shared classroom scene
-===================================================== */
-.live-gallery{
-  position:relative!important;
- width:100%!important;
-max-width:100%!important;
-box-sizing:border-box!important;
-  min-height:650px!important;
-  aspect-ratio:16/9;
-  margin-top:18px!important;
-  padding:0!important;
-  overflow:hidden!important;
-  border:0!important;
-  border-radius:0!important;
-  background:
-    linear-gradient(180deg,rgba(16,37,68,.12),rgba(16,37,68,.35)),
-    linear-gradient(180deg,#8ba5b8 0%,#b7c8d1 43%,#657d8c 44%,#354b5c 100%)!important;
-  box-shadow:none!important;
+/* ==============================================
+   BEA — ONE CONTINUOUS FACE-TO-FACE STADIUM
+============================================== */
+
+main {
+  max-width: none;
+  width: 100%;
+  padding: 0 20px;
 }
-.live-gallery>h3,
-.teacher-front-area>h3,
-.student-gallery-area>h3,
-.hall-view-area{display:none!important}
-.student-gallery-area{
-  position:absolute!important;
-  inset:75px 0 auto 0!important;
-  height:270px!important;
-  margin:0!important;padding:0 12px!important;
-  background:transparent!important;border:0!important;border-radius:0!important;
-  z-index:2!important;
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
 }
-#studentGallery{
-  display:flex!important;flex-flow:row nowrap!important;
-  justify-content:center!important;align-items:flex-start!important;
-  gap:10px!important;width:100%!important;height:100%!important;
-  padding:0!important;overflow-x:auto!important;
-  background:transparent!important;border:0!important;
+
+.live-gallery {
+  display: grid !important;
+  grid-template-columns: minmax(0, 38%) minmax(0, 62%) !important;
+  grid-template-rows: auto 1fr !important;
+  grid-template-areas:
+    "title title"
+    "teacher students" !important;
+
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 650px !important;
+  padding: 25px !important;
+  gap: 15px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+
+  background: radial-gradient(ellipse at center, #345d80, #102544) !important;
+  border: 6px solid #f2b544 !important;
+  border-radius: 100px / 55px !important;
 }
-#studentGallery .remote-video-card{
-  flex:0 0 clamp(105px,16%,190px)!important;
-  width:auto!important;height:230px!important;
-  position:relative!important;overflow:visible!important;
-  background:transparent!important;border:0!important;
-  border-radius:0!important;box-shadow:none!important;
+
+.stadium-title {
+  grid-area: title;
+  text-align: center;
+  color: white;
+  margin: 0;
 }
-#studentGallery .remote-video-card video{
-  display:block!important;width:100%!important;height:100%!important;
-  object-fit:cover!important;object-position:center!important;
-  background:transparent!important;border:0!important;border-radius:0!important;
+
+.teacher-front-area {
+  grid-area: teacher;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 0;
+  background: transparent !important;
+  border: none !important;
+  padding: 10px !important;
 }
-.teacher-front-area{
-  position:absolute!important;inset:auto 0 0 0!important;
-  width:100%!important;height:470px!important;
-  margin:0!important;padding:0!important;
-  background:transparent!important;border:0!important;
-  z-index:5!important;
+
+.student-gallery-area {
+  grid-area: students;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-width: 0;
+  background: transparent !important;
+  border: none !important;
+  padding: 10px !important;
 }
-#teacherFrontStage{
-  position:absolute!important;left:50%!important;bottom:0!important;
-  transform:translateX(-50%)!important;
-  display:flex!important;align-items:flex-end!important;justify-content:center!important;
-  width:min(48%,560px)!important;height:100%!important;min-height:0!important;
-  padding:0!important;gap:0!important;overflow:visible!important;
-  background:transparent!important;border:0!important;border-radius:0!important;
+
+.teacher-front-area h3,
+.student-gallery-area h3 {
+  color: #ffe0a0 !important;
+  text-align: center;
+  font-size: 15px;
 }
-#teacherFrontStage .remote-video-card{
-  position:relative!important;width:100%!important;height:100%!important;
-  max-width:none!important;overflow:visible!important;
-  background:transparent!important;border:0!important;
-  border-radius:0!important;box-shadow:none!important;
+
+#teacherFrontStage {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-height: 350px !important;
+  background: transparent !important;
+  border: none !important;
 }
-#teacherFrontStage video{
-  display:block!important;width:100%!important;height:100%!important;
-  object-fit:contain!important;object-position:center bottom!important;
-  background:transparent!important;border:0!important;border-radius:0!important;
+
+#studentGallery {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-content: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  min-height: 350px !important;
+  background: transparent !important;
+  border: none !important;
 }
-.remote-video-name,.remote-video-status{
-  position:absolute!important;left:8px!important;bottom:8px!important;
-  padding:4px 8px!important;color:#fff!important;
-  background:rgba(0,0,0,.28)!important;border:0!important;
-  border-radius:0!important;text-shadow:0 1px 4px #000!important;
-  font-size:12px!important;z-index:8!important;
+
+.remote-video-card {
+  min-width: 0;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
-.remote-video-status{display:none!important}
-#hallRemoteStage{display:none!important}
-#teacherFrontStage:empty:after{
-  content:"Teacher camera will appear here";
-  color:#fff;text-shadow:0 1px 4px #000;
+
+#teacherFrontStage .remote-video-card {
+  width: 100% !important;
+  max-width: 480px !important;
 }
-@media(max-width:700px){
-  .live-gallery{min-height:470px!important;aspect-ratio:auto}
-  .student-gallery-area{top:55px!important;height:185px!important}
-  #studentGallery .remote-video-card{flex-basis:28%!important;height:165px!important}
-  .teacher-front-area{height:315px!important}
-  #teacherFrontStage{width:66%!important}
+
+#teacherFrontStage video {
+  width: 100% !important;
+  height: 320px !important;
+  object-fit: cover !important;
+  border: 3px solid #f2b544 !important;
+  border-radius: 18px !important;
 }
+
+#studentGallery .remote-video-card video {
+  display: block !important;
+  width: 100% !important;
+  height: 150px !important;
+  object-fit: cover !important;
+  border: 2px solid #d5e4f3 !important;
+  border-radius: 12px !important;
+}
+
+.remote-video-name {
+  color: white !important;
+  text-align: center;
+}
+
+.hall-view-area,
+#hallRemoteStage {
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+  .live-gallery {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto !important;
+    grid-template-areas:
+      "title"
+      "teacher"
+      "students" !important;
+    border-radius: 35px !important;
+    padding: 15px !important;
+  }
+
+  #teacherFrontStage {
+    min-height: 250px !important;
+  }
+
+  #teacherFrontStage video {
+    height: 230px !important;
+  }
+
+  #studentGallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+  
 </style>
 </head>
 <body>
@@ -468,103 +299,47 @@ box-sizing:border-box!important;
             </div>
           </div>
         </div>
-     <div class="live-gallery">
-  display:flex!important;
-  flex-direction:column!important;
-  width:100%!important;
-  min-height:680px!important;
-  padding:30px!important;
-  gap:18px!important;
-  background:radial-gradient(ellipse,#345d80,#102544)!important;
-  border:6px solid #f2b544!important;
-  border-radius:100px / 55px!important;
-  box-sizing:border-box!important;
-  overflow:hidden!important;
-">
+ <div class="live-gallery">
 
-  <h3 style="
-    order:0!important;
-    text-align:center!important;
-    color:white!important;
-    width:100%!important;
-  ">
-    🏫 BEA — ONE SHARED LIVE CLASSROOM
+  <h3 class="stadium-title">
+    🏫 BOSCO ENGLISH ACADEMY — LIVE CLASSROOM
   </h3>
 
-  <!-- TEACHER AT THE FRONT -->
-  <div class="teacher-front-area"> 
-    order:1!important;
-    display:flex!important;
-    flex-direction:column!important;
-    align-items:center!important;
-    width:100%!important;
-    background:transparent!important;
-    border:0!important;
-    padding:10px!important;
-  ">
+  <div class="teacher-front-area">
+    <h3>👨‍🏫 TEACHER</h3>
 
-    <h3 style="color:#ffe0a0!important;text-align:center!important;">
-      👨‍🏫 TEACHER — FRONT OF THE CLASS
-    </h3>
-
-    <div id="teacherFrontStage" style="
-      display:flex!important;
-      justify-content:center!important;
-      align-items:center!important;
-      width:100%!important;
-      min-height:260px!important;
-      background:transparent!important;
-      border:0!important;
-    ">
-      <div id="teacherEmptyMessage" style="color:white!important;">
+    <div id="teacherFrontStage">
+      <div id="teacherEmptyMessage">
         Waiting for the teacher's live camera...
       </div>
     </div>
   </div>
 
-  <!-- KEEP HALL CAMERA ID FOR EXISTING JAVASCRIPT -->
-  <div class="hall-view-area" style="display:none!important;">
+  <div class="hall-view-area" style="display:none">
     <h3>Whole Hall Camera</h3>
     <div id="hallRemoteStage">
-      <div id="hallEmptyMessage">Waiting for the hall camera...</div>
+      <div id="hallEmptyMessage">
+        Waiting for the hall camera...
+      </div>
     </div>
   </div>
 
-  <!-- STUDENTS FACING THE TEACHER -->
   <div class="student-gallery-area">
-    order:2!important;
-    display:flex!important;
-    flex-direction:column!important;
-    align-items:center!important;
-    width:100%!important;
-    background:transparent!important;
-    border:0!important;
-    padding:15px!important;
-  ">
+    <h3>👥 STUDENTS — FACING THE TEACHER</h3>
 
-    <h3 style="color:#ffe0a0!important;text-align:center!important;">
-      👥 STUDENTS — SEATED FACING THE TEACHER
-    </h3>
-
-    <div class="remote-video-grid" id="studentGallery" style="
-      display:flex!important;
-      flex-direction:row!important;
-      flex-wrap:wrap!important;
-      justify-content:center!important;
-      align-items:flex-start!important;
-      gap:18px!important;
-      width:100%!important;
-      min-height:150px!important;
-      background:transparent!important;
-      border:0!important;
-    ">
-      <div id="remoteEmptyMessage" style="color:white!important;">
+    <div class="remote-video-grid" id="studentGallery">
+      <div id="remoteEmptyMessage">
         Waiting for students to connect...
- </div>
+      </div>
     </div>
-
   </div>
-</section>
+
+</div>
+
+</div><!-- END CAMERA STAGE -->
+
+</section><!-- END TEACHING PANEL -->
+
 <!-- BEA INTERACTIVE CHALKBOARD -->
 <div class="board-wrap">
 
@@ -586,44 +361,24 @@ box-sizing:border-box!important;
   </div>
 
   <div class="board-tools">
-
-    <button class="secondary tool-button active" id="markerBtn">
-      🖊️ Marker
-    </button>
-
-    <button class="secondary tool-button" id="chalkBtn">
-      🖍️ Chalk
-    </button>
-
-    <button class="secondary tool-button" id="handwritingBtn">
-      ✍️ Handwriting
-    </button>
-
-    <button class="secondary tool-button" id="textBtn">
-      ⌨️ Text
-    </button>
+    <button class="secondary tool-button active" id="markerBtn">🖊️ Marker</button>
+    <button class="secondary tool-button" id="chalkBtn">🖍️ Chalk</button>
+    <button class="secondary tool-button" id="handwritingBtn">✍️ Handwriting</button>
+    <button class="secondary tool-button" id="textBtn">⌨️ Text</button>
 
     <div class="pen-tool">
       <label for="penColor">🎨 Colour</label>
-      <input type="color" class="color-picker"
-             id="penColor" value="#173b67">
+      <input type="color" class="color-picker" id="penColor" value="#173b67">
     </div>
 
     <div class="pen-tool">
       <label for="penSize">Thickness</label>
-      <input type="range" class="thickness-picker"
-             id="penSize" min="2" max="24" value="4">
+      <input type="range" class="thickness-picker" id="penSize" min="2" max="24" value="4">
       <span class="thickness-value" id="penSizeValue">4</span>
     </div>
 
-    <button class="secondary tool-button" id="eraseBtn">
-      Eraser
-    </button>
-
-    <button class="dark" id="clearBtn">
-      Clear board
-    </button>
-
+    <button class="secondary tool-button" id="eraseBtn">Eraser</button>
+    <button class="dark" id="clearBtn">Clear board</button>
   </div>
 
   <p class="board-instruction" id="boardInstruction">
@@ -633,6 +388,8 @@ box-sizing:border-box!important;
 
 </div>
 <!-- END INTERACTIVE CHALKBOARD -->
+
+<aside class="side"> 
 <aside class="side">
   <section class="panel">
     <div class="panel-head">
