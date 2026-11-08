@@ -1356,7 +1356,15 @@ async function startVideo(which){
   const constraints={audio:false,video:{...qualityConstraints(quality.value),...(select.value?{deviceId:{exact:select.value}}:{})}};
   const fresh=await navigator.mediaDevices.getUserMedia(constraints);
   if(request!==(teacher?teacherCameraRequest:hallCameraRequest)){fresh.getTracks().forEach(t=>t.stop());return;}
-  const old=teacher?teacherStream:hallStream;video.srcObject=fresh;await video.play().catch(()=>{});
+  const old=teacher?teacherStream:hallStream;
+video.srcObject=fresh;
+video.muted=true;
+video.autoplay=true;
+video.playsInline=true;
+video.style.display='block';
+video.style.visibility='visible';
+video.style.opacity='1';
+await video.play();
   if(old){await removeStreamFromPeers(old);old.getTracks().forEach(t=>t.stop());}
   if(teacher)teacherStream=fresh;else hallStream=fresh;
   if(teacher && currentParticipantRole === 'teacher'){
