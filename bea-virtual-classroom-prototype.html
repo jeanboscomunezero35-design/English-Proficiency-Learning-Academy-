@@ -570,88 +570,99 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
     height:230px !important;
   }
 } 
-/* BEA ONE-BOX LIVE CLASSROOM — FINAL DISPLAY */
+/* BEA CLASSROOM — RESTORE LIVE VIDEO VISIBILITY */
 
-.camera-grid{
-  display:grid !important;
-  grid-template-columns:1fr 1fr !important;
-  gap:12px;
-}
-
-/* Keep camera controls visible */
-.camera-card{
-  position:relative !important;
-  background:#ffffff !important;
-  color:#102544 !important;
-  border:1px solid #dce5ef !important;
-  box-shadow:none !important;
-}
-
-.camera-heading{
-  color:#102544 !important;
-}
-
-.camera-heading span:last-child{
-  color:#65758b !important;
-}
-
-.camera-controls{
-  background:#ffffff !important;
-}
-
-.camera-controls label,
-.camera-status{
-  color:#34445a !important;
-}
-
-/* Hide camera pictures visually, not the video elements */
+/* Restore camera previews */
 .camera-screen{
-  position:absolute !important;
-  left:-10000px !important;
-  top:0 !important;
-  width:640px !important;
-  height:480px !important;
-  opacity:0 !important;
-  pointer-events:none !important;
+  position:relative !important;
+  left:auto !important;
+  top:auto !important;
+  width:100% !important;
+  height:260px !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  overflow:hidden !important;
+  pointer-events:auto !important;
 }
 
-/* One main classroom display */
-.live-gallery{
+.camera-screen video{
   display:block !important;
   position:relative !important;
   width:100% !important;
-  margin-top:18px !important;
-  padding:0 !important;
-  background:transparent !important;
-  border:none !important;
-  overflow:hidden !important;
+  height:100% !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  object-fit:contain !important;
 }
 
-#beaClassroomCanvas{
-  display:block !important;
+/* Restore the classroom */
+.live-gallery{
+  display:flex !important;
+  flex-direction:column !important;
+  position:relative !important;
   width:100% !important;
   height:auto !important;
-  aspect-ratio:16 / 9 !important;
-  background:transparent !important;
-  border:0 !important;
+  padding:15px !important;
+  background:#172c47 !important;
+  overflow:visible !important;
 }
 
-/* Hide the separate galleries, preserve their live video elements */
+/* Show teacher and students */
 .teacher-front-area,
 .student-gallery-area,
 .hall-view-area{
-  position:absolute !important;
-  left:-10000px !important;
-  top:0 !important;
-  width:640px !important;
-  opacity:0 !important;
-  pointer-events:none !important;
+  position:relative !important;
+  left:auto !important;
+  top:auto !important;
+  width:100% !important;
+  height:auto !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
 }
 
-.live-gallery > h3{
+/* Teacher stage */
+#teacherFrontStage{
+  display:flex !important;
+  position:relative !important;
+  width:100% !important;
+  min-height:400px !important;
+  background:#172c47 !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+}
+
+/* Teacher picture */
+#teacherFrontStage video{
+  display:block !important;
+  width:100% !important;
+  height:500px !important;
+  object-fit:contain !important;
+}
+
+/* Student gallery */
+#studentGallery{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:12px !important;
+  width:100% !important;
+}
+
+/* Hide unused composition canvas */
+#beaClassroomCanvas{
   display:none !important;
-}      
-</style>
+}
+
+@media(max-width:700px){
+  #teacherFrontStage{
+    min-height:300px !important;
+  }
+
+  #teacherFrontStage video{
+    height:350px !important;
+  }
+}
 </head>
 <body>
 <header>
