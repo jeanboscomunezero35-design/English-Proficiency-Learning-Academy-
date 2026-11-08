@@ -1438,9 +1438,10 @@ async function startVideo(which){
    hallStream = fresh;
   }
 
-  if(teacher && currentParticipantRole === 'teacher'){
+ if(teacher){
    showLocalTeacherAtFront(fresh);
-  }
+}
+  
 
   await addStreamToExistingPeers(fresh);
 
@@ -1470,8 +1471,6 @@ async function startVideo(which){
 
 }
 function showLocalTeacherAtFront(stream){
-
- if(currentParticipantRole !== 'teacher') return;
 
  const stage = $('teacherFrontStage');
 
