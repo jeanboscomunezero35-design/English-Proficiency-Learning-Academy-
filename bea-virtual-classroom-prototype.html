@@ -1,125 +1,95 @@
-!DOCTYPE html>
-<html lang="en">
+<style>
+/* BEA CLASSROOM — RESTORED DISPLAY */
 
-  <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js"></script>
-<title>BEA Virtual Classroom | Bosco English Academy</title>
-/* BEA ONE-SCENE LIVE CLASSROOM */
-
-.live-gallery{
-  position:relative;
-  display:block !important;
-  width:100%;
-  padding:0 !important;
-  background:#172c47 !important;
-  border:3px solid #f2b544;
-  border-radius:14px;
-  overflow:hidden;
-  box-sizing:border-box;
+.live-gallery {
+  position: relative;
+  display: block !important;
+  width: 100%;
+  padding: 15px !important;
+  background: #172c47 !important;
+  border: 3px solid #f2b544 !important;
+  border-radius: 14px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-#beaClassroomCanvas{
-  display:block;
-  width:100%;
-  height:auto;
-  aspect-ratio:16 / 9;
-  background:#172c47;
+#beaClassroomCanvas {
+  display: none !important;
 }
 
-/* Keep live video sources running for the classroom composition */
-.teacher-front-area,
-.student-gallery-area,
-.hall-view-area{
-  position:absolute !important;
-  left:-10000px !important;
-  top:0 !important;
-  width:640px !important;
-  opacity:0 !important;
-  pointer-events:none !important;
+.camera-screen {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 260px !important;
+  height: 260px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  overflow: hidden !important;
 }
 
-.live-gallery > h3{
-  display:none !important;
-}
-  /* BEA FINAL TRANSPARENT CLASSROOM */
-
-.live-gallery,
-#beaClassroomCanvas{
-  background:transparent !important;
-  background-color:transparent !important;
-  box-shadow:none !important;
-}
-
-.live-gallery{
-  border:none !important;
-  border-radius:0 !important;
-}
-
-#beaClassroomCanvas{
-  display:block;
-  width:100%;
-  aspect-ratio:16 / 9;
-  border:none !important;
-}
-
-.teacher-front-area,
-.student-gallery-area,
-.hall-view-area{
-  background:transparent !important;
-  border:none !important;
-  box-shadow:none !important;
-}
-/* BEA CAMERA PREVIEW RECOVERY — CLEAN */
-
-.camera-screen{
-  position:relative !important;
-  left:auto !important;
-  top:auto !important;
-  width:100% !important;
-  height:260px !important;
-  opacity:1 !important;
-  overflow:hidden !important;
-}
-
-.camera-screen video{
-  display:block !important;
-  width:100% !important;
-  height:100% !important;
-  object-fit:contain !important;
-}
-
-.teacher-front-area,
-.student-gallery-area,
-.hall-view-area{
-  position:relative !important;
-  left:auto !important;
-  top:auto !important;
-  width:100% !important;
-  opacity:1 !important;
-  pointer-events:auto !important;
-}
-  /* BEA LIVE CAMERA DISPLAY FIX */
-#teacherCamera,
-#hallCamera {
+.camera-screen video {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  position: relative !important;
-  z-index: 10 !important;
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
 }
 
-.camera-screen {
+.teacher-front-area,
+.student-gallery-area,
+.hall-view-area {
   position: relative !important;
-  min-height: 260px !important;
+  left: auto !important;
+  top: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+#teacherCamera,
+#hallCamera {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+#teacherFrontStage {
+  display: flex !important;
+  position: relative !important;
+  width: 100% !important;
+  min-height: 350px !important;
+  background: #172c47 !important;
+  align-items: center !important;
+  justify-content: center !important;
   overflow: hidden !important;
-} 
-   
- <style>
+}
+
+#teacherFrontStage video {
+  display: block !important;
+  width: 100% !important;
+  height: 400px !important;
+  object-fit: contain !important;
+}
+
+#studentGallery {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+@media (max-width: 700px) {
+  #teacherFrontStage video {
+    height: 300px !important;
+  }
+}
+</style>
 /* BEA FULL-BODY TEACHER DISPLAY */
 
 .live-gallery{
