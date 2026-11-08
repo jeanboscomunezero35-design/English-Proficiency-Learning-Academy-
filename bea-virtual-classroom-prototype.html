@@ -654,13 +654,18 @@ async function stopVideo(which){
  if(teacher){teacherStream=null;removeLocalTeacherFromFront();}else hallStream=null;$(teacher?'teacherStatus':'hallStatus').textContent='Camera stopped.';updateOverallStatus();
 }
 $('startTeacher').onclick=()=>startVideo('teacher');$('startHall').onclick=()=>startVideo('hall');
-$('stopTeacher').onclick=()=>stopVideo('teacher');$('stopHall').onclick=()=>stopVideo('hall');
-$('refreshCameras').onclick=refreshCameras;
+$('stopTeacher').onclick=()=>stopVideo('teacher');$('stopHall').onclick=()=>stopVideo('hall);
+if($('refreshCameras')){
+  $('refreshCameras').onclick=refreshCameras;
+}
 $('teacherQuality').onchange=()=>{if(teacherStream)startVideo('teacher');};$('hallQuality').onchange=()=>{if(hallStream)startVideo('hall');};
 teacherSelect.onchange=()=>{if(teacherStream)startVideo('teacher');};hallSelect.onchange=()=>{if(hallStream)startVideo('hall');};
 function toggleExpand(card,btn){const yes=$(card).classList.toggle('expanded');$(btn).textContent=yes?'Minimize':'Enlarge';}
 $('expandTeacher').onclick=()=>toggleExpand('teacherCard','expandTeacher');$('expandHall').onclick=()=>toggleExpand('hallCard','expandHall');
-$('stopAllCameras').onclick=()=>{stopVideo('teacher');stopVideo('hall');};
+if($('stopAllCameras')){
+if($('startMic')) $('startMic').onclick=startMic;
+if($('stopMic')) $('stopMic').onclick=stopMic;  
+}
 navigator.mediaDevices?.addEventListener?.('devicechange',refreshCameras);
 async function startMic(){
  try{if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone not supported.');const fresh=await navigator.mediaDevices.getUserMedia({audio:true,video:false});if(microphoneStream)microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=fresh;await addStreamToExistingPeers(fresh);$('startMic').textContent='🎤 Microphone active';updateOverallStatus();}
