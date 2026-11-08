@@ -653,9 +653,13 @@ async function stopVideo(which){
  video.pause();video.srcObject=null;video.style.display='none';$(teacher?'teacherPlaceholder':'hallPlaceholder').style.display='block';$(teacher?'teacherLiveTag':'hallLiveTag').style.display='none';
  if(teacher){teacherStream=null;removeLocalTeacherFromFront();}else hallStream=null;$(teacher?'teacherStatus':'hallStatus').textContent='Camera stopped.';updateOverallStatus();
 }
-$('startTeacher').onclick=()=>startVideo('teacher');$('startHall').onclick=()=>startVideo('hall');
+$('startTeacher').onclick=()=>startVideo('teacher');
+$('startHall').onclick=()=>startVideo('hall');
+
 $('stopTeacher').onclick=()=>stopVideo('teacher');
-if($('refreshCameras')){$('stopHall').onclick=()=>stopVideo('hall');
+$('stopHall').onclick=()=>stopVideo('hall');
+
+if($('refreshCameras')){
   $('refreshCameras').onclick=refreshCameras;
 }
 $('teacherQuality').onchange=()=>{if(teacherStream)startVideo('teacher');};$('hallQuality').onchange=()=>{if(hallStream)startVideo('hall');};
