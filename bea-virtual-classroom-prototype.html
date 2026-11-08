@@ -815,46 +815,7 @@ function updateEmptyMessages(){
     }
 
   });
-// BEA EMERGENCY LIVE VIDEO DISPLAY
-(function(){
 
-  const teacherBox = document.getElementById('beaEmergencyTeacher');
-  const studentBox = document.getElementById('beaEmergencyStudent');
-
-  function updateEmergencyVideos(){
-
-    if(!teacherBox || !studentBox) return;
-
-    if(currentParticipantRole === 'teacher'){
-
-      if(teacherStream && teacherBox.srcObject !== teacherStream){
-        teacherBox.srcObject = teacherStream;
-      }
-
-      const student = document.querySelector('#studentGallery video');
-
-      if(student && student.srcObject && studentBox.srcObject !== student.srcObject){
-        studentBox.srcObject = student.srcObject;
-      }
-
-    }else{
-
-      const teacher = document.querySelector('#teacherFrontStage video');
-
-      if(teacher && teacher.srcObject && teacherBox.srcObject !== teacher.srcObject){
-        teacherBox.srcObject = teacher.srcObject;
-      }
-
-      if(teacherStream && studentBox.srcObject !== teacherStream){
-        studentBox.srcObject = teacherStream;
-      }
-    }
-
-  }
-
-  setInterval(updateEmergencyVideos, 500);
-
-})();
   updateEmptyMessages();
 } 
 function updatePresence(state){
