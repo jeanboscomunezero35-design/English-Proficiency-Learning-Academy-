@@ -673,6 +673,12 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
         </div>
         <div class="live-gallery">
           <canvas id="beaClassroomCanvas"></canvas>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+  <video id="beaEmergencyTeacher" autoplay playsinline muted
+    style="width:48%;min-height:220px;background:#111;object-fit:contain;"></video>
+  <video id="beaEmergencyStudent" autoplay playsinline
+    style="width:48%;min-height:220px;background:#111;object-fit:contain;"></video>
+</div>
           <h3>👥 Live Virtual Classroom — Connected Participants</h3>
           <div class="teacher-front-area"><h3>👨‍🏫 Teacher — Front of Classroom</h3><div id="teacherFrontStage"><div id="teacherEmptyMessage">Waiting for the teacher's live camera...</div></div></div>
           <div class="hall-view-area"><h3>🏫 Whole Hall Camera</h3><div id="hallRemoteStage"><div id="hallEmptyMessage">Waiting for the hall camera...</div></div></div>
@@ -809,7 +815,46 @@ function updateEmptyMessages(){
     }
 
   });
+// BEA EMERGENCY LIVE VIDEO DISPLAY
+(function(){
 
+  const teacherBox = document.getElementById('beaEmergencyTeacher');
+  const studentBox = document.getElementById('beaEmergencyStudent');
+
+  function updateEmergencyVideos(){
+
+    if(!teacherBox || !studentBox) return;
+
+    if(currentParticipantRole === 'teacher'){
+
+      if(teacherStream && teacherBox.srcObject !== teacherStream){
+        teacherBox.srcObject = teacherStream;
+      }
+
+      const student = document.querySelector('#studentGallery video');
+
+      if(student && student.srcObject && studentBox.srcObject !== student.srcObject){
+        studentBox.srcObject = student.srcObject;
+      }
+
+    }else{
+
+      const teacher = document.querySelector('#teacherFrontStage video');
+
+      if(teacher && teacher.srcObject && teacherBox.srcObject !== teacher.srcObject){
+        teacherBox.srcObject = teacher.srcObject;
+      }
+
+      if(teacherStream && studentBox.srcObject !== teacherStream){
+        studentBox.srcObject = teacherStream;
+      }
+    }
+
+  }
+
+  setInterval(updateEmergencyVideos, 500);
+
+})();
   updateEmptyMessages();
 } 
 function updatePresence(state){
