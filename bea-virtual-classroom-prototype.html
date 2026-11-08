@@ -1,190 +1,190 @@
- <style>
-/* ==========================================
-   BEA — ONE SHARED CLASSROOM SCENE
-   Students behind; teacher in front
-========================================== */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BEA Virtual Classroom | Bosco English Academy</title>
+<!-- Updated with the requested horizontal one-scene classroom design; existing BEA classroom JavaScript preserved. -->
+<style>
+:root{--navy:#102544;--blue:#1769aa;--sky:#eaf4ff;--gold:#f2b544;--muted:#65758b;--line:#dce5ef;--ink:#23354d;--green:#16834a}
+*{box-sizing:border-box}
+body{margin:0;background:#f4f7fb;color:var(--ink);font-family:Arial,sans-serif}
+header{background:var(--navy);color:white;padding:17px max(18px,calc((100% - 1250px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:19px;letter-spacing:.2px}.brand small{display:block;font-size:11px;color:#c5d6eb;font-weight:400;margin-top:4px}
+.badge{background:#234568;border:1px solid #476486;border-radius:20px;padding:7px 12px;font-size:12px}
+main{max-width:1250px;margin:28px auto;padding:0 18px}
+.intro{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+h1{margin:0;color:var(--navy);font-size:clamp(25px,4vw,36px)}.intro p{margin:8px 0 0;color:var(--muted)}
+.notice{background:#fff8e8;border:1px solid #f2d99d;color:#73531a;padding:12px 15px;border-radius:12px;margin-bottom:18px;font-size:13px;line-height:1.5}
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);gap:18px}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 18px #17365d0b;overflow:hidden}
+.panel-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel-head h2{font-size:16px;margin:0;color:var(--navy)}.stage{padding:16px}
+.camera-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.camera-card{background:#102544;border-radius:12px;overflow:hidden;color:white;min-width:0;transition:all .2s}
+.camera-heading{padding:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;font-weight:bold}
+.camera-heading span:last-child{color:#c5d6eb;font-weight:normal}
+.camera-screen{height:260px;position:relative;background:linear-gradient(135deg,#172c47,#294c70);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.camera-screen video{width:100%;height:100%;object-fit:cover;display:none;background:#172c47}
+#hallCamera{object-fit:contain;background:#101b2b}
+.camera-placeholder{text-align:center;padding:15px;max-width:300px}.camera-placeholder .icon{font-size:40px}
+.camera-placeholder h3{font-size:15px;margin:10px 0 6px}.camera-placeholder p{font-size:12px;color:#d8e5f3;line-height:1.5}
+.camera-live-tag{position:absolute;top:10px;left:10px;background:#b42318;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:bold;display:none}
+.camera-controls{padding:12px;display:grid;gap:9px}.camera-controls label{font-size:11px;font-weight:bold;color:#d8e5f3}
+.camera-controls select{width:100%;font-size:12px;padding:9px}
+.camera-actions{display:flex;gap:7px;flex-wrap:wrap}.camera-actions button{flex:1;min-width:65px;font-size:11px;padding:10px 7px}
+.camera-status{font-size:11px;color:#c5d6eb;line-height:1.5}
+.camera-card.expanded{grid-column:1/-1}.camera-card.expanded .camera-screen{height:480px}
+.camera-global-controls,.controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.camera-global-controls button{flex:1}.camera-note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}
+button,.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:700;cursor:pointer;font-size:13px}
+.primary{background:var(--blue);color:white}.secondary{background:var(--sky);color:#15558a}.dark{background:#e9edf3;color:#34445a}.danger{background:#fff0ef;color:#b42318}
+button:disabled{opacity:.45;cursor:not-allowed}
+.live-gallery{margin-top:18px;padding:15px;background:#f0f5fb;border:1px solid #dce5ef;border-radius:12px}
+.teacher-front-area,.student-gallery-area,.hall-view-area{width:100%;margin-top:16px}
+.teacher-front-area h3,.student-gallery-area h3,.hall-view-area h3{color:var(--navy);margin:0 0 12px;font-size:16px}
+#teacherFrontStage,#hallRemoteStage{display:flex;flex-direction:column;align-items:center;width:100%;gap:12px;background:#0b1930;padding:12px;border-radius:12px;min-height:85px;color:#d8e5f3}
+.student-gallery-area{background:#0b1930;padding:12px;border-radius:12px}
+.remote-video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;width:100%}
+.remote-video-card{background:#102544;border-radius:10px;overflow:hidden;color:white;width:100%}
+.remote-video-card video{width:100%;height:220px;object-fit:contain;display:block;background:#172c47}
+.teacher-remote-card{max-width:950px}.teacher-remote-card video{height:480px}
+.hall-remote-card{max-width:950px}.hall-remote-card video{height:350px}
+.remote-video-name{padding:10px;font-size:14px;font-weight:bold;color:white}.remote-video-status{font-size:12px;color:#c5d6eb;padding:0 10px 10px}
+.board-wrap{padding:16px;border-top:1px solid var(--line)}
+.board-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.board-title h3{margin:0;color:var(--navy);font-size:15px}
+.board-surface{position:relative;width:100%;border-radius:10px;overflow:hidden;background:white;border:1px solid #d9e1ea}
+canvas{width:100%;height:300px;background:white;touch-action:none;display:block;cursor:crosshair}
+.board-surface.chalk-mode canvas{background:#263b32}
+#textEditor{position:absolute;display:none;z-index:5;left:0;top:0;width:100%;height:100%;padding:8px;border:1px dashed var(--gold);outline:none;resize:none;overflow:auto;background:transparent;font-size:25px;font-weight:bold;line-height:1.5;color:#173b67;font-family:Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
+.board-tools{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.pen-tool{display:flex;align-items:center;gap:9px;min-height:43px;padding:6px 11px;background:#eaf4ff;border:1px solid #c5d9ed;border-radius:10px}
+.pen-tool label{font-size:12px;font-weight:700;color:#15558a;white-space:nowrap}
+.color-picker{width:38px!important;height:30px!important;padding:2px!important;border:2px solid white!important;border-radius:50%!important}
+.thickness-picker{width:95px!important;height:20px;padding:0!important;cursor:pointer}
+.thickness-value{background:var(--blue);color:white;font-size:12px;font-weight:bold;min-width:25px;text-align:center;padding:5px 7px;border-radius:6px}
+.board-instruction{font-size:12px;color:#65758b;margin-top:10px;line-height:1.5}
+.side{display:flex;flex-direction:column;gap:18px}.entry{padding:16px}
+.entry label{display:block;font-size:12px;font-weight:bold;color:#52647a;margin:12px 0 6px}
+input,select,textarea{border:1px solid #d4deea;border-radius:8px;padding:10px;font:inherit;color:var(--ink);background:white}
+input,select{width:100%}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.mode{border:1px solid var(--line);padding:11px;border-radius:10px;background:#fff;text-align:left}
+.mode.active{border:2px solid var(--blue);background:#f0f7ff}
+.mode strong{display:block;font-size:13px}.mode span{font-size:11px;color:var(--muted);display:block;margin-top:5px;line-height:1.4}
+.room-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.room-share{display:none;margin-top:14px;padding:12px;background:#f0f7ff;border:1px solid #c9def2;border-radius:10px}
+.room-share strong{display:block;color:var(--navy);font-size:12px;margin-bottom:6px}.room-share input{font-size:12px;margin-bottom:8px}
+.room-state{font-size:12px;line-height:1.5;margin-top:10px;color:#52647a}
+.participant-list{margin-top:10px;padding:10px;background:#f7f9fc;border-radius:9px;font-size:12px;line-height:1.6}
+.chat{padding:14px}.messages{height:180px;overflow:auto;background:#f7f9fc;border-radius:10px;padding:10px;font-size:13px}
+.msg{margin:0 0 10px;line-height:1.45}.msg b{color:var(--blue)}
+.chat-row{display:flex;gap:7px;margin-top:9px}.chat-row input{min-width:0;flex:1}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+.feature{background:white;border:1px solid var(--line);border-radius:12px;padding:13px}
+.feature b{display:block;font-size:13px;color:var(--navy)}.feature span{font-size:11px;color:var(--muted);line-height:1.4;display:block;margin-top:5px}
+.status{font-size:12px;color:var(--green);font-weight:bold}
+footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.features{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.camera-grid{grid-template-columns:1fr}.camera-screen{height:230px}.camera-card.expanded .camera-screen{height:300px}.teacher-remote-card video{height:260px}.hall-remote-card video{height:220px}.remote-video-card video{height:200px}}
+@media(max-width:460px){main{padding:0 12px}.features{grid-template-columns:1fr 1fr}.controls button{flex:1}.mode-grid,.room-actions{grid-template-columns:1fr}.pen-tool{flex:1}}
 
-.live-gallery {
-  position: relative !important;
-  display: block !important;
-  width: 100% !important;
-  min-height: 570px !important;
-  padding: 16px !important;
-  overflow: hidden !important;
-  background: #172c47 !important;
-  border: 3px solid #f2b544 !important;
-  border-radius: 15px !important;
-  color: #fff !important;
-  box-sizing: border-box !important;
+/* =====================================================
+   BEA ONE-SCENE HORIZONTAL CLASSROOM
+   Students behind; teacher in front; shared classroom scene
+===================================================== */
+.live-gallery{
+  position:relative!important;
+  width:100%!important;
+  min-height:650px!important;
+  aspect-ratio:16/9;
+  margin-top:18px!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:0!important;
+  border-radius:0!important;
+  background:
+    linear-gradient(180deg,rgba(16,37,68,.12),rgba(16,37,68,.35)),
+    linear-gradient(180deg,#8ba5b8 0%,#b7c8d1 43%,#657d8c 44%,#354b5c 100%)!important;
+  box-shadow:none!important;
 }
-
-.live-gallery > h3 {
-  position: relative !important;
-  z-index: 5 !important;
-  margin: 0 0 12px !important;
-  text-align: center !important;
+.live-gallery>h3,
+.teacher-front-area>h3,
+.student-gallery-area>h3,
+.hall-view-area{display:none!important}
+.student-gallery-area{
+  position:absolute!important;
+  inset:75px 0 auto 0!important;
+  height:270px!important;
+  margin:0!important;padding:0 12px!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  z-index:2!important;
 }
-
-/* STUDENTS — BEHIND THE TEACHER */
-
-.student-gallery-area {
-  position: absolute !important;
-  top: 85px !important;
-  left: 12px !important;
-  right: 12px !important;
-  height: 175px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  z-index: 2 !important;
+#studentGallery{
+  display:flex!important;flex-flow:row nowrap!important;
+  justify-content:center!important;align-items:flex-start!important;
+  gap:10px!important;width:100%!important;height:100%!important;
+  padding:0!important;overflow-x:auto!important;
+  background:transparent!important;border:0!important;
 }
-
-.student-gallery-area h3 {
-  text-align: center !important;
-  margin: 0 0 8px !important;
-  color: white !important;
+#studentGallery .remote-video-card{
+  flex:0 0 clamp(105px,16%,190px)!important;
+  width:auto!important;height:230px!important;
+  position:relative!important;overflow:visible!important;
+  background:transparent!important;border:0!important;
+  border-radius:0!important;box-shadow:none!important;
 }
-
-#studentGallery {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 12px !important;
-  width: 100% !important;
-  height: 135px !important;
-  padding: 8px !important;
-  overflow-x: auto !important;
-  background: transparent !important;
-  border: 0 !important;
+#studentGallery .remote-video-card video{
+  display:block!important;width:100%!important;height:100%!important;
+  object-fit:cover!important;object-position:center!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
 }
-
-#studentGallery .remote-video-card {
-  position: relative !important;
-  flex: 0 0 145px !important;
-  width: 145px !important;
-  height: 115px !important;
-  min-height: 115px !important;
-  overflow: hidden !important;
-  background: #102544 !important;
-  border: 1px solid #8eb8df !important;
-  border-radius: 9px !important;
+.teacher-front-area{
+  position:absolute!important;inset:auto 0 0 0!important;
+  width:100%!important;height:470px!important;
+  margin:0!important;padding:0!important;
+  background:transparent!important;border:0!important;
+  z-index:5!important;
 }
-
-#studentGallery .remote-video-card video {
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
+#teacherFrontStage{
+  position:absolute!important;left:50%!important;bottom:0!important;
+  transform:translateX(-50%)!important;
+  display:flex!important;align-items:flex-end!important;justify-content:center!important;
+  width:min(48%,560px)!important;height:100%!important;min-height:0!important;
+  padding:0!important;gap:0!important;overflow:visible!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
 }
-
-/* TEACHER — IN FRONT OF THE STUDENTS */
-
-.teacher-front-area {
-  position: absolute !important;
-  bottom: 15px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  width: min(48%, 480px) !important;
-  height: 310px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  z-index: 4 !important;
-  background: transparent !important;
+#teacherFrontStage .remote-video-card{
+  position:relative!important;width:100%!important;height:100%!important;
+  max-width:none!important;overflow:visible!important;
+  background:transparent!important;border:0!important;
+  border-radius:0!important;box-shadow:none!important;
 }
-
-.teacher-front-area h3 {
-  text-align: center !important;
-  margin: 0 0 6px !important;
-  color: white !important;
+#teacherFrontStage video{
+  display:block!important;width:100%!important;height:100%!important;
+  object-fit:contain!important;object-position:center bottom!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
 }
-
-#teacherFrontStage {
-  position: relative !important;
-  display: flex !important;
-  align-items: flex-end !important;
-  justify-content: center !important;
-  width: 100% !important;
-  height: 275px !important;
-  min-height: 275px !important;
-  max-height: 275px !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  background: #203c5c !important;
-  border: 2px solid #f2b544 !important;
-  border-radius: 12px !important;
+.remote-video-name,.remote-video-status{
+  position:absolute!important;left:8px!important;bottom:8px!important;
+  padding:4px 8px!important;color:#fff!important;
+  background:rgba(0,0,0,.28)!important;border:0!important;
+  border-radius:0!important;text-shadow:0 1px 4px #000!important;
+  font-size:12px!important;z-index:8!important;
 }
-
-#teacherFrontStage .remote-video-card {
-  position: relative !important;
-  width: 100% !important;
-  height: 100% !important;
-  overflow: hidden !important;
+.remote-video-status{display:none!important}
+#hallRemoteStage{display:none!important}
+#teacherFrontStage:empty:after{
+  content:"Teacher camera will appear here";
+  color:#fff;text-shadow:0 1px 4px #000;
 }
-
-#teacherFrontStage video {
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: contain !important;
-  object-position: center bottom !important;
+@media(max-width:700px){
+  .live-gallery{min-height:470px!important;aspect-ratio:auto}
+  .student-gallery-area{top:55px!important;height:185px!important}
+  #studentGallery .remote-video-card{flex-basis:28%!important;height:165px!important}
+  .teacher-front-area{height:315px!important}
+  #teacherFrontStage{width:66%!important}
 }
-
-/* HIDE SEPARATE HALL SECTION */
-
-#hallRemoteStage,
-.hall-view-area {
-  display: none !important;
-}
-
-/* WAITING MESSAGE */
-
-#beaClassroomWaiting {
-  position: absolute !important;
-  top: 48% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  width: 90% !important;
-  text-align: center !important;
-  color: white !important;
-  font-size: 17px !important;
-  z-index: 6 !important;
-}
-
-/* MOBILE DISPLAY */
-
-@media (max-width: 600px) {
-  .live-gallery {
-    min-height: 490px !important;
-  }
-
-  .student-gallery-area {
-    top: 75px !important;
-  }
-
-  .student-gallery-area h3 {
-    font-size: 12px !important;
-  }
-
-  #studentGallery .remote-video-card {
-    flex-basis: 105px !important;
-    width: 105px !important;
-    height: 95px !important;
-    min-height: 95px !important;
-  }
-
-  .teacher-front-area {
-    width: 75% !important;
-    height: 250px !important;
-  }
-
-  #teacherFrontStage {
-    height: 220px !important;
-    min-height: 220px !important;
-    max-height: 220px !important;
-  }
-}
-</style>
 </style>
 </head>
 <body>
@@ -194,17 +194,15 @@
 </header>
 <main>
   <div class="intro"><div><h1>Jean Bosco's Virtual Teaching Room</h1><p>A classroom without walls — learn together from anywhere.</p></div><span class="status" id="connectionStatus">● Ready</span></div>
-  <div class="notice"><b>Live classroom:</b> Sign in to your BEA account, create or join a room, then start your cameras and microphone. Students need to allow camera/microphone permissions. For reliable connections across different networks, configure a TURN relay in addition to the built-in STUN server. The teacher camera is displayed at the front of each student's classroom; student cameras appear in the teacher's student gallery. The whiteboard is currently local to this browser.</div>
+  <div class="notice"><b>Live classroom:</b> Sign in to your BEA account, create or join a room, then start your cameras and microphone. Students need to allow camera/microphone permissions. For reliable connections across different networks, configure a TURN relay in addition to the built-in STUN server. The whiteboard is currently local to this browser.</div>
   <div class="layout">
     <section class="panel">
-      <div class="panel-head"><h2>Live teaching area</h2><span class="badge" style="background:#eef5fc
-      ;color:#28547c;border-color:#d5e5f5">Teacher and student views</span></div>
+      <div class="panel-head"><h2>Live teaching area</h2><span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Teacher and student views</span></div>
       <div class="stage">
         <div class="camera-grid">
           <div class="camera-card" id="teacherCard">
             <div class="camera-heading"><span>🎥 CAMERA 1 — TEACHER</span><span>Teacher view</span></div>
-            <div class="camera-screen"><video id="teacherCamera" autoplay playsinline muted
-style="display:block!important;width:100%!important;height:260px!important;object-fit:contain!important;background:#222!important;"></video><div class="camera-placeholder" id="teacherPlaceholder"><div class="icon">👨‍🏫</div><h3>Teacher's View</h3><p>Your teaching area will appear here.</p></div><span class="camera-live-tag" id="teacherLiveTag">● CAMERA ACTIVE</span></div>
+            <div class="camera-screen"><video id="teacherCamera" autoplay playsinline muted></video><div class="camera-placeholder" id="teacherPlaceholder"><div class="icon">👨‍🏫</div><h3>Teacher's View</h3><p>Your teaching area will appear here.</p></div><span class="camera-live-tag" id="teacherLiveTag">● CAMERA ACTIVE</span></div>
             <div class="camera-controls">
               <label for="teacherCameraSelect">Choose teacher camera</label><select id="teacherCameraSelect"><option value="">Detecting cameras...</option></select>
               <label for="teacherQuality">Teacher camera quality</label><select id="teacherQuality"><option value="auto">Auto — Best available</option><option value="720">HD — 720p</option><option value="1080" selected>Full HD — 1080p</option><option value="4k">Ultra HD — 4K</option></select>
@@ -224,21 +222,9 @@ style="display:block!important;width:100%!important;height:260px!important;objec
           </div>
         </div>
         <div class="live-gallery">
-          <canvas id="beaClassroomCanvas"></canvas>
-         
           <h3>👥 Live Virtual Classroom — Connected Participants</h3>
-          <div class="teacher-front-area">
-  <h3>👨‍🏫 Teacher — Front of Classroom</h3>
-
-  <div id="teacherFrontStage"
-       style="width:100%;min-height:400px;background:#172c47;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-
-    <div id="teacherEmptyMessage" style="color:white;">
-      Waiting for the teacher's live camera...
-    </div>
-
-  </div>
-</div>
+          <div class="teacher-front-area"><h3>👨‍🏫 Teacher — Front of Classroom</h3><div id="teacherFrontStage"><div id="teacherEmptyMessage">Waiting for the teacher's live camera...</div></div></div>
+          <div class="hall-view-area"><h3>🏫 Whole Hall Camera</h3><div id="hallRemoteStage"><div id="hallEmptyMessage">Waiting for the hall camera...</div></div></div>
           <div class="student-gallery-area"><h3>👥 Students — Classroom Gallery</h3><div class="remote-video-grid" id="studentGallery"><div id="remoteEmptyMessage">Waiting for students to connect...</div></div></div>
         </div>
         <div class="camera-global-controls">
@@ -247,7 +233,7 @@ style="display:block!important;width:100%!important;height:260px!important;objec
         <p class="camera-note">For the best whole-hall view, use a wide-angle USB camera positioned to capture the room. Two physical cameras are needed for two independent views. Keep this page open while teaching.</p>
       </div>
       <div class="board-wrap">
-        <div class="board-title"><h3>✍️ Interactive teaching board</h3><span style="font-size:11px;color:#718096">Draw, type and explain · local board</span></div>
+        <div class="board-title"><h3>✍️ Interactive teaching board</h3><span style="font-size:11px;color:#718096">Draw, type and explain</span></div>
         <div class="board-surface" id="boardSurface"><canvas id="board" width="1100" height="360"></canvas><textarea id="textEditor" spellcheck="false" placeholder="Start typing your lesson here...&#10;Press Ctrl + Enter when finished."></textarea></div>
         <div class="board-tools">
           <button class="secondary tool-button active" id="markerBtn">🖊️ Marker</button><button class="secondary tool-button" id="chalkBtn">🖍️ Chalk</button><button class="secondary tool-button" id="handwritingBtn">✍️ Handwriting</button><button class="secondary tool-button" id="textBtn">⌨️ Text</button>
@@ -289,33 +275,7 @@ style="display:block!important;width:100%!important;height:260px!important;objec
 <footer>© Bosco English Academy · Founded by Jean Bosco Munezero · Building Confidence in English</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-segmentation.onResults(results => {
-
-  // Start with a completely transparent canvas
-  personCtx.clearRect(0, 0, 640, 480);
-
-  // Draw the person's segmentation mask first
-  personCtx.drawImage(
-    results.segmentationMask,
-    0, 0, 640, 480
-  );
-
-  // Keep only the camera image inside the person's mask
-  personCtx.globalCompositeOperation = 'source-in';
-
-  personCtx.drawImage(
-    results.image,
-    0, 0, 640, 480
-  );
-
-  // Restore normal drawing
-  personCtx.globalCompositeOperation = 'source-over';
-
-  feed.ready = true;
-  feed.busy = false;
-
-});
-  <script>
+<script>
 /* IMPORTANT: Keep your real Supabase project URL and anon/public key here.
    Never use the service_role key in a public HTML file. */
 const SUPABASE_URL = 'https://arnlcdpncwuruacaqjko.supabase.co';
@@ -350,98 +310,23 @@ function removeRemoteParticipant(id){
  Object.keys(remoteVideoTiles).filter(k=>k.startsWith(id+'_')).forEach(k=>{remoteVideoTiles[k].remove();delete remoteVideoTiles[k];});
  const audio=$('remoteAudio_'+id);if(audio)audio.remove();
  if(peerConnections[id]){clearInterval(peerConnections[id].statsTimer);peerConnections[id].pc.close();delete peerConnections[id];}
- updateEmptyMessages();
 }
 function updateEmptyMessages(){
-  const teacher = $('teacherFrontStage');
-  const students = $('studentGallery');
-  const classroom = document.querySelector('.live-gallery');
-
-  if(!teacher || !students || !classroom) return;
-
-  teacher.querySelectorAll('[id$="EmptyMessage"]').forEach(e=>e.remove());
-  students.querySelectorAll('[id$="EmptyMessage"]').forEach(e=>e.remove());
-
-  const teacherConnected =
-    !!teacher.querySelector('.remote-video-card');
-
-  const studentsConnected =
-    !!students.querySelector('.remote-video-card');
-
-  let waiting = $('beaClassroomWaiting');
-
-  if(!teacherConnected && !studentsConnected){
-    if(!waiting){
-      waiting = document.createElement('div');
-      waiting.id = 'beaClassroomWaiting';
-      waiting.textContent = 'Welcome to Bosco English Academy. Waiting for the class to connect...';
-      classroom.appendChild(waiting);
-    }
-  }else if(waiting){
-    waiting.remove();
-  }
+ const teacherStage=$('teacherFrontStage'),studentStage=$('studentGallery');
+ if(teacherStage && !teacherStage.querySelector('.remote-video-card'))teacherStage.innerHTML="<div id='teacherEmptyMessage'>Teacher's live camera will appear here.</div>";
+ if(studentStage && !studentStage.querySelector('.remote-video-card'))studentStage.innerHTML='<div id="remoteEmptyMessage">Students will appear here when they join.</div>';
 }
- function removeRemoteMedia(id,type){
-
-  Object.keys(remoteVideoTiles).forEach(function(key){
-
-    const card = remoteVideoTiles[key];
-
-    if(
-      card.dataset.participant === id &&
-      card.dataset.streamType === type
-    ){
-      card.remove();
-      delete remoteVideoTiles[key];
-    }
-
-  });
-
-  updateEmptyMessages();
-} 
 function updatePresence(state){
- const next={};
-
- Object.values(state).flat().forEach(p=>{
-  if(p.id){
-   next[p.id]={
-    id:p.id,
-    name:p.name||'BEA participant',
-    role:p.role||'student',
-    mode:p.mode||'individual',
-    hand:!!p.hand
-   };
-  }
- });
-
- Object.keys(connectedParticipants).forEach(id=>{
-  if(!next[id])removeRemoteParticipant(id);
- });
-
- connectedParticipants=next;
- updateParticipantList();
-
- const groupStudents=Object.values(next).filter(
-  p=>p.role==='student' && p.mode==='group'
- );
-
- console.log('BEA Group hall students:',groupStudents);
-
- Object.values(next).forEach(p=>{
-  if(
-   p.id!==currentParticipantId &&
-   currentParticipantId.localeCompare(p.id)<0 &&
-   !peerConnections[p.id]
-  ){
-   startRtcOffer(p);
-  }
- });
+ const next={};Object.values(state).flat().forEach(p=>{if(p.id)next[p.id]={id:p.id,name:p.name||'BEA participant',role:p.role||'student',hand:!!p.hand};});
+ Object.keys(connectedParticipants).forEach(id=>{if(!next[id])removeRemoteParticipant(id);});
+ connectedParticipants=next;updateParticipantList();
+ Object.values(next).forEach(p=>{if(p.id!==currentParticipantId && currentParticipantId.localeCompare(p.id)<0 && !peerConnections[p.id])startRtcOffer(p);});
 }
 async function connectToClassroom(code,role,name){
  code=String(code||'').toUpperCase().trim();name=String(name||'').trim();role=String(role||'Student').toLowerCase();
  if(!code){setEntry('Enter a classroom code first.');return;}
  if(!name){setEntry('Enter your name first.');$('displayName').focus();return;}
- if(!hasSupabaseConfig()){setEntry('Supabase settings are not configured in this file. Uses the same public Supabase project settings as the Bosco English Academy website.');return;}
+ if(!hasSupabaseConfig()){setEntry('Supabase settings are not configured in this file. Add your existing Project URL and anon/public key in the two settings near the beginning of the script.');return;}
  try{
   if(!beaSupabase)beaSupabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
   const {data:{session},error}=await beaSupabase.auth.getSession();
@@ -457,139 +342,45 @@ async function connectToClassroom(code,role,name){
   classroomChannel
    .on('presence',{event:'sync'},()=>updatePresence(classroomChannel.presenceState()))
    .on('broadcast',{event:'class-chat'},({payload})=>{if(payload?.senderId!==currentParticipantId)addMessage(payload?.name||'Participant',payload?.message||'');})
-   .on('broadcast',{event:'webrtc-signal'},({payload})=>{
- console.log('BEA SIGNAL RECEIVED:',payload);
- handleRtcSignal(payload);
-})
+   .on('broadcast',{event:'webrtc-signal'},({payload})=>handleRtcSignal(payload))
    .on('broadcast',{event:'class-hand'},({payload})=>{if(payload?.senderId!==currentParticipantId){if(connectedParticipants[payload.senderId])connectedParticipants[payload.senderId].hand=!!payload.raised;updateParticipantList();addMessage('BEA Assistant',(payload.name||'A participant')+(payload.raised?' raised a hand.':' lowered a hand.'),true);}})
+   .on('broadcast',{event:'board-op'},({payload})=>{if(payload?.senderId!==currentParticipantId)applyRemoteBoardOperation(payload.op);})
    .subscribe(async status=>{
-    console.log('BEA SUPABASE CHANNEL STATUS:',status);
     if(status==='SUBSCRIBED'){
-    await classroomChannel.track({
-  id:currentParticipantId,
-  name,
-  role:currentParticipantRole,
-  mode:selectedMode,
-  hand:false,
-  joinedAt:new Date().toISOString()
-});
+     await classroomChannel.track({id:currentParticipantId,name,role,hand:false,joinedAt:new Date().toISOString()});
      setEntry('Connected to '+code+'. Share the invitation link with your students.');$('roomBadge').textContent='Connected · '+code;cameraStatus.textContent='● Connected to '+code;
     }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){setEntry('Could not connect. Check Supabase URL, anon key and Realtime settings.');}
    });
  }catch(e){console.error('BEA classroom connection:',e);setEntry('Connection error: '+e.message);}
 }
 async function sendRtcSignal(to,signal){
-  if(!classroomChannel){
-    console.error('BEA SIGNAL NOT SENT: No classroom channel.');
-    return;
-  }
-
-  const streamTypes={};
-
-  [teacherStream,hallStream,microphoneStream]
-    .filter(Boolean)
-    .forEach(s=>{
-      const hasVideo=s.getVideoTracks().length>0;
-
-      streamTypes[s.id]=!hasVideo
-        ? 'audio'
-        : (currentParticipantRole==='teacher'
-            ? (s===teacherStream?'teacher':'hall')
-            : 'student');
-    });
-
-  try{
-    const result=await classroomChannel.send({
-      type:'broadcast',
-      event:'webrtc-signal',
-      payload:{
-        from:currentParticipantId,
-        to,
-        name:$('displayName').value,
-        role:currentParticipantRole,
-        streamTypes,
-        signal
-      }
-    });
-
-    console.log('BEA SIGNAL SENT:',{
-      to,
-      type:signal.type,
-      result
-    });
-
-  }catch(error){
-    console.error('BEA SIGNAL SEND ERROR:',error);
-  }
+ if(!classroomChannel)return;
+ const streamTypes={};[teacherStream,hallStream,microphoneStream].filter(Boolean).forEach(s=>{streamTypes[s.id]=s===teacherStream?'teacher':s===hallStream?'hall':'audio';});
+ await classroomChannel.send({type:'broadcast',event:'webrtc-signal',payload:{from:currentParticipantId,to,name:$('displayName').value,role:currentParticipantRole,streamTypes,signal}});
 }
+function showLocalTeacherAtFront(stream){
+ const stage=$('teacherFrontStage');if(!stage||!stream)return;
+ const empty=$('teacherEmptyMessage');if(empty)empty.remove();
+ let card=$('beaLocalTeacherTile');
+ if(!card){card=document.createElement('div');card.id='beaLocalTeacherTile';card.className='remote-video-card bea-local-teacher-card';
+  const v=document.createElement('video');v.id='beaLocalTeacherVideo';v.autoplay=true;v.playsInline=true;v.muted=true;
+  const label=document.createElement('div');label.className='remote-video-name';label.textContent='👨‍🏫 Teacher — Jean Bosco';
+  const status=document.createElement('div');status.className='remote-video-status';status.textContent='● Your live teaching camera';card.append(v,label,status);stage.prepend(card);
+ }
+ const v=$('beaLocalTeacherVideo');if(v.srcObject!==stream){v.srcObject=stream;v.play().catch(()=>{});}
+}
+function removeLocalTeacherFromFront(){const tile=$('beaLocalTeacherTile');if(tile)tile.remove();updateEmptyMessages();}
 function destinationFor(type){return type==='teacher'?'teacherFrontStage':type==='hall'?'hallRemoteStage':'studentGallery';}
 function showRemoteVideo(id,name,stream,role,type){
-
-  const key = id + '_' + stream.id;
-
-  if(remoteVideoTiles[key]) return;
-
-  const target = $(destinationFor(type));
-
-  if(!target) return;
-
-  const empty = target.querySelector('[id$="EmptyMessage"]');
-
-  if(empty) empty.remove();
-
-  const card = document.createElement('div');
-
-  card.className = 'remote-video-card ' +
-    (type === 'teacher' ? 'teacher-remote-card' :
-     type === 'hall' ? 'hall-remote-card' :
-     'student-remote-card');
-
-  card.dataset.participant = id;
-  card.dataset.streamType = type;
-
-  const video = document.createElement('video');
-
-  video.autoplay = true;
-  video.playsInline = true;
-  video.muted = true;
-  video.controls = false;
-  video.srcObject = stream;
-
-  video.onloadedmetadata = function(){
-    video.play().catch(function(error){
-      console.log('Video playback waiting:', error);
-    });
-  };
-
-  stream.getVideoTracks().forEach(function(track){
-    track.onended = function(){
-      card.remove();
-      delete remoteVideoTiles[key];
-      updateEmptyMessages();
-    };
-  });
-
-  const label = document.createElement('div');
-
-  label.className = 'remote-video-name';
-
-  label.textContent =
-    type === 'teacher' ? '👨‍🏫 Teacher — ' + name :
-    type === 'hall' ? '🏫 Whole Hall — ' + name :
-    '👤 Student — ' + name;
-
-  const status = document.createElement('div');
-
-  status.className = 'remote-video-status';
-  status.textContent = '● Live connection';
-
-  card.appendChild(video);
-  card.appendChild(label);
-  card.appendChild(status);
-
-  target.appendChild(card);
-
-  remoteVideoTiles[key] = card;
+ const key=id+'_'+stream.id;if(remoteVideoTiles[key])return;
+ if(type==='teacher' && id===currentParticipantId)return;
+ const target=$(destinationFor(type));if(!target)return;
+ const empty=target.querySelector('[id$="EmptyMessage"]');if(empty)empty.remove();
+ const card=document.createElement('div');card.className='remote-video-card '+(type==='teacher'?'teacher-remote-card':type==='hall'?'hall-remote-card':'student-remote-card');
+ const video=document.createElement('video');video.autoplay=true;video.playsInline=true;video.controls=true;video.srcObject=stream;
+ const label=document.createElement('div');label.className='remote-video-name';label.textContent=type==='teacher'?'👨‍🏫 Teacher — '+name:type==='hall'?'🏫 Whole Hall — '+name:'👤 Student — '+name;
+ const status=document.createElement('div');status.className='remote-video-status';status.textContent='● Live connection';
+ card.append(video,label,status);target.appendChild(card);remoteVideoTiles[key]=card;
 }
 function createPeerConnection(id,name,role='student'){
  if(peerConnections[id])return peerConnections[id];
@@ -599,282 +390,52 @@ function createPeerConnection(id,name,role='student'){
  pc.ontrack=e=>{
   const stream=e.streams[0]||new MediaStream([e.track]);
   if(e.track.kind==='video'){const type=conn.remoteStreamTypes[stream.id]||(conn.role==='teacher'?'teacher':'student');showRemoteVideo(id,name,stream,conn.role,type);}
-  if(e.track.kind==='audio'){let a=$('remoteAudio_'+id);if(!a){a=document.createElement('audio');a.id='remoteAudio_'+id;a.autoplay=true;a.playsInline=true;a.controls=true;a.style.cssText='position:fixed;bottom:8px;right:8px;width:220px;z-index:20';document.body.appendChild(a);}a.srcObject=stream;a.play().catch(()=>{});}
+  if(e.track.kind==='audio'){let a=$('remoteAudio_'+id);if(!a){a=document.createElement('audio');a.id='remoteAudio_'+id;a.autoplay=true;a.playsInline=true;document.body.appendChild(a);}a.srcObject=stream;a.play().catch(()=>{});}
  };
  pc.onicecandidate=e=>{if(e.candidate)sendRtcSignal(id,{type:'candidate',candidate:e.candidate.toJSON()});};
  pc.onconnectionstatechange=()=>{console.log('BEA connection',name,pc.connectionState);if(pc.connectionState==='failed')pc.restartIce();};
  pc.oniceconnectionstatechange=()=>console.log('BEA ICE',name,pc.iceConnectionState);
  pc.onnegotiationneeded=async()=>{
-  try{
-   if(pc.signalingState!=='stable')return;
-   if(currentParticipantId.localeCompare(id)<0){
-    const offer=await pc.createOffer();
-    await pc.setLocalDescription(offer);
-    await sendRtcSignal(id,{type:'offer',description:pc.localDescription});
-   }else{
-    await sendRtcSignal(id,{type:'renegotiate-request'});
-   }
-  }catch(e){console.error('BEA negotiation:',e);}
+  try{if(pc.signalingState!=='stable')return;const offer=await pc.createOffer();await pc.setLocalDescription(offer);await sendRtcSignal(id,{type:'offer',description:pc.localDescription});}catch(e){console.error('BEA negotiation:',e);}
  };
  conn.statsTimer=setInterval(async()=>{try{if(pc.connectionState==='closed'){clearInterval(conn.statsTimer);return;}const stats=await pc.getStats();stats.forEach(r=>{if(r.type==='inbound-rtp'&&r.kind==='video')console.log('BEA VIDEO',name,{frames:r.framesDecoded,bytes:r.bytesReceived,lost:r.packetsLost,jitter:r.jitter});});}catch{}},5000);
  return conn;
 }
 async function startRtcOffer(person){
- try{createPeerConnection(person.id,person.name,person.role);}
- catch(e){console.error('BEA peer setup:',e);}
+ try{const conn=createPeerConnection(person.id,person.name,person.role);const pc=conn.pc;if(pc.signalingState!=='stable')return;const offer=await pc.createOffer();await pc.setLocalDescription(offer);await sendRtcSignal(person.id,{type:'offer',description:pc.localDescription});}
+ catch(e){console.error('BEA offer:',e);}
 }
 async function handleRtcSignal(payload){
-
-  if(!payload || payload.to !== currentParticipantId || !payload.signal) return;
-
-  const id = payload.from;
-  const name = payload.name || 'BEA Participant';
-  const role = payload.role || 'student';
-  const s = payload.signal;
-
-  if(s.type === 'media-stopped'){
-    removeRemoteMedia(id, s.streamType);
-    return;
+ if(!payload||payload.to!==currentParticipantId||!payload.signal)return;
+ const id=payload.from,name=payload.name||'BEA Participant',role=payload.role||'student';
+ try{
+  const conn=createPeerConnection(id,name,role),pc=conn.pc,s=payload.signal;
+  conn.remoteStreamTypes={...conn.remoteStreamTypes,...(payload.streamTypes||{})};
+  if(s.type==='offer'){
+   if(pc.signalingState!=='stable')return;
+   await pc.setRemoteDescription(new RTCSessionDescription(s.description));
+   for(const c of conn.pendingCandidates.splice(0))await pc.addIceCandidate(new RTCIceCandidate(c));
+   const answer=await pc.createAnswer();await pc.setLocalDescription(answer);await sendRtcSignal(id,{type:'answer',description:pc.localDescription});
+  }else if(s.type==='answer'){
+   if(pc.signalingState==='have-local-offer'){await pc.setRemoteDescription(new RTCSessionDescription(s.description));for(const c of conn.pendingCandidates.splice(0))await pc.addIceCandidate(new RTCIceCandidate(c));}
+  }else if(s.type==='candidate'){
+   if(pc.remoteDescription)await pc.addIceCandidate(new RTCIceCandidate(s.candidate));else conn.pendingCandidates.push(s.candidate);
   }
-
-  try{
-
-    const conn = createPeerConnection(id, name, role);
-    const pc = conn.pc;
-
-    conn.remoteStreamTypes = {
-      ...conn.remoteStreamTypes,
-      ...(payload.streamTypes || {})
-    };
-
-    if(s.type === 'renegotiate-request'){
-
-      if(currentParticipantId.localeCompare(id) < 0 &&
-         pc.signalingState === 'stable'){
-
-        const offer = await pc.createOffer();
-
-        await pc.setLocalDescription(offer);
-
-        await sendRtcSignal(id,{
-          type:'offer',
-          description:pc.localDescription
-        });
-      }
-
-    }
-
-    else if(s.type === 'offer'){
-
-      const offerCollision =
-        pc.signalingState !== 'stable';
-
-      const polite =
-        currentParticipantId.localeCompare(id) > 0;
-
-      if(offerCollision && !polite){
-        console.log('BEA: Ignoring conflicting offer');
-        return;
-      }
-
-      if(offerCollision && polite){
-        await pc.setLocalDescription({type:'rollback'});
-      }
-
-      await pc.setRemoteDescription(
-        new RTCSessionDescription(s.description)
-      );
-
-      for(const candidate of conn.pendingCandidates.splice(0)){
-        await pc.addIceCandidate(
-          new RTCIceCandidate(candidate)
-        );
-      }
-
-      const answer = await pc.createAnswer();
-
-      await pc.setLocalDescription(answer);
-
-      await sendRtcSignal(id,{
-        type:'answer',
-        description:pc.localDescription
-      });
-
-    }
-
-    else if(s.type === 'answer'){
-
-      if(pc.signalingState === 'have-local-offer'){
-
-        await pc.setRemoteDescription(
-          new RTCSessionDescription(s.description)
-        );
-
-        for(const candidate of conn.pendingCandidates.splice(0)){
-          await pc.addIceCandidate(
-            new RTCIceCandidate(candidate)
-          );
-        }
-      }
-
-    }
-
-    else if(s.type === 'candidate'){
-
-      if(pc.remoteDescription){
-
-        await pc.addIceCandidate(
-          new RTCIceCandidate(s.candidate)
-        );
-
-      }else{
-
-        conn.pendingCandidates.push(s.candidate);
-
-      }
-
-    }
-
-  }catch(error){
-
-    console.error('BEA signal error:', error);
-
-  }
-
+ }catch(e){console.error('BEA signal error:',e);}
 }
 async function addStreamToExistingPeers(stream){
-
-  if(!stream) return;
-
-  for(const id of Object.keys(peerConnections)){
-
-    const conn = peerConnections[id];
-    const pc = conn.pc;
-
-    let added = false;
-
-    stream.getTracks().forEach(track=>{
-
-      const exists = pc.getSenders().some(
-        sender => sender.track === track
-      );
-
-      if(!exists){
-        
-        pc.addTrack(track,stream);
-        added = true;
-      }
-
-    });
-
-    if(added){
-
-      console.log('BEA: New camera tracks added for',id);
-
-      try{
-
-        if(currentParticipantId.localeCompare(id)<0){
-
-          if(pc.signalingState==='stable'){
-
-            const offer = await pc.createOffer();
-
-            await pc.setLocalDescription(offer);
-
-            await sendRtcSignal(id,{
-              type:'offer',
-              description:pc.localDescription
-            });
-
-          }
-
-        }else{
-
-          await sendRtcSignal(id,{
-            type:'renegotiate-request'
-          });
-
-        }
-
-      }catch(error){
-
-        console.error('BEA: Camera renegotiation failed:',error);
-
-      }
-
-    }
-
-  }
-
+ for(const id of Object.keys(peerConnections)){
+  const pc=peerConnections[id].pc;
+  stream.getTracks().forEach(track=>{if(!pc.getSenders().some(s=>s.track===track))pc.addTrack(track,stream);});
+ }
 }
-
-
 async function removeStreamFromPeers(stream){
-
-  if(!stream) return;
-
-  for(const id of Object.keys(peerConnections)){
-
-    const pc = peerConnections[id].pc;
-
-    for(const track of stream.getTracks()){
-
-      const sender = pc.getSenders().find(
-        s => s.track === track
-      );
-
-      if(sender){
-
-        try{
-
-          await sender.replaceTrack(null);
-
-        }catch(error){
-
-          console.error('Unable to remove camera track:',error);
-
-        }
-
-      }
-
-    }
-
-  }
-
-} 
-
-
-async function removeStreamFromPeers(stream){
-
-  if(!stream) return;
-
-  for(const id of Object.keys(peerConnections)){
-
-    const pc = peerConnections[id].pc;
-
-    for(const track of stream.getTracks()){
-
-      const sender = pc.getSenders().find(
-        s => s.track === track
-      );
-
-      if(sender){
-
-        try{
-          await sender.replaceTrack(null);
-        }catch(error){
-          console.error('Unable to remove camera track:',error);
-        }
-      }
-  }
-
+ for(const id of Object.keys(peerConnections)){
+  const pc=peerConnections[id].pc;
+  for(const sender of pc.getSenders()){if(stream.getTracks().includes(sender.track)){try{await sender.replaceTrack(null);}catch{}}}
+ }
 }
-
-}
-
-function qualityConstraints(q){
-    
-      let w=1920,h=1080;if(q==='720'){w=1280;h=720;}if(q==='4k'){w=3840;h=2160;}return {width:{ideal:w},height:{ideal:h},frameRate:{ideal:30,max:30}};}
+function qualityConstraints(q){let w=1920,h=1080;if(q==='720'){w=1280;h=720;}if(q==='4k'){w=3840;h=2160;}return {width:{ideal:w},height:{ideal:h},frameRate:{ideal:30,max:30}};}
 async function refreshCameras(){
  if(!navigator.mediaDevices?.enumerateDevices)return;
  try{
@@ -883,279 +444,30 @@ async function refreshCameras(){
   if(cams.length===1)$('hallStatus').textContent='One camera detected. Connect a second camera for a separate hall view.';
  }catch(e){console.error('Camera detection:',e);}
 }
-function showLocalTeacherAtFront(stream){
-
-  if(currentParticipantRole !== 'teacher') return;
-
-  const stage = $('teacherFrontStage');
-  if(!stage) return;
-
-  const old = stage.querySelector('[data-local-teacher="true"]');
-  if(old) old.remove();
-
-  const empty = stage.querySelector('[id$="EmptyMessage"]');
-  if(empty) empty.remove();
-
-  const card = document.createElement('div');
-  card.className = 'remote-video-card teacher-remote-card';
-  card.dataset.localTeacher = 'true';
-
-  const video = document.createElement('video');
-  video.autoplay = true;
-  video.playsInline = true;
-  video.muted = true;
-  video.srcObject = stream;
-
-  const label = document.createElement('div');
-  label.className = 'remote-video-name';
-  label.textContent = '👨‍🏫 Teacher — Jean Bosco';
-
-  card.appendChild(video);
-  card.appendChild(label);
-  stage.prepend(card);
-
-  video.play().catch(()=>{});
-}  
 async function startVideo(which){
-
- const teacher = which === 'teacher';
- const video = teacher ? teacherCamera : hallCamera;
- const select = teacher ? teacherSelect : hallSelect;
-
- const quality = $(teacher?'teacherQuality':'hallQuality');
- const placeholder = $(teacher?'teacherPlaceholder':'hallPlaceholder');
- const tag = $(teacher?'teacherLiveTag':'hallLiveTag');
- const status = $(teacher?'teacherStatus':'hallStatus');
-
- const request = teacher ? ++teacherCameraRequest : ++hallCameraRequest;
-
- status.textContent = 'Starting camera...';
-
+ const teacher=which==='teacher',video=teacher?teacherCamera:hallCamera,select=teacher?teacherSelect:hallSelect;
+ const quality=$(teacher?'teacherQuality':'hallQuality'),placeholder=$(teacher?'teacherPlaceholder':'hallPlaceholder'),tag=$(teacher?'teacherLiveTag':'hallLiveTag'),status=$(teacher?'teacherStatus':'hallStatus');
+ const request=teacher?++teacherCameraRequest:++hallCameraRequest;status.textContent='Starting camera...';
  try{
-
-  if(!navigator.mediaDevices?.getUserMedia){
-   throw new Error('Camera requires HTTPS.');
-  }
-
-  const constraints = {
-   audio:false,
-   video:{
-    ...qualityConstraints(quality.value),
-    ...(select.value ? {deviceId:{exact:select.value}} : {})
-   }
-  };
-
-  const fresh = await navigator.mediaDevices.getUserMedia(constraints);
-
-  if(request !== (teacher ? teacherCameraRequest : hallCameraRequest)){
-   fresh.getTracks().forEach(t=>t.stop());
-   return;
-  }
-
-  const old = teacher ? teacherStream : hallStream;
-
-  video.srcObject = fresh;
-  video.muted = true;
-  video.autoplay = true;
-  video.playsInline = true;
-
-  Object.assign(video.style,{
-   display:'block',
-   visibility:'visible',
-   opacity:'1',
-   width:'100%',
-   height:'100%',
-   objectFit:'contain',
-   zIndex:'10'
-  });
-
-  await video.play();
-
-  await new Promise(resolve=>{
-   if(video.videoWidth > 0){
-    resolve();
-    return;
-   }
-
-   video.addEventListener('loadeddata',resolve,{once:true});
-   setTimeout(resolve,4000);
-  });
-
-  if(!video.videoWidth || !video.videoHeight){
-   throw new Error('Camera started but no video picture was received.');
-  }
-
-  if(old){
-   await removeStreamFromPeers(old);
-   old.getTracks().forEach(t=>t.stop());
-  }
-
-  if(teacher){
-   teacherStream = fresh;
-  }else{
-   hallStream = fresh;
-  }
-
- if(teacher){
-   showLocalTeacherAtFront(fresh);
-}
-  
-
+  if(!navigator.mediaDevices?.getUserMedia)throw new Error('Camera access requires HTTPS and a supported browser.');
+  const constraints={audio:false,video:{...qualityConstraints(quality.value),...(select.value?{deviceId:{exact:select.value}}:{})}};
+  const fresh=await navigator.mediaDevices.getUserMedia(constraints);
+  if(request!==(teacher?teacherCameraRequest:hallCameraRequest)){fresh.getTracks().forEach(t=>t.stop());return;}
+  const old=teacher?teacherStream:hallStream;video.srcObject=fresh;await video.play().catch(()=>{});
+  if(old){await removeStreamFromPeers(old);old.getTracks().forEach(t=>t.stop());}
+  if(teacher)teacherStream=fresh;else hallStream=fresh;
+  if(teacher && currentParticipantRole==='teacher')showLocalTeacherAtFront(fresh);
   await addStreamToExistingPeers(fresh);
-
-  video.style.display = 'block';
-  placeholder.style.display = 'none';
-  tag.style.display = 'block';
-
-  const s = fresh.getVideoTracks()[0].getSettings();
-
-  status.textContent =
-   'Camera active: '+(s.width||'?')+' × '+(s.height||'?');
-
-  console.log('BEA CAMERA SUCCESS:',video.videoWidth,video.videoHeight);
-
-  updateOverallStatus();
-  refreshCameras();
-
- }catch(e){
-
-  console.error('BEA CAMERA ERROR:',e);
-
-  status.textContent = 'Camera could not start.';
-
-  alert('Camera error: '+e.message);
-
- }
-
-}
-function showLocalTeacherAtFront(stream){
-
- const stage = $('teacherFrontStage');
-
- if(!stage){
-  console.error('Teacher front stage not found.');
-  return;
- }
-
- const old = stage.querySelector('[data-local-teacher="true"]');
-
- if(old) old.remove();
-
- const empty = stage.querySelector('[id$="EmptyMessage"]');
-
- if(empty) empty.remove();
-
- const card = document.createElement('div');
-
- card.className = 'remote-video-card teacher-remote-card';
- card.dataset.localTeacher = 'true';
-
- Object.assign(card.style,{
-  width:'100%',
-  height:'100%',
-  minHeight:'300px',
-  position:'relative',
-  display:'flex',
-  alignItems:'center',
-  justifyContent:'center',
-  overflow:'hidden'
- });
-
- const video = document.createElement('video');
-
- video.autoplay = true;
- video.playsInline = true;
- video.muted = true;
- video.srcObject = stream;
-
- Object.assign(video.style,{
-  display:'block',
-  width:'100%',
-  height:'100%',
-  objectFit:'contain',
-  visibility:'visible',
-  opacity:'1'
- });
-
- card.appendChild(video);
-
- stage.prepend(card);
-
- video.play().catch(error=>{
-  console.error('Teacher front video error:',error);
- });
-
- console.log('BEA TEACHER FRONT VIDEO CREATED');
-
+  video.style.display='block';placeholder.style.display='none';tag.style.display='block';
+  const s=fresh.getVideoTracks()[0].getSettings();status.textContent='Camera active: '+(s.width||'?')+' × '+(s.height||'?')+(s.frameRate?' · '+Math.round(s.frameRate)+' FPS':'');
+  updateOverallStatus();refreshCameras();
+ }catch(e){console.error(e);status.textContent='Camera could not start.';alert('Unable to start '+which+' camera: '+(e.name==='NotAllowedError'?'Allow camera permission.':e.name==='OverconstrainedError'?'Try Auto or 720p.':e.message));}
 }
 async function stopVideo(which){
-
-  const teacher = which === 'teacher';
-
-  const video = teacher ? teacherCamera : hallCamera;
-
-  const stream = teacher ? teacherStream : hallStream;
-
-  const type = teacher ? 'teacher' : 'hall';
-
-  // Cancel any camera request still in progress
-  if(teacher){
-    teacherCameraRequest++;
-  }else{
-    hallCameraRequest++;
-  }
-
-  // Notify other participants that this camera has stopped
-  if(stream && classroomChannel){
-
-    for(const id of Object.keys(peerConnections)){
-
-      try{
-
-        await sendRtcSignal(id,{
-          type:'media-stopped',
-          streamType:type
-        });
-
-      }catch(error){
-
-        console.error('Camera stop notification:',error);
-
-      }
-
-    }
-
-  }
-
-  // Remove the camera tracks from connections
-  if(stream){
-
-    await removeStreamFromPeers(stream);
-
-    stream.getTracks().forEach(function(track){
-      track.stop();
-    });
-
-  }
-
-  video.pause();
-  video.srcObject = null;
-  video.style.display = 'none';
-
-  $(teacher ? 'teacherPlaceholder' : 'hallPlaceholder').style.display = 'block';
-
-  $(teacher ? 'teacherLiveTag' : 'hallLiveTag').style.display = 'none';
-
-  if(teacher){
-    teacherStream = null;
-  }else{
-    hallStream = null;
-  }
-
-  $(teacher ? 'teacherStatus' : 'hallStatus').textContent = 'Camera stopped.';
-
-  updateOverallStatus();
-
+ const teacher=which==='teacher',video=teacher?teacherCamera:hallCamera,stream=teacher?teacherStream:hallStream;
+ if(stream){await removeStreamFromPeers(stream);stream.getTracks().forEach(t=>t.stop());}
+ video.pause();video.srcObject=null;video.style.display='none';$(teacher?'teacherPlaceholder':'hallPlaceholder').style.display='block';$(teacher?'teacherLiveTag':'hallLiveTag').style.display='none';
+ if(teacher){teacherStream=null;removeLocalTeacherFromFront();}else hallStream=null;$(teacher?'teacherStatus':'hallStatus').textContent='Camera stopped.';updateOverallStatus();
 }
 $('startTeacher').onclick=()=>startVideo('teacher');$('startHall').onclick=()=>startVideo('hall');
 $('stopTeacher').onclick=()=>stopVideo('teacher');$('stopHall').onclick=()=>stopVideo('hall');
@@ -1178,44 +490,15 @@ $('createRoomBtn').onclick=()=>{if($('role').value!=='Teacher'){setEntry('Choose
 $('joinRoomBtn').onclick=()=>connectToClassroom($('roomCode').value,$('role').value,$('displayName').value);
 $('quickOpenBtn').onclick=()=>{const room=$('roomCode').value.trim()||new URLSearchParams(location.search).get('room');if(!room){setEntry('Enter a classroom code or open a valid invitation link first.');$('roomCode').focus();return;}connectToClassroom(room,$('role').value,$('displayName').value);};
 $('copyRoomLinkBtn').onclick=async()=>{try{await navigator.clipboard.writeText($('roomLink').value);$('copyRoomLinkBtn').textContent='Copied!';}catch{$('roomLink').select();document.execCommand('copy');$('copyRoomLinkBtn').textContent='Copied!';}};
-// Automatically load classroom details from an invitation link
-const inviteParams = new URLSearchParams(window.location.search);
-const inviteRoom = (inviteParams.get('room') || '').trim().toUpperCase();
-const inviteRole = (inviteParams.get('role') || 'Student').toLowerCase();
-
-if(inviteRoom){
-  $('roomCode').value = inviteRoom;
-  $('role').value = inviteRole === 'teacher' ? 'Teacher' : 'Student';
-
-  setEntry('Invitation detected. Enter your name, then choose Quick Open or Join classroom.');
-}
+const inviteRoom=new URLSearchParams(location.search).get('room'),inviteRole=new URLSearchParams(location.search).get('role');
+if(inviteRoom){$('roomCode').value=inviteRoom;if(inviteRole)$('role').value=inviteRole.toLowerCase()==='teacher'?'Teacher':'Student';setEntry('Invitation detected. Enter your name, then choose Quick Open or Join classroom.');}
+function sendChat(){const v=$('chatInput').value.trim();if(!v)return;const name=$('displayName').value.trim()||'Guest';addMessage(name,v);if(classroomChannel)classroomChannel.send({type:'broadcast',event:'class-chat',payload:{senderId:currentParticipantId,name,message:v}});$('chatInput').value='';}
+$('sendBtn').onclick=sendChat;$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat();});
 async function setHand(raised){
- const name=$('displayName').value.trim()||'Participant';
-
- await classroomChannel.track({
-  id:currentParticipantId,
-  name,
-  role:currentParticipantRole,
-  mode:selectedMode,
-  hand:raised,
-  joinedAt:new Date().toISOString()
- });
-
- await classroomChannel.send({
-  type:'broadcast',
-  event:'class-hand',
-  payload:{
-   senderId:currentParticipantId,
-   name,
-   raised
-  }
- });
-
- addMessage(
-  'BEA Assistant',
-  raised?'You raised your hand.':'You lowered your hand.',
-  true
- );
+ if(!currentRoomCode||!classroomChannel){addMessage('BEA Assistant','Join a classroom before raising your hand.',true);return;}
+ const name=$('displayName').value.trim()||'Participant';await classroomChannel.track({id:currentParticipantId,name,role:currentParticipantRole,hand:raised,joinedAt:new Date().toISOString()});
+ classroomChannel.send({type:'broadcast',event:'class-hand',payload:{senderId:currentParticipantId,name,raised}});
+ addMessage('BEA Assistant',raised?'You raised your hand.':'You lowered your hand.',true);
 }
 $('handBtn').onclick=()=>setHand(true);$('lowerHandBtn').onclick=()=>setHand(false);
 
@@ -1257,7 +540,6 @@ async function cleanup(){
  [teacherStream,hallStream,microphoneStream].forEach(s=>s?.getTracks().forEach(t=>t.stop()));
 }
 window.addEventListener('beforeunload',()=>{cleanup();});
-window.addEventListener('error',event=>{console.error('BEA page error:',event.error||event.message);const box=$('entryMessage');if(box)box.textContent='A classroom script error occurred. Refresh this page; if it continues, send the Console error to BEA support.';});
 refreshCameras();
 </script>
 </body>
