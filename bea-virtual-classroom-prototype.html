@@ -1366,6 +1366,12 @@ video.style.display='block';
 video.style.visibility='visible';
 video.style.opacity='1';
 await video.play();
+await new Promise(resolve => {
+  video.addEventListener('loadeddata', resolve, {once:true});
+  setTimeout(resolve, 3000);
+});
+
+alert('Video dimensions: ' + video.videoWidth + ' × ' + video.videoHeight);
 console.log('BEA VIDEO:', video.videoWidth, video.videoHeight, video.readyState);  
    if(old){await removeStreamFromPeers(old);old.getTracks().forEach(t=>t.stop());}
   if(teacher)teacherStream=fresh;else hallStream=fresh;
