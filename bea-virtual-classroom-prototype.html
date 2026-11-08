@@ -1,158 +1,190 @@
-<style>
+ <style>
+/* ==========================================
+   BEA — ONE SHARED CLASSROOM SCENE
+   Students behind; teacher in front
+========================================== */
+
+.live-gallery {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  min-height: 570px !important;
+  padding: 16px !important;
+  overflow: hidden !important;
+  background: #172c47 !important;
+  border: 3px solid #f2b544 !important;
+  border-radius: 15px !important;
+  color: #fff !important;
+  box-sizing: border-box !important;
+}
+
+.live-gallery > h3 {
+  position: relative !important;
+  z-index: 5 !important;
+  margin: 0 0 12px !important;
+  text-align: center !important;
+}
+
+/* STUDENTS — BEHIND THE TEACHER */
+
+.student-gallery-area {
+  position: absolute !important;
+  top: 85px !important;
+  left: 12px !important;
+  right: 12px !important;
+  height: 175px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 2 !important;
+}
+
+.student-gallery-area h3 {
+  text-align: center !important;
+  margin: 0 0 8px !important;
+  color: white !important;
+}
+
+#studentGallery {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  height: 135px !important;
+  padding: 8px !important;
+  overflow-x: auto !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+#studentGallery .remote-video-card {
+  position: relative !important;
+  flex: 0 0 145px !important;
+  width: 145px !important;
+  height: 115px !important;
+  min-height: 115px !important;
+  overflow: hidden !important;
+  background: #102544 !important;
+  border: 1px solid #8eb8df !important;
+  border-radius: 9px !important;
+}
+
+#studentGallery .remote-video-card video {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* TEACHER — IN FRONT OF THE STUDENTS */
+
+.teacher-front-area {
+  position: absolute !important;
+  bottom: 15px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: min(48%, 480px) !important;
+  height: 310px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 4 !important;
+  background: transparent !important;
+}
+
+.teacher-front-area h3 {
+  text-align: center !important;
+  margin: 0 0 6px !important;
+  color: white !important;
+}
+
+#teacherFrontStage {
+  position: relative !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 275px !important;
+  min-height: 275px !important;
+  max-height: 275px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #203c5c !important;
+  border: 2px solid #f2b544 !important;
+  border-radius: 12px !important;
+}
+
+#teacherFrontStage .remote-video-card {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+#teacherFrontStage video {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center bottom !important;
+}
+
+/* HIDE SEPARATE HALL SECTION */
+
+#hallRemoteStage,
+.hall-view-area {
+  display: none !important;
+}
+
+/* WAITING MESSAGE */
+
+#beaClassroomWaiting {
+  position: absolute !important;
+  top: 48% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 90% !important;
+  text-align: center !important;
+  color: white !important;
+  font-size: 17px !important;
+  z-index: 6 !important;
+}
+
+/* MOBILE DISPLAY */
+
+@media (max-width: 600px) {
+  .live-gallery {
+    min-height: 490px !important;
+  }
+
+  .student-gallery-area {
+    top: 75px !important;
+  }
+
+  .student-gallery-area h3 {
+    font-size: 12px !important;
+  }
+
+  #studentGallery .remote-video-card {
+    flex-basis: 105px !important;
+    width: 105px !important;
+    height: 95px !important;
+    min-height: 95px !important;
+  }
+
+  .teacher-front-area {
+    width: 75% !important;
+    height: 250px !important;
+  }
 
   #teacherFrontStage {
-    min-height: 250px;
-    max-height: 350px;
-  }
-
-  #teacherFrontStage video {
-    min-height: 250px;
-    max-height: 350px;
-  }
-
-  #studentGallery {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    padding: 8px;
-  }
-
-  #studentGallery video,
-  #studentGallery .remote-video,
-  #studentGallery .participant-tile {
-    height: 130px !important;
+    height: 220px !important;
+    min-height: 220px !important;
+    max-height: 220px !important;
   }
 }
-/* BEA — ONE SHARED CLASSROOM SCENE */
-
-.live-gallery{
-  position:relative!important;
-  display:block!important;
-  width:100%!important;
-  min-height:570px!important;
-  padding:16px!important;
-  overflow:hidden!important;
-  background:#172c47!important;
-  border:3px solid #f2b544!important;
-  border-radius:15px!important;
-  color:#fff!important;
-}
-
-.live-gallery>h3{
-  position:relative;
-  z-index:5;
-  margin:0 0 12px;
-  text-align:center;
-}
-
-/* Students behind the teacher */
-.student-gallery-area{
-  position:absolute!important;
-  top:85px!important;
-  left:12px!important;
-  right:12px!important;
-  height:175px!important;
-  z-index:2!important;
-}
-
-.student-gallery-area h3{
-  text-align:center;
-  margin-bottom:8px;
-}
-
-#studentGallery{
-  display:flex!important;
-  flex-direction:row!important;
-  flex-wrap:nowrap!important;
-  justify-content:center!important;
-  align-items:center!important;
-  gap:12px!important;
-  width:100%!important;
-  height:135px!important;
-  padding:8px!important;
-  overflow-x:auto!important;
-  background:transparent!important;
-  border:0!important;
-}
-
-#studentGallery .remote-video-card{
-  flex:0 0 145px!important;
-  height:115px!important;
-  min-height:115px!important;
-}
-
-/* Teacher in the foreground */
-.teacher-front-area{
-  position:absolute!important;
-  bottom:15px!important;
-  left:50%!important;
-  transform:translateX(-50%)!important;
-  width:min(48%,480px)!important;
-  height:310px!important;
-  z-index:4!important;
-}
-
-.teacher-front-area h3{
-  text-align:center;
-  margin-bottom:6px;
-}
-
-#teacherFrontStage{
-  width:100%!important;
-  height:275px!important;
-  min-height:275px!important;
-  background:#203c5c!important;
-  border:2px solid #f2b544!important;
-  border-radius:12px!important;
-  overflow:hidden!important;
-}
-
-#teacherFrontStage .remote-video-card{
-  width:100%!important;
-  height:100%!important;
-}
-
-#teacherFrontStage video{
-  width:100%!important;
-  height:100%!important;
-  object-fit:contain!important;
-}
-
-/* Hall feed does not create a separate classroom section */
-#hallRemoteStage{
-  display:none!important;
-}
-
-/* One shared waiting message */
-#beaClassroomWaiting{
-  position:absolute;
-  top:48%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width:90%;
-  text-align:center;
-  color:#fff;
-  font-size:17px;
-  z-index:6;
-}
-
-@media(max-width:600px){
-  .live-gallery{min-height:490px!important}
-  .student-gallery-area{top:75px!important}
-  .student-gallery-area h3{font-size:12px}
-  #studentGallery .remote-video-card{
-    flex-basis:105px!important;
-    height:95px!important;
-    min-height:95px!important;
-  }
-  .teacher-front-area{
-    width:75%!important;
-    height:250px!important;
-  }
-  #teacherFrontStage{
-    height:220px!important;
-    min-height:220px!important;
-  }
-}   
+</style>
 </style>
 </head>
 <body>
