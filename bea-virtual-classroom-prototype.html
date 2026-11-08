@@ -1366,7 +1366,8 @@ video.style.display='block';
 video.style.visibility='visible';
 video.style.opacity='1';
 await video.play();
-  if(old){await removeStreamFromPeers(old);old.getTracks().forEach(t=>t.stop());}
+console.log('BEA VIDEO:', video.videoWidth, video.videoHeight, video.readyState);  
+   if(old){await removeStreamFromPeers(old);old.getTracks().forEach(t=>t.stop());}
   if(teacher)teacherStream=fresh;else hallStream=fresh;
   if(teacher && currentParticipantRole === 'teacher'){
   showLocalTeacherAtFront(fresh);
