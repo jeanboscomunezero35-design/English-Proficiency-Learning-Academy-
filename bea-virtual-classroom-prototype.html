@@ -654,8 +654,8 @@ async function stopVideo(which){
  if(teacher){teacherStream=null;removeLocalTeacherFromFront();}else hallStream=null;$(teacher?'teacherStatus':'hallStatus').textContent='Camera stopped.';updateOverallStatus();
 }
 $('startTeacher').onclick=()=>startVideo('teacher');$('startHall').onclick=()=>startVideo('hall');
-$('stopTeacher').onclick=()=>stopVideo('teacher');$('stopHall').onclick=()=>stopVideo('hall);
-if($('refreshCameras')){
+$('stopTeacher').onclick=()=>stopVideo('teacher');
+if($('refreshCameras')){$('stopHall').onclick=()=>stopVideo('hall');
   $('refreshCameras').onclick=refreshCameras;
 }
 $('teacherQuality').onchange=()=>{if(teacherStream)startVideo('teacher');};$('hallQuality').onchange=()=>{if(hallStream)startVideo('hall');};
@@ -663,8 +663,10 @@ teacherSelect.onchange=()=>{if(teacherStream)startVideo('teacher');};hallSelect.
 function toggleExpand(card,btn){const yes=$(card).classList.toggle('expanded');$(btn).textContent=yes?'Minimize':'Enlarge';}
 $('expandTeacher').onclick=()=>toggleExpand('teacherCard','expandTeacher');$('expandHall').onclick=()=>toggleExpand('hallCard','expandHall');
 if($('stopAllCameras')){
-if($('startMic')) $('startMic').onclick=startMic;
-if($('stopMic')) $('stopMic').onclick=stopMic;  
+  $('stopAllCameras').onclick=()=>{
+    stopVideo('teacher');
+    stopVideo('hall');
+  };
 }
 navigator.mediaDevices?.addEventListener?.('devicechange',refreshCameras);
 async function startMic(){
@@ -672,7 +674,8 @@ async function startMic(){
  catch(e){alert('Unable to start microphone: '+e.message);}
 }
 async function stopMic(){if(microphoneStream){await removeStreamFromPeers(microphoneStream);microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=null;}$('startMic').textContent='🎤 Start microphone';updateOverallStatus();}
-$('startMic').onclick=startMic;$('stopMic').onclick=stopMic;
+if($('startMic')) $('startMic').onclick=startMic;
+if($('stopMic')) $('stopMic').onclick=stopMic;
 function updateOverallStatus(){cameraStatus.textContent=(currentRoomCode?'● Connected · ':'● ')+(teacherStream?'Teacher camera · ':'')+(hallStream?'Hall camera · ':'')+(microphoneStream?'Microphone':'Ready');}
 document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedMode=b.dataset.mode;});
 $('createRoomBtn').onclick=()=>{if($('role').value!=='Teacher'){setEntry('Choose Teacher to create a classroom.');return;}connectToClassroom(makeRoomCode(),'Teacher',$('displayName').value);};
