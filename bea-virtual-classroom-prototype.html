@@ -1,638 +1,189 @@
 <style>
-/* BEA CLASSROOM — RESTORED DISPLAY */
+/* =========================================
+   BEA VIRTUAL CLASSROOM — CLEAN DISPLAY
+   Teacher at the front, students together
+========================================= */
 
+:root {
+  --bea-navy: #102544;
+  --bea-blue: #1769aa;
+  --bea-gold: #f2b544;
+  --bea-white: #ffffff;
+}
+
+/* Main classroom box */
 .live-gallery {
   position: relative;
-  display: block !important;
-  width: 100%;
-  padding: 15px !important;
-  background: #172c47 !important;
-  border: 3px solid #f2b544 !important;
-  border-radius: 14px;
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  min-height: 520px;
+  padding: 18px !important;
+  gap: 18px;
+  background: var(--bea-navy) !important;
+  border: 3px solid var(--bea-gold) !important;
+  border-radius: 16px;
   overflow: hidden;
   box-sizing: border-box;
 }
 
+/* Classroom canvas stays behind the live video */
 #beaClassroomCanvas {
-  display: none !important;
+  display: none;
 }
 
-.camera-screen {
-  position: relative !important;
-  width: 100% !important;
-  min-height: 260px !important;
-  height: 260px !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  overflow: hidden !important;
-}
-
-.camera-screen video {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: contain !important;
-}
-
-.teacher-front-area,
-.student-gallery-area,
-.hall-view-area {
-  position: relative !important;
-  left: auto !important;
-  top: auto !important;
-  width: 100% !important;
-  height: auto !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-}
-
-#teacherCamera,
-#hallCamera {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: contain !important;
-}
-
+/* Teacher stands at the front */
 #teacherFrontStage {
-  display: flex !important;
   position: relative !important;
-  width: 100% !important;
-  min-height: 350px !important;
-  background: #172c47 !important;
-  align-items: center !important;
+  display: flex !important;
   justify-content: center !important;
-  overflow: hidden !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-height: 300px;
+  max-height: 520px;
+  margin: 0 auto !important;
+  overflow: hidden;
+  background: #203c5c;
+  border: 2px solid var(--bea-gold);
+  border-radius: 12px;
+  box-sizing: border-box;
 }
 
+/* Teacher video */
 #teacherFrontStage video {
   display: block !important;
   width: 100% !important;
-  height: 400px !important;
+  height: 100% !important;
+  min-height: 300px;
+  max-height: 520px;
   object-fit: contain !important;
+  object-position: center bottom !important;
+  background: #203c5c;
+  border-radius: 10px;
 }
 
+/* Teacher label */
+#teacherFrontStage .video-label,
+#teacherFrontStage .participant-name {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 10;
+  padding: 7px 12px;
+  color: white;
+  background: rgba(0,0,0,0.75);
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+/* Students appear together below the teacher */
 #studentGallery {
+  position: relative !important;
   display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 12px !important;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  align-items: stretch;
+  gap: 12px;
   width: 100% !important;
+  min-height: 120px;
+  padding: 12px;
+  background: #203c5c;
+  border: 2px solid var(--bea-blue);
+  border-radius: 12px;
+  box-sizing: border-box;
 }
 
+/* Individual student video tiles */
+#studentGallery video,
+#studentGallery .remote-video,
+#studentGallery .participant-tile {
+  display: block !important;
+  width: 100% !important;
+  height: 180px !important;
+  object-fit: contain !important;
+  object-position: center;
+  background: #102544;
+  border-radius: 9px;
+}
+
+/* Whole hall camera */
+#hallRemoteStage {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  background: #172c47;
+  border-radius: 10px;
+}
+
+#hallRemoteStage video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+/* Camera cards */
+.camera-card,
+.camera-box {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.camera-card video,
+.camera-box video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Keep video elements visible */
+.live-gallery video {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Participant names */
+.participant-name,
+.video-label {
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* Mobile display */
 @media (max-width: 700px) {
+  .live-gallery {
+    padding: 8px !important;
+    gap: 10px;
+    min-height: 400px;
+  }
+
+  #teacherFrontStage {
+    min-height: 250px;
+    max-height: 350px;
+  }
+
   #teacherFrontStage video {
-    height: 300px !important;
+    min-height: 250px;
+    max-height: 350px;
+  }
+
+  #studentGallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px;
+  }
+
+  #studentGallery video,
+  #studentGallery .remote-video,
+  #studentGallery .participant-tile {
+    height: 130px !important;
   }
 }
 </style>
-/* BEA FULL-BODY TEACHER DISPLAY */
-
-.live-gallery{
-  grid-template-columns:42% 58%;
-}
-
-#teacherFrontStage .teacher-remote-card{
-  width:100%;
-  max-width:100%;
-}
-
-/* BEA FULL CLASSROOM PEOPLE VIEW */
-
-#teacherFrontStage .teacher-remote-card{
-  width:100%;
-  max-width:100%;
-  background:transparent;
-  border:none;
-}
-
-#teacherFrontStage .teacher-remote-card video{
-  width:100%;
-  height:520px !important;
-  aspect-ratio:3 / 4;
-  object-fit:contain;
-  background:transparent;
-}
-
-#studentGallery{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:10px;
-  width:100%;
-}
-
-#studentGallery .remote-video-card{
-  width:100%;
-  max-width:none;
-  background:transparent;
-  border:none;
-}
-
-#studentGallery .remote-video-card video{
-  width:100%;
-  height:350px !important;
-  aspect-ratio:3 / 4;
-  object-fit:contain;
-  background:transparent;
-}
-
-@media(max-width:700px){
-  #teacherFrontStage .teacher-remote-card video{
-    height:380px !important;
-  }
-
-  #studentGallery .remote-video-card video{
-    height:260px !important;
-  }
-}
-
-@media(max-width:700px){
-  .live-gallery{
-    grid-template-columns:40% 60%;
-  }
-
-  #teacherFrontStage .teacher-remote-card video{
-    height:320px !important;
-  }
-}
-  :root{--navy:#102544;--blue:#1769aa;--sky:#eaf4ff;--gold:#f2b544;--muted:#65758b;--line:#dce5ef;--ink:#23354d;--green:#16834a}
-*{box-sizing:border-box}
-body{margin:0;background:#f4f7fb;color:var(--ink);font-family:Arial,sans-serif}
-header{background:var(--navy);color:white;padding:17px max(18px,calc((100% - 1250px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.brand{font-weight:800;font-size:19px;letter-spacing:.2px}.brand small{display:block;font-size:11px;color:#c5d6eb;font-weight:400;margin-top:4px}
-.badge{background:#234568;border:1px solid #476486;border-radius:20px;padding:7px 12px;font-size:12px}
-main{max-width:1250px;margin:28px auto;padding:0 18px}
-.intro{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
-h1{margin:0;color:var(--navy);font-size:clamp(25px,4vw,36px)}.intro p{margin:8px 0 0;color:var(--muted)}
-.notice{background:#fff8e8;border:1px solid #f2d99d;color:#73531a;padding:12px 15px;border-radius:12px;margin-bottom:18px;font-size:13px;line-height:1.5}
-.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);gap:18px}
-.panel{background:white;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 18px #17365d0b;overflow:hidden}
-.panel-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
-.panel-head h2{font-size:16px;margin:0;color:var(--navy)}.stage{padding:16px}
-.camera-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.camera-card{background:#102544;border-radius:12px;overflow:hidden;color:white;min-width:0;transition:all .2s}
-.camera-heading{padding:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;font-weight:bold}
-.camera-heading span:last-child{color:#c5d6eb;font-weight:normal}
-.camera-screen{height:260px;position:relative;background:linear-gradient(135deg,#172c47,#294c70);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.camera-screen video{width:100%;height:100%;object-fit:cover;display:none;background:#172c47}
-#hallCamera{object-fit:contain;background:#101b2b}
-.camera-placeholder{text-align:center;padding:15px;max-width:300px}.camera-placeholder .icon{font-size:40px}
-.camera-placeholder h3{font-size:15px;margin:10px 0 6px}.camera-placeholder p{font-size:12px;color:#d8e5f3;line-height:1.5}
-.camera-live-tag{position:absolute;top:10px;left:10px;background:#b42318;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:bold;display:none}
-.camera-controls{padding:12px;display:grid;gap:9px}.camera-controls label{font-size:11px;font-weight:bold;color:#d8e5f3}
-.camera-controls select{width:100%;font-size:12px;padding:9px}
-.camera-actions{display:flex;gap:7px;flex-wrap:wrap}.camera-actions button{flex:1;min-width:65px;font-size:11px;padding:10px 7px}
-.camera-status{font-size:11px;color:#c5d6eb;line-height:1.5}
-.camera-card.expanded{grid-column:1/-1}.camera-card.expanded .camera-screen{height:480px}
-.camera-global-controls,.controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
-.camera-global-controls button{flex:1}.camera-note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}
-button,.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:700;cursor:pointer;font-size:13px}
-.primary{background:var(--blue);color:white}.secondary{background:var(--sky);color:#15558a}.dark{background:#e9edf3;color:#34445a}.danger{background:#fff0ef;color:#b42318}
-button:disabled{opacity:.45;cursor:not-allowed}
-.live-gallery{margin-top:18px;padding:15px;background:#f0f5fb;border:1px solid #dce5ef;border-radius:12px}
-/* CLASSROOM VIDEO AREAS */
-.teacher-front-area,
-.student-gallery-area,
-.hall-view-area{
-  width:100%;
-  margin-top:16px;
-}
-
-.teacher-front-area h3,
-.student-gallery-area h3,
-.hall-view-area h3{
-  color:var(--navy);
-  margin:0 0 12px;
-  font-size:16px;
-}
-
-/* TEACHER FRONT STAGE AND WHOLE HALL */
-#teacherFrontStage,
-#hallRemoteStage{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  width:100%;
-  gap:12px;
-  background:#0b1930;
-  padding:12px;
-  border-radius:12px;
-  min-height:85px;
-  color:#d8e5f3;
-}
-
-/* STUDENT GALLERY */
-.student-gallery-area{
-  background:#0b1930;
-  padding:12px;
-  border-radius:12px;
-}
-
-.remote-video-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:12px;
-  width:100%;
-}
-
-.student-gallery-area .remote-video-card{
-  max-width:520px;
-}
-
-/* ALL REMOTE VIDEO CARDS */
-.remote-video-card{
-  background:#102544;
-  border-radius:10px;
-  overflow:hidden;
-  color:white;
-  width:100%;
-}
-
-/* VIDEO MUST USE THE AVAILABLE CARD WIDTH */
-.remote-video-card video{
-  display:block;
-  width:100%;
-  height:auto !important;
-  aspect-ratio:16 / 9;
-  object-fit:contain;
-  background:#172c47;
-}
-
-/* TEACHER — PROMINENT FRONT STAGE */
-.teacher-remote-card{
-  width:100%;
-  max-width:1100px;
-  border:3px solid var(--gold);
-  box-shadow:0 8px 25px #0005;
-}
-
-.teacher-remote-card video{
-  width:100%;
-  height:auto !important;
-  aspect-ratio:16 / 9;
-  object-fit:contain;
-}
-
-/* WHOLE HALL */
-.hall-remote-card{
-  width:100%;
-  max-width:1100px;
-}
-
-.hall-remote-card video{
-  width:100%;
-  height:auto !important;
-  aspect-ratio:16 / 9;
-  object-fit:contain;
-}
-
-/* PARTICIPANT NAMES AND CONNECTION STATUS */
-.remote-video-name{
-  padding:10px;
-  font-size:14px;
-  font-weight:bold;
-  color:white;
-}
-
-.remote-video-status{
-  font-size:12px;
-  color:#c5d6eb;
-  padding:0 10px 10px;
-}
-.board-wrap{padding:16px;border-top:1px solid var(--line)}
-.board-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.board-title h3{margin:0;color:var(--navy);font-size:15px}
-.board-surface{position:relative;width:100%;border-radius:10px;overflow:hidden;background:white;border:1px solid #d9e1ea}
-canvas{width:100%;height:300px;background:white;touch-action:none;display:block;cursor:crosshair}
-.board-surface.chalk-mode canvas{background:#263b32}
-#textEditor{position:absolute;display:none;z-index:5;left:0;top:0;width:100%;height:100%;padding:8px;border:1px dashed var(--gold);outline:none;resize:none;overflow:auto;background:transparent;font-size:25px;font-weight:bold;line-height:1.5;color:#173b67;font-family:Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
-.board-tools{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:12px}
-.pen-tool{display:flex;align-items:center;gap:9px;min-height:43px;padding:6px 11px;background:#eaf4ff;border:1px solid #c5d9ed;border-radius:10px}
-.pen-tool label{font-size:12px;font-weight:700;color:#15558a;white-space:nowrap}
-.color-picker{width:38px!important;height:30px!important;padding:2px!important;border:2px solid white!important;border-radius:50%!important}
-.thickness-picker{width:95px!important;height:20px;padding:0!important;cursor:pointer}
-.thickness-value{background:var(--blue);color:white;font-size:12px;font-weight:bold;min-width:25px;text-align:center;padding:5px 7px;border-radius:6px}
-.board-instruction{font-size:12px;color:#65758b;margin-top:10px;line-height:1.5}
-.side{display:flex;flex-direction:column;gap:18px}.entry{padding:16px}
-.entry label{display:block;font-size:12px;font-weight:bold;color:#52647a;margin:12px 0 6px}
-input,select,textarea{border:1px solid #d4deea;border-radius:8px;padding:10px;font:inherit;color:var(--ink);background:white}
-input,select{width:100%}
-.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
-.mode{border:1px solid var(--line);padding:11px;border-radius:10px;background:#fff;text-align:left}
-.mode.active{border:2px solid var(--blue);background:#f0f7ff}
-.mode strong{display:block;font-size:13px}.mode span{font-size:11px;color:var(--muted);display:block;margin-top:5px;line-height:1.4}
-.room-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
-.room-share{display:none;margin-top:14px;padding:12px;background:#f0f7ff;border:1px solid #c9def2;border-radius:10px}
-.room-share strong{display:block;color:var(--navy);font-size:12px;margin-bottom:6px}.room-share input{font-size:12px;margin-bottom:8px}
-.room-state{font-size:12px;line-height:1.5;margin-top:10px;color:#52647a}
-.participant-list{margin-top:10px;padding:10px;background:#f7f9fc;border-radius:9px;font-size:12px;line-height:1.6}
-.chat{padding:14px}.messages{height:180px;overflow:auto;background:#f7f9fc;border-radius:10px;padding:10px;font-size:13px}
-.msg{margin:0 0 10px;line-height:1.45}.msg b{color:var(--blue)}
-.chat-row{display:flex;gap:7px;margin-top:9px}.chat-row input{min-width:0;flex:1}
-.features{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
-.feature{background:white;border:1px solid var(--line);border-radius:12px;padding:13px}
-.feature b{display:block;font-size:13px;color:var(--navy)}.feature span{font-size:11px;color:var(--muted);line-height:1.4;display:block;margin-top:5px}
-.status{font-size:12px;color:var(--green);font-weight:bold}
-footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.features{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:650px){.camera-grid{grid-template-columns:1fr}.camera-screen{height:230px}.camera-card.expanded .camera-screen{height:300px}.teacher-remote-card video{height:260px}.hall-remote-card video{height:220px}.remote-video-card video{height:200px}}
-@media(max-width:460px){main{padding:0 12px}.features{grid-template-columns:1fr 1fr}.controls button{flex:1}.mode-grid,.room-actions{grid-template-columns:1fr}.pen-tool{flex:1}}
-/* BEA — ONE SHARED LIVE CLASSROOM */
-.live-gallery{
-  display:flex;
-  flex-direction:column;
-  gap:0;
-  width:100%;
-  padding:20px;
-  background:#0b1930;
-  border:3px solid #f2b544;
-  border-radius:16px;
-  overflow:hidden;
-}
-
-/* TEACHER STANDS AT THE FRONT */
-.teacher-front-area,
-#teacherFrontStage{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  width:100%;
-  background:transparent;
-  border:0;
-  padding:8px;
-}
-
-.teacher-remote-card{
-  width:100%;
-  max-width:480px;
-  border:3px solid #f2b544;
-  border-radius:12px;
-  overflow:hidden;
-}
-
-.teacher-remote-card video{
-  width:100%;
-  aspect-ratio:3 / 4;
-  object-fit:cover;
-}
-
-/* STUDENTS SIT BELOW THE TEACHER */
-.student-gallery-area{
-  width:100%;
-  background:transparent;
-  border:0;
-  padding:15px 5px;
-}
-
-#studentGallery{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:15px;
-  width:100%;
-}
-
-.student-remote-card{
-  width:100%;
-  max-width:none;
-  border:1px solid #54708f;
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.student-remote-card video{
-  width:100%;
-  aspect-ratio:16 / 9;
-  object-fit:cover;
-}
-
-/* MOBILE CLASSROOM */
-@media(max-width:600px){
-  .live-gallery{
-    padding:8px;
-  }
-
-  .teacher-remote-card{
-    max-width:100%;
-  }
-
-  #studentGallery{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px;
-  }
-}
-/* =================================
-  /* =====================================
- /* BEA LIVE PEOPLE CLASSROOM */
-
-.live-gallery{
-  display:grid;
-  grid-template-columns:35% 65%;
-  grid-template-rows:auto auto;
-  gap:0;
-  width:100%;
-  padding:10px;
-  box-sizing:border-box;
-  background:#172c47;
-  border:3px solid #f2b544;
-  border-radius:14px;
-  overflow:hidden;
-}
-
-.live-gallery > h3{
-  grid-column:1 / -1;
-  text-align:center;
-  color:white;
-  margin:8px;
-}
-
-.teacher-front-area,
-.student-gallery-area{
-  background:transparent !important;
-  border:none !important;
-  box-shadow:none !important;
-  padding:5px;
-  min-width:0;
-}
-
-.teacher-front-area{
-  grid-column:1;
-  grid-row:2;
-}
-
-.student-gallery-area{
-  grid-column:2;
-  grid-row:2;
-}
-
-.teacher-front-area h3,
-.student-gallery-area h3{
-  display:none;
-}
-
-#teacherFrontStage{
-  display:flex;
-  width:100%;
-  align-items:center;
-  justify-content:center;
-}
-
-#teacherFrontStage .teacher-remote-card{
-  width:100%;
-  max-width:none;
-  border:none !important;
-  background:transparent;
-}
-
-#teacherFrontStage video{
-  display:block;
-  width:100%;
-  height:520px !important;
-  object-fit:contain;
-  background:transparent;
-}
-
-#studentGallery{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:8px;
-  width:100%;
-}
-
-#studentGallery .remote-video-card{
-  width:100%;
-  max-width:none;
-  border:none !important;
-  background:transparent;
-}
-
-#studentGallery video{
-  display:block;
-  width:100%;
-  height:300px !important;
-  object-fit:contain;
-  background:transparent;
-}
-
-.hall-view-area{
-  grid-column:1 / -1;
-  background:transparent !important;
-  border:none !important;
-}
-
-@media(max-width:700px){
-  .live-gallery{
-    grid-template-columns:35% 65%;
-    padding:4px;
-  }
-
-  #teacherFrontStage video{
-    height:350px !important;
-  }
-
-  #studentGallery{
-    grid-template-columns:1fr;
-  }
-
-  #studentGallery video{
-    height:230px !important;
-  }
-} 
-/* BEA CLASSROOM — RESTORE LIVE VIDEO VISIBILITY */
-
-/* Restore camera previews */
-.camera-screen{
-  position:relative !important;
-  left:auto !important;
-  top:auto !important;
-  width:100% !important;
-  height:260px !important;
-  opacity:1 !important;
-  visibility:visible !important;
-  overflow:hidden !important;
-  pointer-events:auto !important;
-}
-
-.camera-screen video{
-  display:block !important;
-  position:relative !important;
-  width:100% !important;
-  height:100% !important;
-  visibility:visible !important;
-  opacity:1 !important;
-  object-fit:contain !important;
-}
-
-/* Restore the classroom */
-.live-gallery{
-  display:flex !important;
-  flex-direction:column !important;
-  position:relative !important;
-  width:100% !important;
-  height:auto !important;
-  padding:15px !important;
-  background:#172c47 !important;
-  overflow:visible !important;
-}
-
-/* Show teacher and students */
-.teacher-front-area,
-.student-gallery-area,
-.hall-view-area{
-  position:relative !important;
-  left:auto !important;
-  top:auto !important;
-  width:100% !important;
-  height:auto !important;
-  opacity:1 !important;
-  visibility:visible !important;
-  pointer-events:auto !important;
-}
-
-/* Teacher stage */
-#teacherFrontStage{
-  display:flex !important;
-  position:relative !important;
-  width:100% !important;
-  min-height:400px !important;
-  background:#172c47 !important;
-  align-items:center !important;
-  justify-content:center !important;
-  overflow:hidden !important;
-}
-
-/* Teacher picture */
-#teacherFrontStage video{
-  display:block !important;
-  width:100% !important;
-  height:500px !important;
-  object-fit:contain !important;
-}
-
-/* Student gallery */
-#studentGallery{
-  display:grid !important;
-  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-  gap:12px !important;
-  width:100% !important;
-}
-
-/* Hide unused composition canvas */
-#beaClassroomCanvas{
-  display:none !important;
-}
-
-@media(max-width:700px){
-  #teacherFrontStage{
-    min-height:300px !important;
-  }
-
-  #teacherFrontStage video{
-    height:350px !important;
-  }
-}
 </head>
 <body>
 <header>
