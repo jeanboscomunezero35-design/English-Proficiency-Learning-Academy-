@@ -582,51 +582,247 @@ function showRemoteVideo(id,name,stream,role,type){
 }
 function createPeerConnection(id,name,role='student'){
  if(peerConnections[id])return peerConnections[id];
- const pc=new RTCPeerConnection(RTC_CONFIG),conn={pc,name,role,remoteStreamTypes:{},pendingCandidates:[],makingOffer:false,statsTimer:null};
- peerConnections[id]=conn;
- [teacherStream,hallStream,microphoneStream].filter(Boolean).forEach(s=>s.getTracks().forEach(t=>{if(!pc.getSenders().some(x=>x.track===t))pc.addTrack(t,s);}));
- pc.ontrack=e=>{
- console.error(
-  'BEA VIDEO RECEIVED:',
-  id,
+
+ const pc=new RTCPeerConnection(RTC_CONFIG);
+
+ const conn={
+  pc,
   name,
-  e.track.kind,
-  e.track.readyState
-);
-   const stream=e.streams[0]||new MediaStream([e.track]);
-  if(e.track.kind==='video'){const type=conn.remoteStreamTypes[stream.id]||(conn.role==='teacher'?'teacher':'student');showRemoteVideo(id,name,stream,conn.role,type);}
-  if(e.track.kind==='audio'){let a=$('remoteAudio_'+id);if(!a){a=document.createElement('audio');a.id='remoteAudio_'+id;a.autoplay=true;a.playsInline=true;document.body.appendChild(a);}a.srcObject=stream;a.play().catch(()=>{});}
+  role,
+  remoteStreamTypes:{},
+  pendingCandidates:[],
+  makingOffer:false,
+  negotiationPending:false,
+  ignoreOffer:false,
+  polite:currentParticipantId.localeCompare(id)>0,
+  statsTimer:null
  };
- pc.onicecandidate=e=>{if(e.candidate)sendRtcSignal(id,{type:'candidate',candidate:e.candidate.toJSON()});};
- pc.onconnectionstatechange=()=>{console.log('BEA connection',name,pc.connectionState);if(pc.connectionState==='failed')pc.restartIce();};
- pc.oniceconnectionstatechange=()=>console.log('BEA ICE',name,pc.iceConnectionState);
- pc.onnegotiationneeded=async()=>{
-  try{if(pc.signalingState!=='stable')return;const offer=await pc.createOffer();await pc.setLocalDescription(offer);await sendRtcSignal(id,{type:'offer',description:pc.localDescription});}catch(e){console.error('BEA negotiation:',e);}
+
+ peerConnections[id]=conn;
+
+ [teacherStream,hallStream,microphoneStream]
+  .filter(Boolean)
+  .forEach(s=>s.getTracks().forEach(t=>{
+   if(!pc.getSenders().some(x=>x.track===t)){
+    pc.addTrack(t,s);
+   }
+  }));
+
+ pc.ontrack=e=>{
+  console.log('BEA INCOMING TRACK:',id,name,e.track.kind);
+
+  const stream=e.streams[0]||new MediaStream([e.track]);
+
+  if(e.track.kind==='video'){
+   const type=conn.remoteStreamTypes[stream.id]||
+     (conn.role==='teacher'?'teacher':'student');
+
+   showRemoteVideo(id,name,stream,conn.role,type);
+  }
+
+  if(e.track.kind==='audio'){
+   let a=$('remoteAudio_'+id);
+
+   if(!a){
+    a=document.createElement('audio');
+    a.id='remoteAudio_'+id;
+    a.autoplay=true;
+    a.playsInline=true;
+    document.body.appendChild(a);
+   }
+
+   a.srcObject=stream;
+   a.play().catch(()=>{});
+  }
  };
- conn.statsTimer=setInterval(async()=>{try{if(pc.connectionState==='closed'){clearInterval(conn.statsTimer);return;}const stats=await pc.getStats();stats.forEach(r=>{if(r.type==='inbound-rtp'&&r.kind==='video')console.log('BEA VIDEO',name,{frames:r.framesDecoded,bytes:r.bytesReceived,lost:r.packetsLost,jitter:r.jitter});});}catch{}},5000);
+
+ pc.onicecandidate=e=>{
+  if(e.candidate){
+   sendRtcSignal(id,{
+    type:'candidate',
+    candidate:e.candidate.toJSON()
+   });
+  }
+ };
+
+ pc.onconnectionstatechange=()=>{
+  console.log('BEA CONNECTION:',name,pc.connectionState);
+
+  if(pc.connectionState==='failed'){
+   pc.restartIce();
+  }
+ };
+
+ pc.oniceconnectionstatechange=()=>{
+  console.log('BEA ICE:',name,pc.iceConnectionState);
+ };
+
+ pc.onnegotiationneeded=()=>{
+  negotiatePeer(conn,id);
+ };
+
+ conn.statsTimer=setInterval(async()=>{
+  try{
+   if(pc.connectionState==='closed'){
+    clearInterval(conn.statsTimer);
+    return;
+   }
+
+   const stats=await pc.getStats();
+
+   stats.forEach(r=>{
+    if(r.type==='inbound-rtp'&&r.kind==='video'){
+     console.log('BEA VIDEO:',name,{
+      frames:r.framesDecoded,
+      bytes:r.bytesReceived,
+      lost:r.packetsLost,
+      jitter:r.jitter
+     });
+    }
+   });
+  }catch(e){
+   console.error('BEA stats:',e);
+  }
+ },5000);
+
  return conn;
 }
-async function startRtcOffer(person){
- try{const conn=createPeerConnection(person.id,person.name,person.role);const pc=conn.pc;if(pc.signalingState!=='stable')return;const offer=await pc.createOffer();await pc.setLocalDescription(offer);await sendRtcSignal(person.id,{type:'offer',description:pc.localDescription});}
- catch(e){console.error('BEA offer:',e);}
+async function negotiatePeer(conn,id){
+ const pc=conn.pc;
+
+ if(conn.makingOffer){
+  conn.negotiationPending=true;
+  return;
+ }
+
+ if(pc.signalingState!=='stable'){
+  conn.negotiationPending=true;
+  return;
+ }
+
+ conn.negotiationPending=false;
+ conn.makingOffer=true;
+
+ try{
+  const offer=await pc.createOffer();
+
+  if(pc.signalingState!=='stable'){
+   conn.negotiationPending=true;
+   return;
+  }
+
+  await pc.setLocalDescription(offer);
+
+  await sendRtcSignal(id,{
+   type:'offer',
+   description:pc.localDescription
+  });
+
+  console.log('BEA OFFER SENT:',id);
+
+ }catch(e){
+  console.error('BEA negotiation error:',e);
+
+ }finally{
+  conn.makingOffer=false;
+
+  if(conn.negotiationPending&&pc.signalingState==='stable'){
+   setTimeout(()=>negotiatePeer(conn,id),200);
+  }
+ }
 }
 async function handleRtcSignal(payload){
  if(!payload||payload.to!==currentParticipantId||!payload.signal)return;
- const id=payload.from,name=payload.name||'BEA Participant',role=payload.role||'student';
+
+ const id=payload.from;
+ const name=payload.name||'BEA Participant';
+ const role=payload.role||'student';
+
  try{
-  const conn=createPeerConnection(id,name,role),pc=conn.pc,s=payload.signal;
-  conn.remoteStreamTypes={...conn.remoteStreamTypes,...(payload.streamTypes||{})};
+  const conn=createPeerConnection(id,name,role);
+  const pc=conn.pc;
+  const s=payload.signal;
+
+  conn.remoteStreamTypes={
+   ...conn.remoteStreamTypes,
+   ...(payload.streamTypes||{})
+  };
+
   if(s.type==='offer'){
-   if(pc.signalingState!=='stable')return;
-   await pc.setRemoteDescription(new RTCSessionDescription(s.description));
-   for(const c of conn.pendingCandidates.splice(0))await pc.addIceCandidate(new RTCIceCandidate(c));
-   const answer=await pc.createAnswer();await pc.setLocalDescription(answer);await sendRtcSignal(id,{type:'answer',description:pc.localDescription});
+
+   const offerCollision=
+    conn.makingOffer||pc.signalingState!=='stable';
+
+   conn.ignoreOffer=!conn.polite&&offerCollision;
+
+   if(conn.ignoreOffer){
+    console.log('BEA OFFER IGNORED:',id);
+    return;
+   }
+
+   if(offerCollision&&conn.polite){
+    await pc.setLocalDescription({type:'rollback'});
+   }
+
+   await pc.setRemoteDescription(
+    new RTCSessionDescription(s.description)
+   );
+
+   for(const c of conn.pendingCandidates.splice(0)){
+    await pc.addIceCandidate(new RTCIceCandidate(c));
+   }
+
+   const answer=await pc.createAnswer();
+
+   await pc.setLocalDescription(answer);
+
+   await sendRtcSignal(id,{
+    type:'answer',
+    description:pc.localDescription
+   });
+
+   console.log('BEA ANSWER SENT:',id);
+
+   if(conn.negotiationPending){
+    setTimeout(()=>negotiatePeer(conn,id),200);
+   }
+
   }else if(s.type==='answer'){
-   if(pc.signalingState==='have-local-offer'){await pc.setRemoteDescription(new RTCSessionDescription(s.description));for(const c of conn.pendingCandidates.splice(0))await pc.addIceCandidate(new RTCIceCandidate(c));}
+
+   if(pc.signalingState==='have-local-offer'){
+    await pc.setRemoteDescription(
+     new RTCSessionDescription(s.description)
+    );
+
+    for(const c of conn.pendingCandidates.splice(0)){
+     await pc.addIceCandidate(new RTCIceCandidate(c));
+    }
+
+    console.log('BEA ANSWER RECEIVED:',id);
+
+    if(conn.negotiationPending){
+     setTimeout(()=>negotiatePeer(conn,id),200);
+    }
+   }
+
   }else if(s.type==='candidate'){
-   if(pc.remoteDescription)await pc.addIceCandidate(new RTCIceCandidate(s.candidate));else conn.pendingCandidates.push(s.candidate);
+
+   if(pc.remoteDescription){
+    try{
+     await pc.addIceCandidate(
+      new RTCIceCandidate(s.candidate)
+     );
+    }catch(e){
+     if(!conn.ignoreOffer)throw e;
+    }
+   }else{
+    conn.pendingCandidates.push(s.candidate);
+   }
   }
- }catch(e){console.error('BEA signal error:',e);}
+
+ }catch(e){
+  console.error('BEA signal error:',e);
+ }
 }
 async function addStreamToExistingPeers(stream){
  for(const id of Object.keys(peerConnections)){
