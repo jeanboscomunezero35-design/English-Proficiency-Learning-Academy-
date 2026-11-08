@@ -4,7 +4,44 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BEA Virtual Classroom | Bosco English Academy</title>
-<style>
+/* BEA ONE-SCENE LIVE CLASSROOM */
+
+.live-gallery{
+  position:relative;
+  display:block !important;
+  width:100%;
+  padding:0 !important;
+  background:#172c47 !important;
+  border:3px solid #f2b544;
+  border-radius:14px;
+  overflow:hidden;
+  box-sizing:border-box;
+}
+
+#beaClassroomCanvas{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:16 / 9;
+  background:#172c47;
+}
+
+/* Keep live video sources running for the classroom composition */
+.teacher-front-area,
+.student-gallery-area,
+.hall-view-area{
+  position:absolute !important;
+  left:-10000px !important;
+  top:0 !important;
+  width:640px !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+.live-gallery > h3{
+  display:none !important;
+}
+  <style>
 /* BEA FULL-BODY TEACHER DISPLAY */
 
 .live-gallery{
@@ -493,6 +530,7 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
           </div>
         </div>
         <div class="live-gallery">
+          <canvas id="beaClassroomCanvas"></canvas>
           <h3>👥 Live Virtual Classroom — Connected Participants</h3>
           <div class="teacher-front-area"><h3>👨‍🏫 Teacher — Front of Classroom</h3><div id="teacherFrontStage"><div id="teacherEmptyMessage">Waiting for the teacher's live camera...</div></div></div>
           <div class="hall-view-area"><h3>🏫 Whole Hall Camera</h3><div id="hallRemoteStage"><div id="hallEmptyMessage">Waiting for the hall camera...</div></div></div>
@@ -546,7 +584,82 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
 <footer>© Bosco English Academy · Founded by Jean Bosco Munezero · Building Confidence in English</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
+/* BEA LIVE HORIZONTAL CLASSROOM COMPOSER */
+
+(function(){
+
+  const canvas = document.getElementById('beaClassroomCanvas');
+  if(!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = 1600;
+  canvas.height = 900;
+
+  function drawPerson(video,x,y,w,h){
+
+    if(!video || video.readyState < 2 || !video.videoWidth) return;
+
+    const scale = Math.min(
+      w / video.videoWidth,
+      h / video.videoHeight
+    );
+
+    const width = video.videoWidth * scale;
+    const height = video.videoHeight * scale;
+
+    const dx = x + (w-width)/2;
+    const dy = y + (h-height)/2;
+
+    ctx.drawImage(video,dx,dy,width,height);
+  }
+
+  function drawClassroom(){
+
+    ctx.fillStyle = '#172c47';
+    ctx.fillRect(0,0,1600,900);
+
+    ctx.fillStyle = '#f2b544';
+    ctx.font = 'bold 34px Arial';
+    ctx.fillText('BEA LIVE CLASSROOM',35,45);
+
+    const teacher = document.querySelector(
+      '#teacherFrontStage video'
+    );
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 25px Arial';
+    ctx.fillText('TEACHER',35,90);
+
+    drawPerson(teacher,20,110,500,760);
+
+    const students = Array.from(
+      document.querySelectorAll('#studentGallery video')
+    );
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('STUDENTS',550,90);
+
+    const positions = [
+      [550,110],[1070,110],
+      [550,495],[1070,495]
+    ];
+
+    students.slice(0,4).forEach(function(video,index){
+
+      const p = positions[index];
+
+      drawPerson(video,p[0],p[1],500,370);
+
+    });
+
+    requestAnimationFrame(drawClassroom);
+  }
+
+  drawClassroom();
+
+})();
+  <script>
 /* IMPORTANT: Keep your real Supabase project URL and anon/public key here.
    Never use the service_role key in a public HTML file. */
 const SUPABASE_URL = 'https://arnlcdpncwuruacaqjko.supabase.co';
