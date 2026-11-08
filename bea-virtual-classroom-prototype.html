@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BEA Virtual Classroom | Bosco English Academy</title>
 <!-- Updated with the requested horizontal one-scene classroom design; existing BEA classroom JavaScript preserved. -->
+/* BEA — Make student waiting message visible */
+#studentGallery {
+  color: #d8e5f3 !important;
+}
+
+#remoteEmptyMessage {
+  color: #d8e5f3 !important;
+  text-align: center;
+  font-size: 15px;
+  padding: 20px;
+}
 <style>
 :root{--navy:#102544;--blue:#1769aa;--sky:#eaf4ff;--gold:#f2b544;--muted:#65758b;--line:#dce5ef;--ink:#23354d;--green:#16834a}
 *{box-sizing:border-box}
@@ -575,7 +586,14 @@ function createPeerConnection(id,name,role='student'){
  peerConnections[id]=conn;
  [teacherStream,hallStream,microphoneStream].filter(Boolean).forEach(s=>s.getTracks().forEach(t=>{if(!pc.getSenders().some(x=>x.track===t))pc.addTrack(t,s);}));
  pc.ontrack=e=>{
-  const stream=e.streams[0]||new MediaStream([e.track]);
+ console.error(
+  'BEA VIDEO RECEIVED:',
+  id,
+  name,
+  e.track.kind,
+  e.track.readyState
+);
+   const stream=e.streams[0]||new MediaStream([e.track]);
   if(e.track.kind==='video'){const type=conn.remoteStreamTypes[stream.id]||(conn.role==='teacher'?'teacher':'student');showRemoteVideo(id,name,stream,conn.role,type);}
   if(e.track.kind==='audio'){let a=$('remoteAudio_'+id);if(!a){a=document.createElement('audio');a.id='remoteAudio_'+id;a.autoplay=true;a.playsInline=true;document.body.appendChild(a);}a.srcObject=stream;a.play().catch(()=>{});}
  };
