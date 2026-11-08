@@ -371,56 +371,103 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
             </div>
           </div>
         </div>
-        <div class="live-gallery">
-          <h3>👥 Live Virtual Classroom — Connected Participants</h3>
-          <div class="teacher-front-area"><h3>👨‍🏫 Teacher — Front of Classroom</h3><div id="teacherFrontStage"><div id="teacherEmptyMessage">Waiting for the teacher's live camera...</div></div></div>
-          <div class="hall-view-area"><h3>🏫 Whole Hall Camera</h3><div id="hallRemoteStage"><div id="hallEmptyMessage">Waiting for the hall camera...</div></div></div>
-          <div class="student-gallery-area"><h3>👥 Students — Classroom Gallery</h3><div class="remote-video-grid" id="studentGallery"><div id="remoteEmptyMessage">Waiting for students to connect...</div></div></div>
-        </div>
-        <div class="camera-global-controls">
-          <button class="secondary" id="refreshCameras">🔄 Refresh cameras</button><button class="primary" id="startMic">🎤 Start microphone</button><button class="dark" id="stopMic">Stop microphone</button><button class="danger" id="stopAllCameras">Stop all cameras</button>
-        </div>
-        <p class="camera-note">For the best whole-hall view, use a wide-angle USB camera positioned to capture the room. Two physical cameras are needed for two independent views. Keep this page open while teaching.</p>
+     <div class="live-gallery" style="
+  display:flex!important;
+  flex-direction:column!important;
+  width:100%!important;
+  min-height:680px!important;
+  padding:30px!important;
+  gap:18px!important;
+  background:radial-gradient(ellipse,#345d80,#102544)!important;
+  border:6px solid #f2b544!important;
+  border-radius:100px / 55px!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+">
+
+  <h3 style="
+    order:0!important;
+    text-align:center!important;
+    color:white!important;
+    width:100%!important;
+  ">
+    🏫 BEA — ONE SHARED LIVE CLASSROOM
+  </h3>
+
+  <!-- TEACHER AT THE FRONT -->
+  <div class="teacher-front-area" style="
+    order:1!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    width:100%!important;
+    background:transparent!important;
+    border:0!important;
+    padding:10px!important;
+  ">
+
+    <h3 style="color:#ffe0a0!important;text-align:center!important;">
+      👨‍🏫 TEACHER — FRONT OF THE CLASS
+    </h3>
+
+    <div id="teacherFrontStage" style="
+      display:flex!important;
+      justify-content:center!important;
+      align-items:center!important;
+      width:100%!important;
+      min-height:260px!important;
+      background:transparent!important;
+      border:0!important;
+    ">
+      <div id="teacherEmptyMessage" style="color:white!important;">
+        Waiting for the teacher's live camera...
       </div>
-      <div class="board-wrap">
-        <div class="board-title"><h3>✍️ Interactive teaching board</h3><span style="font-size:11px;color:#718096">Draw, type and explain</span></div>
-        <div class="board-surface" id="boardSurface"><canvas id="board" width="1100" height="360"></canvas><textarea id="textEditor" spellcheck="false" placeholder="Start typing your lesson here...&#10;Press Ctrl + Enter when finished."></textarea></div>
-        <div class="board-tools">
-          <button class="secondary tool-button active" id="markerBtn">🖊️ Marker</button><button class="secondary tool-button" id="chalkBtn">🖍️ Chalk</button><button class="secondary tool-button" id="handwritingBtn">✍️ Handwriting</button><button class="secondary tool-button" id="textBtn">⌨️ Text</button>
-          <div class="pen-tool"><label for="penColor">🎨 Colour</label><input type="color" class="color-picker" id="penColor" value="#173b67"></div>
-          <div class="pen-tool"><label for="penSize">Thickness</label><input type="range" class="thickness-picker" id="penSize" min="2" max="24" value="4"><span class="thickness-value" id="penSizeValue">4</span></div>
-          <button class="secondary tool-button" id="eraseBtn">Eraser</button><button class="dark" id="clearBtn">Clear board</button>
-        </div>
-        <p class="board-instruction" id="boardInstruction">Marker selected: draw with your mouse, finger or stylus. Choose Text to type.</p>
+    </div>
+  </div>
+
+  <!-- KEEP HALL CAMERA ID FOR EXISTING JAVASCRIPT -->
+  <div class="hall-view-area" style="display:none!important;">
+    <h3>Whole Hall Camera</h3>
+    <div id="hallRemoteStage">
+      <div id="hallEmptyMessage">Waiting for the hall camera...</div>
+    </div>
+  </div>
+
+  <!-- STUDENTS FACING THE TEACHER -->
+  <div class="student-gallery-area" style="
+    order:2!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    width:100%!important;
+    background:transparent!important;
+    border:0!important;
+    padding:15px!important;
+  ">
+
+    <h3 style="color:#ffe0a0!important;text-align:center!important;">
+      👥 STUDENTS — SEATED FACING THE TEACHER
+    </h3>
+
+    <div class="remote-video-grid" id="studentGallery" style="
+      display:flex!important;
+      flex-direction:row!important;
+      flex-wrap:wrap!important;
+      justify-content:center!important;
+      align-items:flex-start!important;
+      gap:18px!important;
+      width:100%!important;
+      min-height:150px!important;
+      background:transparent!important;
+      border:0!important;
+    ">
+      <div id="remoteEmptyMessage" style="color:white!important;">
+        Waiting for students to connect...
       </div>
-    </section>
-    <aside class="side">
-      <section class="panel">
-        <div class="panel-head"><h2>Enter the classroom</h2><span class="badge" id="roomBadge">Not connected</span></div>
-        <div class="entry">
-          <label for="displayName">Your name</label><input id="displayName" value="" placeholder="Enter your name">
-          <label>Choose attendance mode</label>
-          <div class="mode-grid"><button class="mode active" data-mode="individual"><strong>👤 Individual</strong><span>One learner joins from home.</span></button><button class="mode" data-mode="group"><strong>🏫 Group hall</strong><span>Students gather in one classroom.</span></button></div>
-          <label for="roomCode">Classroom code</label><input id="roomCode" placeholder="e.g. BEA-ENGLISH-01">
-          <label for="role">I am joining as</label><select id="role"><option>Teacher</option><option>Student</option></select>
-          <div class="room-actions"><button class="primary" id="createRoomBtn">＋ Create classroom</button><button class="secondary" id="joinRoomBtn">↪ Join classroom</button><button class="secondary" id="quickOpenBtn" style="grid-column:1/-1">⚡ Quick Open classroom</button></div>
-          <div class="room-share" id="roomShare"><strong>Share this invitation link with your students</strong><input id="roomLink" readonly aria-label="Classroom invitation link"><button class="primary" style="width:100%" id="copyRoomLinkBtn">Copy invitation link</button></div>
-          <p id="entryMessage" class="room-state">Teachers create a room. Students enter its classroom code or open the invitation link.</p>
-          <div class="participant-list" id="participantList"><strong>Participants:</strong> Not connected yet.</div>
-        </div>
-      </section>
-      <section class="panel">
-        <div class="panel-head"><h2>Class discussion</h2><span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Live chat</span></div>
-        <div class="chat"><div class="messages" id="messages"><p class="msg"><b>BEA Assistant:</b> Welcome! Join a classroom to chat with participants.</p></div><div class="chat-row"><input id="chatInput" placeholder="Write a message..." aria-label="Chat message"><button class="primary" id="sendBtn">Send</button></div><div class="controls"><button class="secondary" id="handBtn">✋ Raise hand</button><button class="dark" id="lowerHandBtn">Lower hand</button></div></div>
-      </section>
-    </aside>
+    </div>
+
   </div>
-  <div class="features">
-    <div class="feature"><b>🎥 HD two-camera teaching</b><span>Independent camera quality and teacher/hall previews.</span></div>
-    <div class="feature"><b>🧑‍🎓 Student participation</b><span>Individual learners and groups in a hall.</span></div>
-    <div class="feature"><b>📝 Interactive board</b><span>Draw, type and erase with different tools.</span></div>
-    <div class="feature"><b>🔒 Private classroom</b><span>Supabase authentication and room-based presence.</span></div>
-  </div>
+</div>
 </main>
 <footer>© Bosco English Academy · Founded by Jean Bosco Munezero · Building Confidence in English</footer>
 
