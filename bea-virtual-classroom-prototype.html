@@ -155,6 +155,87 @@
     flex-basis: 145px !important;
   }
 }
+/* BEA — FACE-TO-FACE STADIUM CLASSROOM */
+
+.live-gallery {
+  display: grid !important;
+  grid-template-columns: 35% 65% !important;
+  grid-template-rows: auto 1fr !important;
+  grid-template-areas:
+    "heading heading"
+    "teacher students" !important;
+
+  width: 100% !important;
+  min-height: 650px !important;
+  align-items: center !important;
+  gap: 15px !important;
+}
+
+/* Stadium heading */
+.live-gallery > h3 {
+  grid-area: heading !important;
+  text-align: center !important;
+}
+
+/* Teacher at one end */
+.live-gallery .teacher-front-area {
+  grid-area: teacher !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Students opposite the teacher */
+.live-gallery .student-gallery-area {
+  grid-area: students !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Teacher camera */
+#teacherFrontStage {
+  width: 100% !important;
+  min-height: 300px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Students face the teacher */
+#studentGallery {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Hide separate hall display, preserve its HTML ID */
+.live-gallery .hall-view-area {
+  display: none !important;
+}
+
+@media(max-width:650px) {
+  .live-gallery {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "heading"
+      "teacher"
+      "students" !important;
+  }
+}
 <style>
 :root{--navy:#102544;--blue:#1769aa;--sky:#eaf4ff;--gold:#f2b544;--muted:#65758b;--line:#dce5ef;--ink:#23354d;--green:#16834a}
 *{box-sizing:border-box}
