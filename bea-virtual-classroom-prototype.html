@@ -501,10 +501,13 @@ function updateEmptyMessages(){
  if(studentStage && !studentStage.querySelector('.remote-video-card'))studentStage.innerHTML='<div id="remoteEmptyMessage">Students will appear here when they join.</div>';
 }
 function updatePresence(state){
- const next={};Object.values(state).flat().forEach(p=>{if(p.id)next[p.id]={id:p.id,name:p.name||'BEA participant',role:p.role||'student',hand:!!p.hand};});
+ console.log('BEA PRESENCE:', state);
+  const next={};Object.values(state).flat().forEach(p=>{if(p.id)next[p.id]={id:p.id,name:p.name||'BEA participant',role:p.role||'student',hand:!!p.hand};});
  Object.keys(connectedParticipants).forEach(id=>{if(!next[id])removeRemoteParticipant(id);});
  connectedParticipants=next;updateParticipantList();
- Object.values(next).forEach(p=>{if(p.id!==currentParticipantId && currentParticipantId.localeCompare(p.id)<0 && !peerConnections[p.id])startRtcOffer(p);});
+console.log('BEA PARTICIPANTS:', next);
+console.log('BEA PEER CONNECTIONS:', peerConnections);
+Object.values(next).forEach(p=>{if(p.id!==currentParticipantId && currentParticipantId.localeCompare(p.id)<0 && !peerConnections[p.id])startRtcOffer(p);});
 }
 async function connectToClassroom(code,role,name){
  code=String(code||'').toUpperCase().trim();name=String(name||'').trim();role=String(role||'Student').toLowerCase();
