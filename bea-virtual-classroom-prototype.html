@@ -693,8 +693,18 @@ style="display:block!important;width:100%!important;height:260px!important;objec
           <canvas id="beaClassroomCanvas"></canvas>
          
           <h3>👥 Live Virtual Classroom — Connected Participants</h3>
-          <div class="teacher-front-area"><h3>👨‍🏫 Teacher — Front of Classroom</h3><div id="teacherFrontStage"><div id="teacherEmptyMessage">Waiting for the teacher's live camera...</div></div></div>
-          <div class="hall-view-area"><h3>🏫 Whole Hall Camera</h3><div id="hallRemoteStage"><div id="hallEmptyMessage">Waiting for the hall camera...</div></div></div>
+          <div class="teacher-front-area">
+  <h3>👨‍🏫 Teacher — Front of Classroom</h3>
+
+  <div id="teacherFrontStage"
+       style="width:100%;min-height:400px;background:#172c47;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+
+    <div id="teacherEmptyMessage" style="color:white;">
+      Waiting for the teacher's live camera...
+    </div>
+
+  </div>
+</div>
           <div class="student-gallery-area"><h3>👥 Students — Classroom Gallery</h3><div class="remote-video-grid" id="studentGallery"><div id="remoteEmptyMessage">Waiting for students to connect...</div></div></div>
         </div>
         <div class="camera-global-controls">
