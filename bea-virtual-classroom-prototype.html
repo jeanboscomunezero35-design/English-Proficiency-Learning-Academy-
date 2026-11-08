@@ -340,97 +340,79 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
 }
 /* =================================
   /* =====================================
-   BEA ONE-BOX NATURAL CLASSROOM
-===================================== */
+ /* BEA LIVE PEOPLE CLASSROOM */
 
 .live-gallery{
   display:grid;
-  grid-template-columns:38% 62%;
+  grid-template-columns:35% 65%;
   grid-template-rows:auto auto;
   gap:0;
   width:100%;
+  padding:10px;
   box-sizing:border-box;
-  padding:18px;
-
-  background:
-    linear-gradient(120deg,#102544e8,#173b67dd),
-    url('https://xndxfz.swu.edu.cn/__local/B/26/62/D7CBD6A475DEA96EFD5D04C7F27_E4538049_FA000.jpg');
-
-  background-size:cover;
-  background-position:center;
-
-  border:4px solid #f2b544;
-  border-radius:18px;
+  background:#172c47;
+  border:3px solid #f2b544;
+  border-radius:14px;
   overflow:hidden;
 }
 
-/* ONE CLASSROOM TITLE */
 .live-gallery > h3{
   grid-column:1 / -1;
   text-align:center;
   color:white;
-  font-size:21px;
-  padding:8px;
-  margin:0;
+  margin:8px;
 }
 
-/* REMOVE ALL INTERNAL BOXES */
 .teacher-front-area,
 .student-gallery-area{
   background:transparent !important;
   border:none !important;
   box-shadow:none !important;
-  padding:10px;
+  padding:5px;
   min-width:0;
 }
 
-/* TEACHER LEFT */
 .teacher-front-area{
   grid-column:1;
   grid-row:2;
-  text-align:center;
+}
+
+.student-gallery-area{
+  grid-column:2;
+  grid-row:2;
 }
 
 .teacher-front-area h3,
 .student-gallery-area h3{
-  color:#f2b544;
-  border:none;
+  display:none;
 }
 
 #teacherFrontStage{
   display:flex;
-  flex-direction:column;
-  align-items:center;
   width:100%;
+  align-items:center;
+  justify-content:center;
 }
 
-/* FULL BODY TEACHER */
 #teacherFrontStage .teacher-remote-card{
   width:100%;
-  max-width:100%;
+  max-width:none;
   border:none !important;
   background:transparent;
 }
 
-#teacherFrontStage .teacher-remote-card video{
+#teacherFrontStage video{
+  display:block;
   width:100%;
   height:520px !important;
-  aspect-ratio:3/4;
   object-fit:contain;
   background:transparent;
-}
-
-/* STUDENTS RIGHT */
-.student-gallery-area{
-  grid-column:2;
-  grid-row:2;
-  text-align:center;
 }
 
 #studentGallery{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px;
+  gap:8px;
   width:100%;
 }
 
@@ -438,51 +420,41 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
   width:100%;
   max-width:none;
   border:none !important;
-  background:#10254499;
+  background:transparent;
 }
 
 #studentGallery video{
+  display:block;
   width:100%;
-  aspect-ratio:16/9;
-  object-fit:cover;
+  height:300px !important;
+  object-fit:contain;
+  background:transparent;
 }
 
-/* HALL CAMERA OUTSIDE MAIN CLASSROOM */
 .hall-view-area{
-  margin-top:15px;
+  grid-column:1 / -1;
+  background:transparent !important;
+  border:none !important;
 }
 
-/* MOBILE */
 @media(max-width:700px){
-
   .live-gallery{
-    grid-template-columns:38% 62%;
-    padding:5px;
-  }
-
-  .teacher-front-area,
-  .student-gallery-area{
+    grid-template-columns:35% 65%;
     padding:4px;
   }
 
-  #teacherFrontStage .teacher-remote-card video{
+  #teacherFrontStage video{
     height:350px !important;
   }
 
   #studentGallery{
     grid-template-columns:1fr;
-    gap:6px;
   }
 
-  .live-gallery > h3{
-    font-size:15px;
+  #studentGallery video{
+    height:230px !important;
   }
-
-  .teacher-front-area h3,
-  .student-gallery-area h3{
-    font-size:12px;
-  }
-}
+}  
 </style>
 </head>
 <body>
