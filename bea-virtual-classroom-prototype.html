@@ -520,7 +520,88 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
   #studentGallery video{
     height:230px !important;
   }
-}  
+} 
+/* BEA ONE-BOX LIVE CLASSROOM — FINAL DISPLAY */
+
+.camera-grid{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:12px;
+}
+
+/* Keep camera controls visible */
+.camera-card{
+  position:relative !important;
+  background:#ffffff !important;
+  color:#102544 !important;
+  border:1px solid #dce5ef !important;
+  box-shadow:none !important;
+}
+
+.camera-heading{
+  color:#102544 !important;
+}
+
+.camera-heading span:last-child{
+  color:#65758b !important;
+}
+
+.camera-controls{
+  background:#ffffff !important;
+}
+
+.camera-controls label,
+.camera-status{
+  color:#34445a !important;
+}
+
+/* Hide camera pictures visually, not the video elements */
+.camera-screen{
+  position:absolute !important;
+  left:-10000px !important;
+  top:0 !important;
+  width:640px !important;
+  height:480px !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+/* One main classroom display */
+.live-gallery{
+  display:block !important;
+  position:relative !important;
+  width:100% !important;
+  margin-top:18px !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:none !important;
+  overflow:hidden !important;
+}
+
+#beaClassroomCanvas{
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  aspect-ratio:16 / 9 !important;
+  background:transparent !important;
+  border:0 !important;
+}
+
+/* Hide the separate galleries, preserve their live video elements */
+.teacher-front-area,
+.student-gallery-area,
+.hall-view-area{
+  position:absolute !important;
+  left:-10000px !important;
+  top:0 !important;
+  width:640px !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+.live-gallery > h3{
+  display:none !important;
+}      
 </style>
 </head>
 <body>
