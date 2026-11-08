@@ -613,191 +613,32 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
 <footer>© Bosco English Academy · Founded by Jean Bosco Munezero · Building Confidence in English</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-/* BEA LIVE CLASSROOM - BACKGROUND REMOVAL */
+segmentation.onResults(results => {
 
-(function(){
+  // Start with a completely transparent canvas
+  personCtx.clearRect(0, 0, 640, 480);
 
-  const canvas = document.getElementById('beaClassroomCanvas');
-  if(!canvas || typeof SelfieSegmentation === 'undefined') return;
-
-  const ctx = canvas.getContext('2d');
-
-  canvas.width = 1600;
-  canvas.height = 900;
-
-  const feeds = new Map();
-
-  function createFeed(video){
-
-    const personCanvas = document.createElement('canvas');
-    personCanvas.width = 640;
-    personCanvas.height = 480;
-
-    const personCtx = personCanvas.getContext('2d');
-
-    const segmentation = new SelfieSegmentation({
-      locateFile: file =>
-        'https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/' + file
-    });
-
-    const feed = {
-      video,
-      canvas: personCanvas,
-      busy:false,
-      segmentation
-    };
-
-    segmentation.setOptions({
-      modelSelection:0
-    });
-
-    segmentation.onResults(results => {
-
-      personCtx.clearRect(0,0,640,480);
-
-      personCtx.drawImage(results.image,0,0,640,480);
-
-      personCtx.globalCompositeOperation = 'destination-in';
-
-      personCtx.drawImage(
-        results.segmentationMask,0,0,640,480
-      );
-
-      personCtx.globalCompositeOperation = 'source-over';
-
-      feed.ready = true;
-      feed.busy = false;
-
-    });
-
-    feeds.set(video,feed);
-
-    return feed;
-  }
-
-  async function processFeed(feed){
-
-    if(feed.busy || feed.video.readyState < 2) return;
-
-    feed.busy = true;
-
-    try{
-      await feed.segmentation.send({
-        image:feed.video
-      });
-    }catch(error){
-      feed.busy = false;
-      console.error('BEA segmentation error:',error);
-    }
-  }
-
-  function drawPerson(feed,x,y,w,h){
-
-    if(!feed || !feed.ready) return;
-
-    const video = feed.canvas;
-
-    const scale = Math.min(
-      w/video.width,
-      h/video.height
-    );
-
-    const width = video.width*scale;
-    const height = video.height*scale;
-
-    ctx.drawImage(
-      video,
-      x+(w-width)/2,
-      y+(h-height)/2,
-      width,
-      height
-    );
-  }
-
-function drawClassroom(){
-
-  ctx.clearRect(0,0,1600,900);
-
-  // Get this device's own live camera
-  const localVideo = typeof teacherCamera !== 'undefined'
-    ? teacherCamera
-    : null;
-
-  // Get the teacher's live camera
-  const remoteTeacher =
-    document.querySelector('#teacherFrontStage video');
-
-  // Get all remote student cameras
-  const remoteStudents = Array.from(
-    document.querySelectorAll('#studentGallery video')
+  // Draw the person's segmentation mask first
+  personCtx.drawImage(
+    results.segmentationMask,
+    0, 0, 640, 480
   );
 
-  let teacherVideo;
-  let studentVideos = [];
+  // Keep only the camera image inside the person's mask
+  personCtx.globalCompositeOperation = 'source-in';
 
-  if(currentParticipantRole === 'teacher'){
+  personCtx.drawImage(
+    results.image,
+    0, 0, 640, 480
+  );
 
-    teacherVideo = localVideo;
+  // Restore normal drawing
+  personCtx.globalCompositeOperation = 'source-over';
 
-    studentVideos = remoteStudents;
+  feed.ready = true;
+  feed.busy = false;
 
-  }else{
-
-    teacherVideo = remoteTeacher;
-
-    if(localVideo && localVideo.srcObject){
-      studentVideos.push(localVideo);
-    }
-
-    remoteStudents.forEach(video => {
-      if(video !== localVideo){
-        studentVideos.push(video);
-      }
-    });
-
-  }
-
-  // Process teacher
-  if(teacherVideo && teacherVideo.srcObject){
-
-    let feed = feeds.get(teacherVideo);
-
-    if(!feed) feed = createFeed(teacherVideo);
-
-    processFeed(feed);
-
-    drawPerson(feed,20,70,500,800);
-
-  }
-
-  // Process students
-  const positions = [
-    [550,70],[1070,70],
-    [550,470],[1070,470],
-    [550,470],[1070,470]
-  ];
-
-  studentVideos.forEach((video,index) => {
-
-    if(index >= positions.length) return;
-
-    let feed = feeds.get(video);
-
-    if(!feed) feed = createFeed(video);
-
-    processFeed(feed);
-
-    const p = positions[index];
-
-    drawPerson(feed,p[0],p[1],500,390);
-
-  });
-
-  requestAnimationFrame(drawClassroom);
-}
-  drawClassroom();
-
-})();
+});
   <script>
 /* IMPORTANT: Keep your real Supabase project URL and anon/public key here.
    Never use the service_role key in a public HTML file. */
