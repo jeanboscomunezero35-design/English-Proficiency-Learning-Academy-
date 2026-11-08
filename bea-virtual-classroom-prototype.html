@@ -484,7 +484,74 @@ box-sizing:border-box!important;
 
   </div>
 </section>
+<!-- BEA INTERACTIVE CHALKBOARD -->
+<div class="board-wrap">
 
+  <div class="board-title">
+    <h3>✍️ Interactive Teaching Board</h3>
+    <span style="font-size:11px;color:#718096">
+      Draw, type and explain
+    </span>
+  </div>
+
+  <div class="board-surface" id="boardSurface">
+    <canvas id="board" width="1100" height="360"></canvas>
+
+    <textarea
+      id="textEditor"
+      spellcheck="false"
+      placeholder="Start typing your lesson here...&#10;Press Ctrl + Enter when finished."
+    ></textarea>
+  </div>
+
+  <div class="board-tools">
+
+    <button class="secondary tool-button active" id="markerBtn">
+      🖊️ Marker
+    </button>
+
+    <button class="secondary tool-button" id="chalkBtn">
+      🖍️ Chalk
+    </button>
+
+    <button class="secondary tool-button" id="handwritingBtn">
+      ✍️ Handwriting
+    </button>
+
+    <button class="secondary tool-button" id="textBtn">
+      ⌨️ Text
+    </button>
+
+    <div class="pen-tool">
+      <label for="penColor">🎨 Colour</label>
+      <input type="color" class="color-picker"
+             id="penColor" value="#173b67">
+    </div>
+
+    <div class="pen-tool">
+      <label for="penSize">Thickness</label>
+      <input type="range" class="thickness-picker"
+             id="penSize" min="2" max="24" value="4">
+      <span class="thickness-value" id="penSizeValue">4</span>
+    </div>
+
+    <button class="secondary tool-button" id="eraseBtn">
+      Eraser
+    </button>
+
+    <button class="dark" id="clearBtn">
+      Clear board
+    </button>
+
+  </div>
+
+  <p class="board-instruction" id="boardInstruction">
+    Marker selected: draw with your mouse, finger or stylus.
+    Choose Text to type.
+  </p>
+
+</div>
+<!-- END INTERACTIVE CHALKBOARD -->
 <aside class="side">
   <section class="panel">
     <div class="panel-head">
