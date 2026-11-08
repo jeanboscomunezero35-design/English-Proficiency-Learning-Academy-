@@ -479,12 +479,78 @@ box-sizing:border-box!important;
     ">
       <div id="remoteEmptyMessage" style="color:white!important;">
         Waiting for students to connect...
-      </div>
+ </div>
     </div>
 
   </div>
+</section>
+
+<aside class="side">
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Enter the classroom</h2>
+      <span class="badge" id="roomBadge">Not connected</span>
+    </div>
+
+    <div class="entry">
+      <label for="displayName">Your name</label>
+      <input id="displayName" placeholder="Enter your name">
+
+      <label>Choose attendance mode</label>
+      <div class="mode-grid">
+        <button class="mode active" data-mode="individual">
+          <strong>👤 Individual</strong>
+          <span>One learner joins from home.</span>
+        </button>
+        <button class="mode" data-mode="group">
+          <strong>🏫 Group hall</strong>
+          <span>Students gather in one classroom.</span>
+        </button>
+      </div>
+
+      <label for="roomCode">Classroom code</label>
+      <input id="roomCode" placeholder="e.g. BEA-ENGLISH-01">
+
+      <label for="role">I am joining as</label>
+      <select id="role">
+        <option>Teacher</option>
+        <option>Student</option>
+      </select>
+
+      <div class="room-actions">
+        <button class="primary" id="createRoomBtn">＋ Create classroom</button>
+        <button class="secondary" id="joinRoomBtn">↪ Join classroom</button>
+        <button class="secondary" id="quickOpenBtn" style="grid-column:1/-1">⚡ Quick Open classroom</button>
+      </div>
+
+      <div class="room-share" id="roomShare">
+        <strong>Share this invitation link with your students</strong>
+        <input id="roomLink" readonly>
+        <button class="primary" style="width:100%" id="copyRoomLinkBtn">Copy invitation link</button>
+      </div>
+
+      <p id="entryMessage" class="room-state">Teachers create a room. Students enter its classroom code or open the invitation link.</p>
+      <div class="participant-list" id="participantList"><strong>Participants:</strong> Not connected yet.</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Class discussion</h2><span class="badge">Live chat</span></div>
+    <div class="chat">
+      <div class="messages" id="messages"><p class="msg"><b>BEA Assistant:</b> Welcome! Join a classroom to chat with participants.</p></div>
+      <div class="chat-row">
+        <input id="chatInput" placeholder="Write a message...">
+        <button class="primary" id="sendBtn">Send</button>
+      </div>
+      <div class="controls">
+        <button class="secondary" id="handBtn">✋ Raise hand</button>
+        <button class="dark" id="lowerHandBtn">Lower hand</button>
+      </div>
+    </div>
+  </section>
+</aside>
 </div>
-</main>
+</main>   
 <footer>© Bosco English Academy · Founded by Jean Bosco Munezero · Building Confidence in English</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
