@@ -1376,7 +1376,14 @@ console.log('BEA VIDEO:', video.videoWidth, video.videoHeight, video.readyState)
   showLocalTeacherAtFront(fresh);
 }
    await addStreamToExistingPeers(fresh);
-  video.style.display='block';placeholder.style.display='none';tag.style.display='block';
+  video.style.display='block';
+video.style.visibility='visible';
+video.style.opacity='1';
+video.style.zIndex='5';
+placeholder.style.display='none';
+placeholder.style.visibility='hidden';
+placeholder.style.opacity='0';
+tag.style.display='block';
   const s=fresh.getVideoTracks()[0].getSettings();status.textContent='Camera active: '+(s.width||'?')+' × '+(s.height||'?')+(s.frameRate?' · '+Math.round(s.frameRate)+' FPS':'');
   updateOverallStatus();refreshCameras();
  }catch(e){console.error(e);status.textContent='Camera could not start.';alert('Unable to start '+which+' camera: '+(e.name==='NotAllowedError'?'Allow camera permission.':e.name==='OverconstrainedError'?'Try Auto or 720p.':e.message));}
