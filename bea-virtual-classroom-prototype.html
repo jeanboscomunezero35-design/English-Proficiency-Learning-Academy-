@@ -784,18 +784,78 @@ async function sendRtcSignal(to,signal){
   }
  });
 }
-function showLocalTeacherAtFront(stream){
- const stage=$('teacherFrontStage');if(!stage||!stream)return;
- const empty=$('teacherEmptyMessage');if(empty)empty.remove();
- let card=$('beaLocalTeacherTile');
- if(!card){card=document.createElement('div');card.id='beaLocalTeacherTile';card.className='remote-video-card bea-local-teacher-card';
-  const v=document.createElement('video');v.id='beaLocalTeacherVideo';v.autoplay=true;v.playsInline=true;v.muted=true;
-  const label=document.createElement('div');label.className='remote-video-name';label.textContent='👨‍🏫 Teacher — Jean Bosco';
-  const status=document.createElement('div');status.className='remote-video-status';status.textContent='● Your live teaching camera';card.append(v,label,status);stage.prepend(card);
- }
- const v=$('beaLocalTeacherVideo');if(v.srcObject!==stream){v.srcObject=stream;v.play().catch(()=>{});}
+function showLocalTeacherAtFront(stream) {
+  const stage = $('teacherFrontStage');
+  if (!stage || !stream) return;
+
+  const empty = $('teacherEmptyMessage');
+  if (empty) empty.remove();
+
+  let card = $('beaLocalTeacherTile');
+
+  if (!card) {
+    card = document.createElement('div');
+    card.id = 'beaLocalTeacherTile';
+    card.className = 'remote-video-card bea-local-teacher-card';
+
+    const video = document.createElement('video');
+    video.id = 'beaLocalTeacherVideo';
+    video.autoplay = true;
+    video.playsInline = true;
+    video.muted = true;
+
+    const label = document.createElement('div');
+    label.className = 'remote-video-name';
+    label.textContent = '👨‍🏫 Teacher — Jean Bosco';
+
+    const status = document.createElement('div');
+    status.className = 'remote-video-status';
+    status.textContent = '● Your live teaching camera';
+
+    card.append(video, label, status);
+    stage.prepend(card);
+  }
+
+  const video = $('beaLocalTeacherVideo');
+
+  if (video.srcObject !== stream) {
+    video.srcObject = stream;
+    video.play().catch(() => {});
+  }
+
+  window.BEA_CLASSROOM_SOURCES =
+    window.BEA_CLASSROOM_SOURCES || new Map();
+
+  window.BEA_CLASSROOM_SOURCES.set('local_teacher', {
+    id: 'local_teacher',
+    name: 'Jean Bosco',
+    role: 'teacher',
+    video: video
+  });
+
+  console.log('BEA TEACHER CAMERA REGISTERED');
 }
-function removeLocalTeacherFromFront(){const tile=$('beaLocalTeacherTile');if(tile)tile.remove();updateEmptyMessages();}
+
+function removeLocalTeacherFromFront() {
+  const tile = $('beaLocalTeacherTile');
+
+  if (tile) {
+    const video = tile.querySelector('video');
+
+    if (video) {
+      video.pause();
+      video.srcObject = null;
+    }
+
+    tile.remove();
+  }
+
+  if (window.BEA_CLASSROOM_SOURCES) {
+    window.BEA_CLASSROOM_SOURCES.delete('local_teacher');
+  }
+
+  updateEmptyMessages();
+}
 function destinationFor(type){return type==='teacher'?'teacherFrontStage':type==='hall'?'hallRemoteStage':'studentGallery';}
 function showRemoteVideo(id,name,stream,role,type){
 
