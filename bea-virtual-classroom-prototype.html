@@ -1553,6 +1553,24 @@ async function initializeBEASegmentation() {
 
 initializeBEASegmentation();
 </script>
+<script>
+window.addEventListener('error', function(e) {
+  let box = document.getElementById('beaRepairNotice');
 
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'beaRepairNotice';
+    box.style.cssText =
+      'position:fixed;bottom:10px;left:10px;right:10px;' +
+      'z-index:999999;background:#fff0ef;color:#8a1c1c;' +
+      'padding:14px;border:2px solid #b42318;' +
+      'font: bold 14px Arial;';
+    document.body.appendChild(box);
+  }
+
+  box.textContent = 'BEA ERROR: ' + e.message +
+    ' — Line: ' + e.lineno;
+});
+</script>
 </body>
 </html>
