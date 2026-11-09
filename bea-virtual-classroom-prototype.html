@@ -1688,14 +1688,16 @@ initializeBEASegmentation();
       );
     });
 
-    if (people.length > 0) {
-      canvas.style.display = 'block';
-      animationStarted = true;
-    }
+  if (people.length > 0) {
+  canvas.style.display = 'block';
+  animationStarted = true;
+} else {
+  // Keep the original live camera videos visible
+  // whenever person segmentation has no result.
+  canvas.style.display = 'none';
+}
 
-    requestAnimationFrame(renderClassroom);
-  }
-
+requestAnimationFrame(renderClassroom);
   function startWhenReady() {
     if (!animationStarted) {
       requestAnimationFrame(renderClassroom);
