@@ -752,8 +752,13 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
     if(status==='SUBSCRIBED'){
      await classroomChannel.track({id:currentParticipantId,name,role,hand:false,joinedAt:new Date().toISOString()});
           // BEA: Register a camera that was started before joining.
-     if(currentParticipantRole==='teacher' && teacherStream){
-       showLocalTeacherAtFront(teacherStream);
+    if(currentParticipantRole==='teacher' && teacherStream){
+  showLocalTeacherAtFront(teacherStream);
+}
+
+if(currentParticipantRole==='student' && teacherStream){
+  showLocalStudentInGallery(teacherStream);
+}
      }
     setEntry('Connected to '+code+'. Share the invitation link with your students.');$('roomBadge').textContent='Connected · '+code;cameraStatus.textContent='● Connected to '+code;
     }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){setEntry('Could not connect. Check Supabase URL, anon key and Realtime settings.');}
@@ -841,7 +846,57 @@ function showLocalTeacherAtFront(stream) {
 
   console.log('BEA TEACHER CAMERA REGISTERED');
 }
+function showLocalStudentInGallery(stream) {
+  if (!stream) return;
 
+  let video = document.getElementById('beaLocalStudentVideo');
+
+  if (!video) {
+    video = document.createElement('video');
+    video.id = 'beaLocalStudentVideo';
+    video.autoplay = true;
+    video.playsInline = true;
+    video.muted = true;
+
+    video.style.position = 'fixed';
+    video.style.left = '-10000px';
+    video.style.top = '0';
+    video.style.width = '2px';
+    video.style.height = '2px';
+    video.style.opacity = '0';
+    video.style.pointerEvents = 'none';
+
+    document.body.appendChild(video);
+  }
+
+  if (video.srcObject !== stream) {
+    video.srcObject = stream;
+    video.play().catch(() => {});
+  }
+
+  window.BEA_CLASSROOM_SOURCES =
+    window.BEA_CLASSROOM_SOURCES || new Map();
+
+  window.BEA_CLASSROOM_SOURCES.set('local_student', {
+    id: 'local_student',
+    name: $('displayName')?.value.trim() || 'Student',
+    role: 'student',
+    video: video
+  });
+}
+function removeLocalStudentFromGallery() {
+  const video = document.getElementById('beaLocalStudentVideo');
+
+  if (video) {
+    video.pause();
+    video.srcObject = null;
+    video.remove();
+  }
+
+  if (window.BEA_CLASSROOM_SOURCES) {
+    window.BEA_CLASSROOM_SOURCES.delete('local_student');
+  }
+}
 function removeLocalTeacherFromFront() {
   const tile = $('beaLocalTeacherTile');
 
@@ -1268,6 +1323,7 @@ async function startVideo(which){
   if(old){await removeStreamFromPeers(old);old.getTracks().forEach(t=>t.stop());}
   if(teacher)teacherStream=fresh;else hallStream=fresh;
   if(teacher && currentParticipantRole==='teacher')showLocalTeacherAtFront(fresh);
+if(teacher && currentParticipantRole==='student')showLocalStudentInGallery(fresh);
   await addStreamToExistingPeers(fresh);
   video.style.display='block';placeholder.style.display='none';tag.style.display='block';
   const s=fresh.getVideoTracks()[0].getSettings();status.textContent='Camera active: '+(s.width||'?')+' × '+(s.height||'?')+(s.frameRate?' · '+Math.round(s.frameRate)+' FPS':'');
@@ -1328,18 +1384,18 @@ async function stopVideo(which){
 
  $(teacher ? 'teacherLiveTag' : 'hallLiveTag').style.display = 'none';
 
- if(teacher){
+if(teacher){
+  teacherStream=null;
 
-  teacherStream = null;
+  if(currentParticipantRole==='teacher'){
+    removeLocalTeacherFromFront();
+  }else if(currentParticipantRole==='student'){
+    removeLocalStudentFromGallery();
+  }
 
-  removeLocalTeacherFromFront();
-
- }else{
-
-  hallStream = null;
-
- }
-
+}else{
+  hallStream=null;
+}
  $(teacher ? 'teacherStatus' : 'hallStatus').textContent = 'Camera stopped.';
 
  updateOverallStatus();
