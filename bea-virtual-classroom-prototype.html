@@ -749,7 +749,11 @@ async function connectToClassroom(code,role,name){
    .subscribe(async status=>{
     if(status==='SUBSCRIBED'){
      await classroomChannel.track({id:currentParticipantId,name,role,hand:false,joinedAt:new Date().toISOString()});
-     setEntry('Connected to '+code+'. Share the invitation link with your students.');$('roomBadge').textContent='Connected · '+code;cameraStatus.textContent='● Connected to '+code;
+          // BEA: Register a camera that was started before joining.
+     if(currentParticipantRole==='teacher' && teacherStream){
+       showLocalTeacherAtFront(teacherStream);
+     }
+    setEntry('Connected to '+code+'. Share the invitation link with your students.');$('roomBadge').textContent='Connected · '+code;cameraStatus.textContent='● Connected to '+code;
     }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){setEntry('Could not connect. Check Supabase URL, anon key and Realtime settings.');}
    });
  }catch(e){console.error('BEA classroom connection:',e);setEntry('Connection error: '+e.message);}
