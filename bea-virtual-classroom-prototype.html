@@ -750,37 +750,31 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
    .on('broadcast',{event:'board-op'},({payload})=>{if(payload?.senderId!==currentParticipantId)applyRemoteBoardOperation(payload.op);})
    .subscribe(async status=>{
     if(status==='SUBSCRIBED'){
-     await classroomChannel.track({id:currentParticipantId,name,role,hand:false,joinedAt:new Date().toISOString()});
-          // BEA: Register a camera that was started before joining.
-    if(currentParticipantRole==='teacher' && teacherStream){
-  showLocalTeacherAtFront(teacherStream);
-}
+        await classroomChannel.track({
+            id:currentParticipantId,
+            name,
+            role,
+            hand:false,
+            joinedAt:new Date().toISOString()
+        });
 
-if(currentParticipantRole==='student' && teacherStream){
-  showLocalStudentInGallery(teacherStream);
-}
-     }
-    setEntry('Connected to '+code+'. Share the invitation link with your students.');$('roomBadge').textContent='Connected · '+code;cameraStatus.textContent='● Connected to '+code;
-    }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){setEntry('Could not connect. Check Supabase URL, anon key and Realtime settings.');}
-   });
- }catch(e){console.error('BEA classroom connection:',e);setEntry('Connection error: '+e.message);}
-}
-async function sendRtcSignal(to,signal){
- if(!classroomChannel)return;
+        // Register a camera that was started before joining.
+        if(currentParticipantRole==='teacher' && teacherStream){
+            showLocalTeacherAtFront(teacherStream);
+        }
 
- const streamTypes={};
+        if(currentParticipantRole==='student' && teacherStream){
+            showLocalStudentInGallery(teacherStream);
+        }
 
- [teacherStream,hallStream,microphoneStream]
-  .filter(Boolean)
-  .forEach(s=>{
-   if(s===teacherStream){
-    streamTypes[s.id]=currentParticipantRole==='teacher'?'teacher':'student';
-   }else if(s===hallStream){
-    streamTypes[s.id]='hall';
-   }else{
-    streamTypes[s.id]='audio';
-   }
-  });
+        setEntry('Connected to '+code+'. Share the invitation link with your students.');
+        $('roomBadge').textContent='Connected · '+code;
+        cameraStatus.textContent='● Connected to '+code;
+
+    }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
+        setEntry('Could not connect. Check Supabase URL, anon key and Realtime settings.');
+    }
+});
 
  await classroomChannel.send({
   type:'broadcast',
