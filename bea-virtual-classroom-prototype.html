@@ -807,15 +807,32 @@ function showRemoteVideo(id,name,stream,role,type){
 
  const key = id + '_' + stream.id;
 
- if(remoteVideoTiles[key]) {
-  const existingVideo = remoteVideoTiles[key].querySelector('video');
+ // Registry for the future shared classroom compositor.
+ window.BEA_CLASSROOM_SOURCES =
+  window.BEA_CLASSROOM_SOURCES || new Map();
 
-  if(existingVideo && existingVideo.srcObject !== stream){
-   existingVideo.srcObject = stream;
-   existingVideo.play().catch(e =>
-    console.warn('BEA playback waiting:', e)
-   );
+ if(remoteVideoTiles[key]) {
+
+  const existingVideo =
+   remoteVideoTiles[key].querySelector('video');
+
+  if(existingVideo) {
+
+   if(existingVideo.srcObject !== stream){
+    existingVideo.srcObject = stream;
+    existingVideo.play().catch(e =>
+     console.warn('BEA playback waiting:',e)
+    );
+   }
+
+   window.BEA_CLASSROOM_SOURCES.set(key,{
+    id,
+    name,
+    role:displayType,
+    video:existingVideo
+   });
   }
+
   return;
  }
 
@@ -827,12 +844,12 @@ function showRemoteVideo(id,name,stream,role,type){
  const empty = target.querySelector('[id$="EmptyMessage"]');
  if(empty) empty.remove();
 
-const card = document.createElement('div');
+ const card = document.createElement('div');
 
-card.dataset.participantId = id;
-card.dataset.streamType = displayType;
+ card.dataset.participantId = id;
+ card.dataset.streamType = displayType;
 
-card.className = 'remote-video-card ' +
+ card.className = 'remote-video-card ' +
   (displayType === 'teacher'
    ? 'teacher-remote-card'
    : displayType === 'hall'
@@ -841,22 +858,22 @@ card.className = 'remote-video-card ' +
 
  const video = document.createElement('video');
 
-video.autoplay = true;
-video.playsInline = true;
-video.muted = true;
-video.controls = false;
-video.disablePictureInPicture = true;
-video.setAttribute('playsinline','');
-video.srcObject = stream;
+ video.autoplay = true;
+ video.playsInline = true;
+ video.muted = true;
+ video.controls = false;
+ video.disablePictureInPicture = true;
+ video.setAttribute('playsinline','');
+ video.srcObject = stream;
 
  video.onloadedmetadata = () => {
   video.play().catch(e =>
-   console.warn('BEA video playback:', e)
+   console.warn('BEA video playback:',e)
   );
  };
 
  video.onplaying = () => {
-  console.log('BEA LIVE VIDEO PLAYING:', name);
+  console.log('BEA LIVE VIDEO PLAYING:',name);
  };
 
  const label = document.createElement('div');
@@ -878,11 +895,19 @@ video.srcObject = stream;
 
  remoteVideoTiles[key] = card;
 
+ // Make this live camera available to the compositor.
+ window.BEA_CLASSROOM_SOURCES.set(key,{
+  id,
+  name,
+  role:displayType,
+  video
+ });
+
  video.play().catch(e =>
-  console.warn('BEA video playback:', e)
+  console.warn('BEA video playback:',e)
  );
 
- console.log('BEA VIDEO DISPLAYED:', name, displayType);
+ console.log('BEA VIDEO REGISTERED:',name,displayType);
 }
 function removeRemoteVideoForParticipant(id, streamType){
 
