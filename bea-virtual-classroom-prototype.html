@@ -800,7 +800,6 @@ async function sendRtcSignal(to,signal,streamTypes){
 }
 
 function showLocalTeacherAtFront(stream) {
-function showLocalTeacherAtFront(stream) {
   const stage = $('teacherFrontStage');
   if (!stage || !stream) return;
 
@@ -1492,7 +1491,7 @@ async function cleanup(){
 }
 window.addEventListener('beforeunload',()=>{cleanup();});
 refreshCameras();
-</script>)
+</script>
 <!-- BEA: Live person-segmentation engine -->
 <script type="module">
 import {
