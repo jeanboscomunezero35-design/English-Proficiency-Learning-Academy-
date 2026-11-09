@@ -720,7 +720,9 @@ async function connectToClassroom(code,role,name){
   const {data:{session},error}=await beaSupabase.auth.getSession();
   if(error)throw error;
   if(!session){setEntry('Please log in to your Bosco English Academy account first.');return;}
-  const user=session.user;currentParticipantId=user.id;
+  const user=session.user;
+currentParticipantId=user.id+':'+crypto.randomUUID();
+ 
   if(role==='teacher'){name=user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||name;role='teacher';}else role='student';
   currentParticipantRole=role;$('displayName').value=name;$('role').value=role==='teacher'?'Teacher':'Student';
   if(classroomChannel){await beaSupabase.removeChannel(classroomChannel);classroomChannel=null;}
