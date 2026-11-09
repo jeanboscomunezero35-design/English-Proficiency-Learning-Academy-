@@ -736,12 +736,12 @@ function showRemoteVideo(id,name,stream,role,type){
 
  const video = document.createElement('video');
 
- video.autoplay = true;
- video.playsInline = true;
- video.muted = true;
- video.controls = true;
- video.setAttribute('playsinline','');
- video.srcObject = stream;
+video.autoplay = true;
+video.playsInline = true;
+video.muted = true;
+video.controls = true;
+video.setAttribute('playsinline','');
+video.srcObject = stream;
 
  video.onloadedmetadata = () => {
   video.play().catch(e =>
