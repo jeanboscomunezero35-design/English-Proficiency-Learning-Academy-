@@ -310,37 +310,44 @@ main {
             </div>
           </div>
         </div>
- <div class="live-gallery">
+<div class="live-gallery">
 
   <h3 class="stadium-title">
     🏫 BOSCO ENGLISH ACADEMY — LIVE CLASSROOM
   </h3>
 
-  <div class="teacher-front-area">
-    <h3>👨‍🏫 TEACHER</h3>
+  <div class="stadium-facing-layout">
 
-    <div id="teacherFrontStage">
-      <div id="teacherEmptyMessage">
-        Waiting for the teacher's live camera...
+    <!-- LEFT: TEACHER -->
+    <div class="teacher-front-area">
+      <h3>👨‍🏫 TEACHER — FRONT OF CLASS</h3>
+
+      <div id="teacherFrontStage">
+        <div id="teacherEmptyMessage">
+          Waiting for the teacher's live camera...
+        </div>
       </div>
     </div>
+
+    <!-- RIGHT: STUDENTS FACING TEACHER -->
+    <div class="student-gallery-area">
+      <h3>👥 STUDENTS — FACING THE TEACHER</h3>
+
+      <div class="remote-video-grid" id="studentGallery">
+        <div id="remoteEmptyMessage">
+          Waiting for students to connect...
+        </div>
+      </div>
+    </div>
+
   </div>
 
+  <!-- HIDDEN WHOLE HALL CAMERA — PRESERVED -->
   <div class="hall-view-area" style="display:none">
     <h3>Whole Hall Camera</h3>
     <div id="hallRemoteStage">
       <div id="hallEmptyMessage">
         Waiting for the hall camera...
-      </div>
-    </div>
-  </div>
-
-  <div class="student-gallery-area">
-    <h3>👥 STUDENTS — FACING THE TEACHER</h3>
-
-    <div class="remote-video-grid" id="studentGallery">
-      <div id="remoteEmptyMessage">
-        Waiting for students to connect...
       </div>
     </div>
   </div>
