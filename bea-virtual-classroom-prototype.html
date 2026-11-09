@@ -891,33 +891,7 @@ function removeRemoteVideoForParticipant(id, streamType) {
   console.log('BEA REMOTE CAMERA REMOVED:', id, streamType);
 }
 
- Object.keys(remoteVideoTiles).forEach(key=>{
 
-  const card = remoteVideoTiles[key];
-
-  if(
-   card &&
-   card.dataset.participantId === id &&
-   card.dataset.streamType === streamType
-  ){
-   const video = card.querySelector('video');
-
-   if(video){
-    video.pause();
-    video.srcObject = null;
-   }
-
-   card.remove();
-   delete remoteVideoTiles[key];
-    
-  }
-
- });
-
- updateEmptyMessages();
-
- console.log('BEA REMOTE CAMERA REMOVED:',id,streamType);
-}
 function createPeerConnection(id,name,role='student'){
 console.error('BEA NEW WEBRTC CODE IS RUNNING');
   if(peerConnections[id])return peerConnections[id];
