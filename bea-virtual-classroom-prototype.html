@@ -776,6 +776,15 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
     }
 });
 
+ }catch(e){
+  console.error('BEA classroom connection:',e);
+  setEntry('Could not connect to classroom: '+(e.message||e));
+ }
+}
+
+async function sendRtcSignal(to,signal,streamTypes){
+ if(!classroomChannel)return;
+
  await classroomChannel.send({
   type:'broadcast',
   event:'webrtc-signal',
@@ -789,6 +798,8 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
   }
  });
 }
+
+function showLocalTeacherAtFront(stream) {
 function showLocalTeacherAtFront(stream) {
   const stage = $('teacherFrontStage');
   if (!stage || !stream) return;
