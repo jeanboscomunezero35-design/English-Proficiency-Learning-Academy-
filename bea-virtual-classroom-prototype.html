@@ -857,119 +857,39 @@ function removeLocalTeacherFromFront() {
   updateEmptyMessages();
 }
 function destinationFor(type){return type==='teacher'?'teacherFrontStage':type==='hall'?'hallRemoteStage':'studentGallery';}
-function showRemoteVideo(id,name,stream,role,type){
+function removeRemoteVideoForParticipant(id, streamType) {
 
- const displayType = type === 'hall'
-  ? 'hall'
-  : String(role).toLowerCase() === 'teacher'
-   ? 'teacher'
-   : 'student';
+  Object.keys(remoteVideoTiles).forEach(key => {
 
- const key = id + '_' + stream.id;
+    const card = remoteVideoTiles[key];
 
- // Registry for the future shared classroom compositor.
- window.BEA_CLASSROOM_SOURCES =
-  window.BEA_CLASSROOM_SOURCES || new Map();
+    if (
+      card &&
+      card.dataset.participantId === id &&
+      card.dataset.streamType === streamType
+    ) {
 
- if(remoteVideoTiles[key]) {
+      const video = card.querySelector('video');
 
-  const existingVideo =
-   remoteVideoTiles[key].querySelector('video');
+      if (video) {
+        video.pause();
+        video.srcObject = null;
+      }
 
-  if(existingVideo) {
+      card.remove();
+      delete remoteVideoTiles[key];
 
-   if(existingVideo.srcObject !== stream){
-    existingVideo.srcObject = stream;
-    existingVideo.play().catch(e =>
-     console.warn('BEA playback waiting:',e)
-    );
-   }
+      if (window.BEA_CLASSROOM_SOURCES) {
+        window.BEA_CLASSROOM_SOURCES.delete(key);
+      }
+    }
 
-   window.BEA_CLASSROOM_SOURCES.set(key,{
-    id,
-    name,
-    role:displayType,
-    video:existingVideo
-   });
-  }
+  });
 
-  return;
- }
+  updateEmptyMessages();
 
- if(displayType === 'teacher' && id === currentParticipantId) return;
-
- const target = $(destinationFor(displayType));
- if(!target) return;
-
- const empty = target.querySelector('[id$="EmptyMessage"]');
- if(empty) empty.remove();
-
- const card = document.createElement('div');
-
- card.dataset.participantId = id;
- card.dataset.streamType = displayType;
-
- card.className = 'remote-video-card ' +
-  (displayType === 'teacher'
-   ? 'teacher-remote-card'
-   : displayType === 'hall'
-    ? 'hall-remote-card'
-    : 'student-remote-card');
-
- const video = document.createElement('video');
-
- video.autoplay = true;
- video.playsInline = true;
- video.muted = true;
- video.controls = false;
- video.disablePictureInPicture = true;
- video.setAttribute('playsinline','');
- video.srcObject = stream;
-
- video.onloadedmetadata = () => {
-  video.play().catch(e =>
-   console.warn('BEA video playback:',e)
-  );
- };
-
- video.onplaying = () => {
-  console.log('BEA LIVE VIDEO PLAYING:',name);
- };
-
- const label = document.createElement('div');
- label.className = 'remote-video-name';
-
- label.textContent =
-  displayType === 'teacher'
-   ? '👨‍🏫 Teacher — ' + name
-   : displayType === 'hall'
-    ? '🏫 Whole Hall — ' + name
-    : '👤 Student — ' + name;
-
- const status = document.createElement('div');
- status.className = 'remote-video-status';
- status.textContent = '● Connecting video...';
-
- card.append(video,label,status);
- target.appendChild(card);
-
- remoteVideoTiles[key] = card;
-
- // Make this live camera available to the compositor.
- window.BEA_CLASSROOM_SOURCES.set(key,{
-  id,
-  name,
-  role:displayType,
-  video
- });
-
- video.play().catch(e =>
-  console.warn('BEA video playback:',e)
- );
-
- console.log('BEA VIDEO REGISTERED:',name,displayType);
+  console.log('BEA REMOTE CAMERA REMOVED:', id, streamType);
 }
-function removeRemoteVideoForParticipant(id, streamType){
 
  Object.keys(remoteVideoTiles).forEach(key=>{
 
@@ -989,6 +909,7 @@ function removeRemoteVideoForParticipant(id, streamType){
 
    card.remove();
    delete remoteVideoTiles[key];
+    
   }
 
  });
