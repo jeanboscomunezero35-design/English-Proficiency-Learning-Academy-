@@ -732,6 +732,20 @@ async function negotiatePeer(conn,id){
   }
  }
 }
+async function startRtcOffer(person){
+ try{
+  const conn=createPeerConnection(
+   person.id,
+   person.name,
+   person.role
+  );
+
+  await negotiatePeer(conn,person.id);
+
+ }catch(e){
+  console.error('BEA offer error:',e);
+ }
+}
 async function handleRtcSignal(payload){
  if(!payload||payload.to!==currentParticipantId||!payload.signal)return;
 
