@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BEA Virtual Classroom | Bosco English Academy</title>
 <!-- Updated with the requested horizontal one-scene classroom design; existing BEA classroom JavaScript preserved. -->
+
+<style>
+
 /* BEA — Make student waiting message visible */
 #studentGallery {
   color: #d8e5f3 !important;
@@ -16,7 +19,6 @@
   font-size: 15px;
   padding: 20px;
 }
-<style>
 :root{--navy:#102544;--blue:#1769aa;--sky:#eaf4ff;--gold:#f2b544;--muted:#65758b;--line:#dce5ef;--ink:#23354d;--green:#16834a}
 *{box-sizing:border-box}
 body{margin:0;background:#f4f7fb;color:var(--ink);font-family:Arial,sans-serif}
@@ -461,31 +463,7 @@ main {
   </div>
 
 </div>
-    <!-- RIGHT: STUDENTS FACING TEACHER -->
-    <div class="student-gallery-area">
-      <h3>👥 STUDENTS — FACING THE TEACHER</h3>
-
-      <div class="remote-video-grid" id="studentGallery">
-        <div id="remoteEmptyMessage">
-          Waiting for students to connect...
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- HIDDEN WHOLE HALL CAMERA — PRESERVED -->
-  <div class="hall-view-area" style="display:none">
-    <h3>Whole Hall Camera</h3>
-    <div id="hallRemoteStage">
-      <div id="hallEmptyMessage">
-        Waiting for the hall camera...
-      </div>
-    </div>
-  </div>
-
-</div>
-
+  
 </div><!-- END CAMERA STAGE -->
 
 </section><!-- END TEACHING PANEL -->
@@ -539,7 +517,6 @@ main {
 </div>
 <!-- END INTERACTIVE CHALKBOARD -->
 
-<aside class="side"> 
 <aside class="side">
   <section class="panel">
     <div class="panel-head">
