@@ -1350,5 +1350,20 @@ async function cleanup(){
 window.addEventListener('beforeunload',()=>{cleanup();});
 refreshCameras();
 </script>
+<!-- BEA: Live person-segmentation engine -->
+<script type="module">
+  import {
+    FilesetResolver,
+    ImageSegmenter
+  } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs";
+
+  window.BEA_SEGMENTATION_ENGINE = {
+    FilesetResolver,
+    ImageSegmenter,
+    ready: true
+  };
+
+  console.log("BEA person-segmentation engine loaded.");
+</script>
 </body>
 </html>
