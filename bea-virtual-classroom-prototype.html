@@ -857,6 +857,82 @@ function removeLocalTeacherFromFront() {
   updateEmptyMessages();
 }
 function destinationFor(type){return type==='teacher'?'teacherFrontStage':type==='hall'?'hallRemoteStage':'studentGallery';}
+function showRemoteVideo(id, name, stream, role, type) {
+
+  const displayType = type === 'hall'
+    ? 'hall'
+    : String(role).toLowerCase() === 'teacher'
+      ? 'teacher'
+      : 'student';
+
+  const key = id + '_' + stream.id;
+
+  window.BEA_CLASSROOM_SOURCES =
+    window.BEA_CLASSROOM_SOURCES || new Map();
+
+  if (remoteVideoTiles[key]) {
+    const existingVideo =
+      remoteVideoTiles[key].querySelector('video');
+
+    if (existingVideo) {
+      if (existingVideo.srcObject !== stream) {
+        existingVideo.srcObject = stream;
+        existingVideo.play().catch(() => {});
+      }
+
+      window.BEA_CLASSROOM_SOURCES.set(key, {
+        id,
+        name,
+        role: displayType,
+        video: existingVideo
+      });
+    }
+
+    return;
+  }
+
+  if (displayType === 'teacher' &&
+      id === currentParticipantId) return;
+
+  const target = $(destinationFor(displayType));
+  if (!target) return;
+
+  const empty = target.querySelector('[id$="EmptyMessage"]');
+  if (empty) empty.remove();
+
+  const card = document.createElement('div');
+  card.dataset.participantId = id;
+  card.dataset.streamType = displayType;
+  card.className = 'remote-video-card';
+
+  const video = document.createElement('video');
+  video.autoplay = true;
+  video.playsInline = true;
+  video.muted = true;
+  video.srcObject = stream;
+
+  const label = document.createElement('div');
+  label.className = 'remote-video-name';
+  label.textContent =
+    (displayType === 'teacher' ? 'Teacher — ' :
+     displayType === 'hall' ? 'Whole Hall — ' : 'Student — ') + name;
+
+  card.append(video, label);
+  target.appendChild(card);
+
+  remoteVideoTiles[key] = card;
+
+  window.BEA_CLASSROOM_SOURCES.set(key, {
+    id,
+    name,
+    role: displayType,
+    video
+  });
+
+  video.play().catch(() => {});
+
+  console.log('BEA VIDEO REGISTERED:', name, displayType);
+}
 function removeRemoteVideoForParticipant(id, streamType) {
 
   Object.keys(remoteVideoTiles).forEach(key => {
