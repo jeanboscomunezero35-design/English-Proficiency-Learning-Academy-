@@ -669,8 +669,33 @@ async function connectToClassroom(code,role,name){
 }
 async function sendRtcSignal(to,signal){
  if(!classroomChannel)return;
- const streamTypes={};[teacherStream,hallStream,microphoneStream].filter(Boolean).forEach(s=>{streamTypes[s.id]=s===teacherStream?'teacher':s===hallStream?'hall':'audio';});
- await classroomChannel.send({type:'broadcast',event:'webrtc-signal',payload:{from:currentParticipantId,to,name:$('displayName').value,role:currentParticipantRole,streamTypes,signal}});
+
+ const streamTypes={};
+
+ [teacherStream,hallStream,microphoneStream]
+  .filter(Boolean)
+  .forEach(s=>{
+   if(s===teacherStream){
+    streamTypes[s.id]=currentParticipantRole==='teacher'?'teacher':'student';
+   }else if(s===hallStream){
+    streamTypes[s.id]='hall';
+   }else{
+    streamTypes[s.id]='audio';
+   }
+  });
+
+ await classroomChannel.send({
+  type:'broadcast',
+  event:'webrtc-signal',
+  payload:{
+   from:currentParticipantId,
+   to,
+   name:$('displayName').value,
+   role:currentParticipantRole,
+   streamTypes,
+   signal
+  }
+ });
 }
 function showLocalTeacherAtFront(stream){
  const stage=$('teacherFrontStage');if(!stage||!stream)return;
@@ -857,6 +882,7 @@ async function startRtcOffer(person){
   );
 
   await negotiatePeer(conn,person.id);
+   
 
  }catch(e){
   console.error('BEA offer error:',e);
