@@ -1496,11 +1496,15 @@ async function initializeBEASegmentation() {
 initializeBEASegmentation();
 </script>
 <script>
-/* BEA — ONE SHARED CLASSROOM SCENE */
+/* BEA — ONE SHARED CLASSROOM SCENE
+   Natural horizontal classroom with person segmentation.
+*/
 
 (function () {
   const canvas = document.getElementById('beaSharedClassroomCanvas');
-  if (!canvas) return;
+  const stage = canvas?.parentElement;
+
+  if (!canvas || !stage) return;
 
   const ctx = canvas.getContext('2d', {
     alpha: false,
@@ -1511,13 +1515,13 @@ initializeBEASegmentation();
     window.BEA_CLASSROOM_SOURCES || new Map();
 
   const processed = new Map();
+  const lastTimestamps = new WeakMap();
 
   let lastFrame = 0;
-  let animationStarted = false;
 
   function prepareCanvas() {
-    const width = Math.max(1200, canvas.clientWidth * 2);
-    const height = Math.max(600, canvas.clientHeight * 2);
+    const width = Math.max(1200, Math.round(stage.clientWidth * 2));
+    const height = Math.max(600, Math.round(stage.clientHeight * 2));
 
     if (canvas.width !== width || canvas.height !== height) {
       canvas.width = width;
@@ -1527,6 +1531,7 @@ initializeBEASegmentation();
 
   function makePersonImage(video, result) {
     const mask = result.categoryMask;
+
     if (!mask) return null;
 
     const maskWidth = mask.width;
@@ -1595,17 +1600,16 @@ initializeBEASegmentation();
   }
 
   function renderClassroom(timestamp) {
-    if (timestamp - lastFrame < 90) {
-      requestAnimationFrame(renderClassroom);
-      return;
-    }
+
+    requestAnimationFrame(renderClassroom);
+
+    if (timestamp - lastFrame < 90) return;
 
     lastFrame = timestamp;
 
     const engine = window.BEA_SEGMENTATION_ENGINE;
 
     if (!engine || !engine.ready || !engine.segmenter) {
-      requestAnimationFrame(renderClassroom);
       return;
     }
 
@@ -1620,15 +1624,27 @@ initializeBEASegmentation();
     const people = [];
 
     for (const [key, source] of sources.entries()) {
+
       const video = source.video;
 
-      if (!video || video.readyState < 2 ||
-          video.videoWidth === 0) continue;
+      if (!video ||
+          video.readyState < 2 ||
+          video.videoWidth === 0) {
+        continue;
+      }
 
       try {
+
+        // Each video receives a new increasing timestamp.
+        const now = performance.now();
+        const previous = lastTimestamps.get(video) || 0;
+        const videoTimestamp = Math.max(now, previous + 1);
+
+        lastTimestamps.set(video, videoTimestamp);
+
         const result = engine.segmenter.segmentForVideo(
           video,
-          timestamp
+          videoTimestamp
         );
 
         const personCanvas = makePersonImage(video, result);
@@ -1641,9 +1657,17 @@ initializeBEASegmentation();
             image: personCanvas
           });
         }
+
       } catch (error) {
         console.warn('BEA segmentation frame:', error);
       }
+    }
+
+    // Keep the original rectangular videos visible
+    // until person segmentation detects someone.
+    if (people.length === 0) {
+      canvas.style.display = 'none';
+      return;
     }
 
     const teacher = people.find(person =>
@@ -1651,9 +1675,11 @@ initializeBEASegmentation();
     );
 
     const students = people.filter(person =>
-      person.role !== 'teacher' && person.role !== 'hall'
+      person.role !== 'teacher' &&
+      person.role !== 'hall'
     );
 
+    // TEACHER: front-left position.
     if (teacher) {
       drawPerson(
         teacher.image,
@@ -1664,8 +1690,16 @@ initializeBEASegmentation();
       );
     }
 
-    const columns = Math.max(1, Math.ceil(Math.sqrt(students.length)));
-    const rows = Math.max(1, Math.ceil(students.length / columns));
+    // STUDENTS: gathered on the right.
+    const columns = Math.max(
+      1,
+      Math.ceil(Math.sqrt(students.length))
+    );
+
+    const rows = Math.max(
+      1,
+      Math.ceil(students.length / columns)
+    );
 
     const areaX = W * 0.34;
     const areaY = H * 0.08;
@@ -1673,6 +1707,7 @@ initializeBEASegmentation();
     const areaH = H * 0.86;
 
     students.forEach((student, index) => {
+
       const column = index % columns;
       const row = Math.floor(index / columns);
 
@@ -1686,27 +1721,16 @@ initializeBEASegmentation();
         cellW,
         cellH
       );
+
     });
 
-  if (people.length > 0) {
-  canvas.style.display = 'block';
-  animationStarted = true;
-} else {
-  // Keep the original live camera videos visible
-  // whenever person segmentation has no result.
-  canvas.style.display = 'none';
-}
-
-requestAnimationFrame(renderClassroom);
-  function startWhenReady() {
-    if (!animationStarted) {
-      requestAnimationFrame(renderClassroom);
-    }
+    canvas.style.display = 'block';
   }
 
-  setInterval(startWhenReady, 1000);
-
   console.log('BEA: Shared classroom compositor installed.');
+
+  requestAnimationFrame(renderClassroom);
+
 })();
 </script>
 </body>
