@@ -643,7 +643,20 @@ async function connectToClassroom(code,role,name){
    .on('presence',{event:'sync'},()=>updatePresence(classroomChannel.presenceState()))
    .on('broadcast',{event:'class-chat'},({payload})=>{if(payload?.senderId!==currentParticipantId)addMessage(payload?.name||'Participant',payload?.message||'');})
    .on('broadcast',{event:'webrtc-signal'},({payload})=>handleRtcSignal(payload))
-   .on('broadcast',{event:'class-hand'},({payload})=>{if(payload?.senderId!==currentParticipantId){if(connectedParticipants[payload.senderId])connectedParticipants[payload.senderId].hand=!!payload.raised;updateParticipantList();addMessage('BEA Assistant',(payload.name||'A participant')+(payload.raised?' raised a hand.':' lowered a hand.'),true);}})
+  .on('broadcast',{event:'camera-stopped'},({payload})=>{
+
+ if(payload?.senderId !== currentParticipantId){
+
+  removeRemoteVideoForParticipant(
+   payload.senderId,
+   payload.streamType
+  );
+
+ }
+
+})
+  
+    .on('broadcast',{event:'class-hand'},({payload})=>{if(payload?.senderId!==currentParticipantId){if(connectedParticipants[payload.senderId])connectedParticipants[payload.senderId].hand=!!payload.raised;updateParticipantList();addMessage('BEA Assistant',(payload.name||'A participant')+(payload.raised?' raised a hand.':' lowered a hand.'),true);}})
    .on('broadcast',{event:'board-op'},({payload})=>{if(payload?.senderId!==currentParticipantId)applyRemoteBoardOperation(payload.op);})
    .subscribe(async status=>{
     if(status==='SUBSCRIBED'){
@@ -726,8 +739,12 @@ function showRemoteVideo(id,name,stream,role,type){
  const empty = target.querySelector('[id$="EmptyMessage"]');
  if(empty) empty.remove();
 
- const card = document.createElement('div');
- card.className = 'remote-video-card ' +
+const card = document.createElement('div');
+
+card.dataset.participantId = id;
+card.dataset.streamType = displayType;
+
+card.className = 'remote-video-card ' +
   (displayType === 'teacher'
    ? 'teacher-remote-card'
    : displayType === 'hall'
@@ -739,7 +756,8 @@ function showRemoteVideo(id,name,stream,role,type){
 video.autoplay = true;
 video.playsInline = true;
 video.muted = true;
-video.controls = true;
+video.controls = false;
+video.disablePictureInPicture = true;
 video.setAttribute('playsinline','');
 video.srcObject = stream;
 
@@ -777,6 +795,34 @@ video.srcObject = stream;
  );
 
  console.log('BEA VIDEO DISPLAYED:', name, displayType);
+}
+function removeRemoteVideoForParticipant(id, streamType){
+
+ Object.keys(remoteVideoTiles).forEach(key=>{
+
+  const card = remoteVideoTiles[key];
+
+  if(
+   card &&
+   card.dataset.participantId === id &&
+   card.dataset.streamType === streamType
+  ){
+   const video = card.querySelector('video');
+
+   if(video){
+    video.pause();
+    video.srcObject = null;
+   }
+
+   card.remove();
+   delete remoteVideoTiles[key];
+  }
+
+ });
+
+ updateEmptyMessages();
+
+ console.log('BEA REMOTE CAMERA REMOVED:',id,streamType);
 }
 function createPeerConnection(id,name,role='student'){
 console.error('BEA NEW WEBRTC CODE IS RUNNING');
@@ -1079,10 +1125,77 @@ async function startVideo(which){
  }catch(e){console.error(e);status.textContent='Camera could not start.';alert('Unable to start '+which+' camera: '+(e.name==='NotAllowedError'?'Allow camera permission.':e.name==='OverconstrainedError'?'Try Auto or 720p.':e.message));}
 }
 async function stopVideo(which){
- const teacher=which==='teacher',video=teacher?teacherCamera:hallCamera,stream=teacher?teacherStream:hallStream;
- if(stream){await removeStreamFromPeers(stream);stream.getTracks().forEach(t=>t.stop());}
- video.pause();video.srcObject=null;video.style.display='none';$(teacher?'teacherPlaceholder':'hallPlaceholder').style.display='block';$(teacher?'teacherLiveTag':'hallLiveTag').style.display='none';
- if(teacher){teacherStream=null;removeLocalTeacherFromFront();}else hallStream=null;$(teacher?'teacherStatus':'hallStatus').textContent='Camera stopped.';updateOverallStatus();
+
+ const teacher = which === 'teacher';
+
+ const video = teacher ? teacherCamera : hallCamera;
+
+ const stream = teacher ? teacherStream : hallStream;
+
+ const streamType = teacher
+  ? (currentParticipantRole === 'teacher' ? 'teacher' : 'student')
+  : 'hall';
+
+ // Tell other participants to remove this camera image.
+ if(classroomChannel && stream){
+
+  try{
+
+   await classroomChannel.send({
+    type:'broadcast',
+    event:'camera-stopped',
+    payload:{
+     senderId:currentParticipantId,
+     streamType:streamType
+    }
+   });
+
+  }catch(e){
+
+   console.error('BEA camera stop notification:',e);
+
+  }
+
+ }
+
+ // Remove this camera track from existing connections.
+ if(stream){
+
+  await removeStreamFromPeers(stream);
+
+  stream.getTracks().forEach(track=>{
+   track.stop();
+  });
+
+ }
+
+ // Clear the local camera.
+ video.pause();
+ video.srcObject = null;
+ video.style.display = 'none';
+
+ $(teacher ? 'teacherPlaceholder' : 'hallPlaceholder').style.display = 'block';
+
+ $(teacher ? 'teacherLiveTag' : 'hallLiveTag').style.display = 'none';
+
+ if(teacher){
+
+  teacherStream = null;
+
+  removeLocalTeacherFromFront();
+
+ }else{
+
+  hallStream = null;
+
+ }
+
+ $(teacher ? 'teacherStatus' : 'hallStatus').textContent = 'Camera stopped.';
+
+ updateOverallStatus();
+
+ console.log('BEA CAMERA STOPPED:',streamType);
+
 }
 $('startTeacher').onclick=()=>startVideo('teacher');
 $('startHall').onclick=()=>startVideo('hall');
