@@ -581,7 +581,8 @@ function showRemoteVideo(id,name,stream,role,type){
  card.append(video,label,status);target.appendChild(card);remoteVideoTiles[key]=card;
 }
 function createPeerConnection(id,name,role='student'){
- if(peerConnections[id])return peerConnections[id];
+console.error('BEA NEW WEBRTC CODE IS RUNNING');
+  if(peerConnections[id])return peerConnections[id];
 
  const pc=new RTCPeerConnection(RTC_CONFIG);
 
