@@ -1372,18 +1372,68 @@ refreshCameras();
 </script>
 <!-- BEA: Live person-segmentation engine -->
 <script type="module">
-  import {
-    FilesetResolver,
-    ImageSegmenter
-  } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs";
+import {
+  FilesetResolver,
+  ImageSegmenter
+} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs";
 
-  window.BEA_SEGMENTATION_ENGINE = {
-    FilesetResolver,
-    ImageSegmenter,
-    ready: true
-  };
+async function initializeBEASegmentation() {
+  try {
+    console.log("BEA: Loading person-segmentation engine...");
 
-  console.log("BEA person-segmentation engine loaded.");
+    const vision = await FilesetResolver.forVisionTasks(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+    );
+
+    const modelURL =
+      "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter_landscape/float16/latest/selfie_segmenter_landscape.tflite";
+
+    let segmenter;
+
+    try {
+      segmenter = await ImageSegmenter.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: modelURL,
+          delegate: "GPU"
+        },
+        runningMode: "VIDEO",
+        outputCategoryMask: true,
+        outputConfidenceMasks: false
+      });
+    } catch (gpuError) {
+      console.warn("BEA: GPU unavailable. Trying CPU...", gpuError);
+
+      segmenter = await ImageSegmenter.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: modelURL,
+          delegate: "CPU"
+        },
+        runningMode: "VIDEO",
+        outputCategoryMask: true,
+        outputConfidenceMasks: false
+      });
+    }
+
+    window.BEA_SEGMENTATION_ENGINE = {
+      FilesetResolver,
+      ImageSegmenter,
+      segmenter,
+      ready: true
+    };
+
+    console.log("BEA: AI segmentation engine READY.");
+
+  } catch (error) {
+    console.error("BEA: Segmentation engine failed to load:", error);
+
+    window.BEA_SEGMENTATION_ENGINE = {
+      ready: false,
+      error
+    };
+  }
+}
+
+initializeBEASegmentation();
 </script>
 </body>
 </html>
