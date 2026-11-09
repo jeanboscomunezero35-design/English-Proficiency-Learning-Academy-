@@ -706,22 +706,28 @@ function showRemoteVideo(id,name,stream,role,type){
 
  const key = id + '_' + stream.id;
 
- if(remoteVideoTiles[key]) return;
+ if(remoteVideoTiles[key]) {
+  const existingVideo = remoteVideoTiles[key].querySelector('video');
+
+  if(existingVideo && existingVideo.srcObject !== stream){
+   existingVideo.srcObject = stream;
+   existingVideo.play().catch(e =>
+    console.warn('BEA playback waiting:', e)
+   );
+  }
+  return;
+ }
 
  if(displayType === 'teacher' && id === currentParticipantId) return;
 
  const target = $(destinationFor(displayType));
-
  if(!target) return;
 
  const empty = target.querySelector('[id$="EmptyMessage"]');
-
  if(empty) empty.remove();
 
  const card = document.createElement('div');
-
- card.className =
-  'remote-video-card ' +
+ card.className = 'remote-video-card ' +
   (displayType === 'teacher'
    ? 'teacher-remote-card'
    : displayType === 'hall'
@@ -732,15 +738,22 @@ function showRemoteVideo(id,name,stream,role,type){
 
  video.autoplay = true;
  video.playsInline = true;
+ video.muted = true;
  video.controls = true;
+ video.setAttribute('playsinline','');
  video.srcObject = stream;
 
- video.play().catch(error => {
-  console.log('BEA video playback:', error);
- });
+ video.onloadedmetadata = () => {
+  video.play().catch(e =>
+   console.warn('BEA video playback:', e)
+  );
+ };
+
+ video.onplaying = () => {
+  console.log('BEA LIVE VIDEO PLAYING:', name);
+ };
 
  const label = document.createElement('div');
-
  label.className = 'remote-video-name';
 
  label.textContent =
@@ -751,21 +764,19 @@ function showRemoteVideo(id,name,stream,role,type){
     : '👤 Student — ' + name;
 
  const status = document.createElement('div');
-
  status.className = 'remote-video-status';
- status.textContent = '● Live connection';
+ status.textContent = '● Connecting video...';
 
  card.append(video,label,status);
-
  target.appendChild(card);
 
  remoteVideoTiles[key] = card;
 
- console.log('BEA VIDEO DISPLAYED:', {
-  participant: name,
-  role: role,
-  display: displayType
- });
+ video.play().catch(e =>
+  console.warn('BEA video playback:', e)
+ );
+
+ console.log('BEA VIDEO DISPLAYED:', name, displayType);
 }
 function createPeerConnection(id,name,role='student'){
 console.error('BEA NEW WEBRTC CODE IS RUNNING');
