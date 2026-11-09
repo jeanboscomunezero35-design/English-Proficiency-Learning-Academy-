@@ -218,13 +218,14 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
 @media(max-width:460px){main{padding:0 12px}.features{grid-template-columns:1fr 1fr}.controls button{flex:1}.mode-grid,.room-actions{grid-template-columns:1fr}.pen-tool{flex:1}}
 
 /* ==============================================
-   BEA — ONE CONTINUOUS FACE-TO-FACE STADIUM
+   BEA IMMERSIVE CLASSROOM
+   TEACHER FRONT — STUDENTS FACING TEACHER
 ============================================== */
 
 main {
   max-width: none;
   width: 100%;
-  padding: 0 20px;
+  padding: 0 15px;
 }
 
 .layout {
@@ -233,45 +234,93 @@ main {
   gap: 20px;
 }
 
+/* ONE SHARED CLASSROOM ENVIRONMENT */
+
 .live-gallery {
   display: grid !important;
   grid-template-columns: minmax(0, 38%) minmax(0, 62%) !important;
-  grid-template-rows: auto 1fr !important;
   grid-template-areas:
     "title title"
     "teacher students" !important;
 
   width: 100% !important;
-  max-width: 100% !important;
-  min-height: 650px !important;
+  min-height: 720px !important;
   padding: 25px !important;
   gap: 15px !important;
-  box-sizing: border-box !important;
-  overflow: hidden !important;
 
-  background: radial-gradient(ellipse at center, #345d80, #102544) !important;
-  border: 6px solid #f2b544 !important;
-  border-radius: 100px / 55px !important;
+  background:
+    linear-gradient(135deg, #274b38, #496b50 50%, #203f32) !important;
+
+  border: none !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 0 50px #10254455 !important;
+  overflow: hidden !important;
 }
 
 .stadium-title {
   grid-area: title;
+  color: #fff4d6 !important;
   text-align: center;
-  color: white;
-  margin: 0;
+  font-size: 23px !important;
+  letter-spacing: 1px;
 }
+
+/* TEACHER AT THE FRONT */
 
 .teacher-front-area {
   grid-area: teacher;
   display: flex !important;
   flex-direction: column !important;
-  align-items: center !important;
   justify-content: center !important;
+  align-items: center !important;
   min-width: 0;
+  padding: 10px !important;
+  background: transparent !important;
+}
+
+.teacher-front-area h3,
+.student-gallery-area h3 {
+  color: #fff4d6 !important;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+#teacherFrontStage {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-height: 500px !important;
+  padding: 0 !important;
   background: transparent !important;
   border: none !important;
-  padding: 10px !important;
 }
+
+/* FULL-BODY TEACHER CAMERA */
+
+#teacherFrontStage .remote-video-card {
+  width: 100% !important;
+  max-width: 480px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#teacherFrontStage video {
+  display: block !important;
+  width: 100% !important;
+  height: min(65vh, 600px) !important;
+  min-height: 420px !important;
+
+  object-fit: contain !important;
+  object-position: center bottom !important;
+
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+/* STUDENTS FACING THE TEACHER */
 
 .student-gallery-area {
   grid-area: students;
@@ -280,103 +329,102 @@ main {
   justify-content: center !important;
   align-items: center !important;
   min-width: 0;
-  background: transparent !important;
-  border: none !important;
   padding: 10px !important;
-}
-
-.teacher-front-area h3,
-.student-gallery-area h3 {
-  color: #ffe0a0 !important;
-  text-align: center;
-  font-size: 15px;
-}
-
-#teacherFrontStage {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  min-height: 350px !important;
   background: transparent !important;
   border: none !important;
 }
 
 #studentGallery {
   display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   align-content: center !important;
-  gap: 12px !important;
+  align-items: end !important;
+  gap: 20px 12px !important;
   width: 100% !important;
-  min-height: 350px !important;
+  min-height: 450px !important;
+  padding: 0 !important;
   background: transparent !important;
   border: none !important;
 }
+
+/* REMOVE VIDEO BOX APPEARANCE */
 
 .remote-video-card {
   min-width: 0;
+  width: 100%;
   background: transparent !important;
   border: none !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
+  overflow: visible !important;
 }
 
-#teacherFrontStage .remote-video-card {
-  width: 100% !important;
-  max-width: 480px !important;
-}
-
-#teacherFrontStage video {
-  width: 100% !important;
-  height: 320px !important;
-  object-fit: cover !important;
-  border: 3px solid #f2b544 !important;
-  border-radius: 18px !important;
-}
+/* FULL CAMERA FRAME FOR STUDENTS */
 
 #studentGallery .remote-video-card video {
   display: block !important;
   width: 100% !important;
-  height: 150px !important;
-  object-fit: cover !important;
-  border: 2px solid #d5e4f3 !important;
-  border-radius: 12px !important;
+  height: 290px !important;
+
+  object-fit: contain !important;
+  object-position: center bottom !important;
+
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
 }
 
 .remote-video-name {
   color: white !important;
-  text-align: center;
+  text-align: center !important;
+  font-size: 13px !important;
+  padding: 8px 2px !important;
 }
+
+.remote-video-status {
+  color: #e5f2e5 !important;
+  text-align: center !important;
+}
+
+/* HIDE SEPARATE HALL DISPLAY */
 
 .hall-view-area,
 #hallRemoteStage {
   display: none !important;
 }
 
-@media (max-width: 700px) {
+/* PHONE DISPLAY */
+
+@media(max-width: 700px) {
+
   .live-gallery {
     grid-template-columns: 1fr !important;
-    grid-template-rows: auto auto auto !important;
     grid-template-areas:
       "title"
       "teacher"
       "students" !important;
-    border-radius: 35px !important;
+    min-height: auto !important;
     padding: 15px !important;
   }
 
   #teacherFrontStage {
-    min-height: 250px !important;
+    min-height: 350px !important;
   }
 
   #teacherFrontStage video {
-    height: 230px !important;
+    height: 420px !important;
+    min-height: 300px !important;
   }
 
   #studentGallery {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    min-height: auto !important;
+  }
+
+  #studentGallery .remote-video-card video {
+    height: 230px !important;
   }
 }
-  
 </style>
 </head>
 <body>
