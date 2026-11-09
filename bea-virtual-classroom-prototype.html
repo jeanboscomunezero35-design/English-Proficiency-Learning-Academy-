@@ -445,6 +445,21 @@ main {
         max-width: 100% !important;
     }
 }  
+/* BEA shared classroom stage */
+#beaSharedClassroomCanvas {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.live-gallery {
+  position: relative;
+}
 </style>
 </head>
 <body>
@@ -482,7 +497,12 @@ main {
           </div>
         </div>
 <div class="live-gallery">
-
+<!-- BEA: One shared classroom display -->
+<canvas
+  id="beaSharedClassroomCanvas"
+  aria-label="BEA shared classroom stage"
+  style="display:none;"
+></canvas>
   <h3 class="stadium-title">
     🏫 BOSCO ENGLISH ACADEMY — LIVE CLASSROOM
   </h3>
