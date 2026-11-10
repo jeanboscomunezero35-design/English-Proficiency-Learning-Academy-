@@ -595,6 +595,131 @@ main {
   #studentGallery { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
 
+/* =========================================================
+   BEA FINAL PRESENTATION — ONE CONTINUOUS LIVE STADIUM
+   Teacher occupies the left side; student feeds share the right.
+   Video wrappers are visually transparent: no separate cards/panels.
+   Each feed keeps its real camera surroundings.
+========================================================= */
+.live-gallery {
+  display: grid !important;
+  grid-template-columns: minmax(0, 34%) minmax(0, 66%) !important;
+  grid-template-areas: "teacher students" !important;
+  grid-template-rows: auto !important;
+  align-items: stretch !important;
+  gap: clamp(10px, 2vw, 24px) !important;
+  min-height: 430px !important;
+  padding: clamp(12px, 2vw, 24px) !important;
+  background: #e9eef2 !important;
+  border: 0 !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+.live-gallery > .stadium-title {
+  grid-column: 1 / -1 !important;
+  margin: 0 0 2px !important;
+  text-align: center !important;
+  color: #102544 !important;
+}
+.live-gallery > .teacher-front-area,
+.live-gallery > .student-gallery-area {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.teacher-front-area { grid-area: teacher !important; }
+.student-gallery-area { grid-area: students !important; }
+.teacher-front-area h3,
+.student-gallery-area h3 {
+  margin: 0 0 10px !important;
+  color: #102544 !important;
+  font-size: clamp(13px, 1.5vw, 17px) !important;
+}
+#teacherFrontStage,
+#studentGallery {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-content: start !important;
+  align-items: start !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-height: 300px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+#studentGallery {
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)) !important;
+}
+/* No card appearance: each live feed blends into the shared stadium stage. */
+#teacherFrontStage .remote-video-card,
+#studentGallery .remote-video-card,
+#teacherFrontStage #beaLocalTeacherTile {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+#teacherFrontStage video,
+#studentGallery video {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  aspect-ratio: 16 / 10 !important;
+  object-fit: cover !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+#teacherFrontStage video { aspect-ratio: 4 / 5 !important; }
+#teacherFrontStage .remote-video-name,
+#studentGallery .remote-video-name,
+#teacherFrontStage .remote-video-status {
+  padding: 5px 0 !important;
+  margin: 0 !important;
+  color: #102544 !important;
+  background: transparent !important;
+  border: 0 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-align: left !important;
+}
+#teacherFrontStage #teacherEmptyMessage,
+#studentGallery #remoteEmptyMessage {
+  padding: 22px 10px !important;
+  color: #33465c !important;
+  text-align: center !important;
+}
+@media (max-width: 700px) {
+  .live-gallery {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas: "teacher" "students" !important;
+    min-height: 0 !important;
+  }
+  #teacherFrontStage video { aspect-ratio: 16 / 9 !important; }
+  #studentGallery { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
 </style>
 </head>
 <body>
