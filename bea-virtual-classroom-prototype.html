@@ -1934,3 +1934,34 @@ window.addEventListener('error', function(e) {
 </script>
 </body>
 </html>
+
+/* BEA FINAL PRESENTATION TUNE — remove the student name strip and give
+   live learner feeds more visible screen area. CSS only: no camera,
+   Supabase, WebRTC, attendance, chat or whiteboard logic is changed. */
+#studentGallery .remote-video-name,
+#studentGallery .student-name {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+#studentGallery .remote-video-card,
+#studentGallery .student-video-card {
+  align-self: start !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+}
+#studentGallery video {
+  width: 100% !important;
+  max-width: none !important;
+  height: clamp(260px, 42vw, 420px) !important;
+  object-fit: contain !important;
+  background: transparent !important;
+}
+@media (max-width: 700px) {
+  #studentGallery video {
+    height: clamp(220px, 65vw, 340px) !important;
+  }
+}
