@@ -817,51 +817,91 @@ main {
 }
 
 
-/* BEA FIX: remove the student name strip and unused white space below feeds. */
-#studentGallery {
+
+/* BEA TARGETED STUDENT STAGE REPAIR
+   Restore a natural, borderless live camera feed and remove unused stage height.
+   Presentation only: no Supabase, WebRTC, camera, chat or attendance code changed. */
+.live-gallery {
+  align-items: start !important;
   min-height: 0 !important;
   height: auto !important;
+  overflow: visible !important;
+}
+.live-gallery > .student-gallery-area {
+  align-self: start !important;
+  height: auto !important;
+  min-height: 0 !important;
+  justify-content: flex-start !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+#studentGallery {
+  display: grid !important;
   align-content: start !important;
+  align-items: start !important;
+  justify-items: stretch !important;
   grid-auto-rows: max-content !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
   gap: 0 !important;
   background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
 }
 #studentGallery .remote-video-card,
-#studentGallery [data-stream-type="student"] {
+#studentGallery .student-video-card {
   display: block !important;
+  align-self: start !important;
+  justify-self: stretch !important;
+  width: 100% !important;
   height: auto !important;
   min-height: 0 !important;
-  padding: 0 !important;
   margin: 0 !important;
-  gap: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
   background: transparent !important;
   border: 0 !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
-}
-#studentGallery .remote-video-name,
-#studentGallery .student-name,
-#studentGallery .remote-video-status {
-  display: none !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  overflow: hidden !important;
 }
 #studentGallery video {
   display: block !important;
   width: 100% !important;
   max-width: none !important;
   height: auto !important;
-  aspect-ratio: 16 / 9 !important;
+  aspect-ratio: 16 / 10 !important;
   object-fit: contain !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  background: #000 !important;
+  background: transparent !important;
   border: 0 !important;
   border-radius: 0 !important;
+  outline: 0 !important;
   box-shadow: none !important;
+}
+#studentGallery .remote-video-name,
+#studentGallery .student-name {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+@media (max-width: 700px) {
+  .live-gallery > .student-gallery-area,
+  #studentGallery {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+  #studentGallery {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
 }
 
 </style>
