@@ -461,62 +461,139 @@ main {
   position: relative;
 }
 
-
-/* =========================================================
-   BEA COMPLETE ONE-SCENE CLASSROOM — NOVEMBER 2026
-   One shared canvas; no individual visible video cards.
-========================================================= */
-.layout{grid-template-columns:minmax(0,1fr)!important;width:100%!important}
-.live-gallery{
-  position:relative!important;display:block!important;width:100%!important;
-  height:clamp(480px,62vw,760px)!important;min-height:480px!important;
-  margin:16px 0 0!important;padding:0!important;overflow:hidden!important;
-  border:0!important;border-radius:16px!important;background:#102b3b!important;
-  box-shadow:0 12px 32px rgba(8,25,43,.18)!important;
-}
-#beaSharedClassroomCanvas{
-  display:block!important;position:absolute!important;inset:0!important;
-  width:100%!important;height:100%!important;z-index:30!important;
-  object-fit:fill!important;pointer-events:none!important;background:#102b3b!important;
-}
-.live-gallery>.stadium-title,.live-gallery>.teacher-front-area,
-.live-gallery>.student-gallery-area,.live-gallery>.hall-view-area{
-  visibility:hidden!important;pointer-events:none!important;
-}
-/* Camera controls remain available, but the old preview rectangles are removed. */
-.camera-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
-.camera-card{background:#f3f7fb!important;color:#20364e!important;border:1px solid #dce5ef!important;border-radius:12px!important;box-shadow:none!important}
-.camera-heading,.camera-screen{display:none!important}
-.camera-controls{padding:12px!important;grid-template-columns:1fr!important}
-.camera-controls label{color:#334c67!important}
-.camera-status{color:#52647a!important}
-.camera-card .camera-actions button{min-width:74px!important}
-@media(max-width:700px){
-  .live-gallery{height:520px!important;min-height:520px!important}
-  .camera-grid{grid-template-columns:1fr!important}
-}
-
-
 /* =========================================================
    BEA NATURAL LIVE CLASSROOM — REAL CAMERA BACKGROUNDS
-   Teacher on the left; learners on the right. No synthetic
-   classroom, desks, chairs, walls, or background replacement.
+   No designed chairs, desks, walls, or artificial scenery.
+   Camera feeds retain the environments captured by each camera.
 ========================================================= */
-.live-gallery{display:grid;grid-template-columns:minmax(240px,.9fr) minmax(0,1.6fr);gap:16px;align-items:start;background:#f4f7fb;border:1px solid #dce5ef;padding:16px;border-radius:14px}
-.live-gallery .stadium-title{grid-column:1/-1;margin:0 0 2px;color:#102544;font-size:18px}
-.live-gallery .teacher-front-area{grid-column:1;min-width:0;margin:0;padding:0;background:transparent}
-.live-gallery .student-gallery-area{grid-column:2;min-width:0;margin:0;padding:12px;background:#eef3f8;border:1px solid #dce5ef;border-radius:12px}
-.live-gallery .teacher-front-area h3,.live-gallery .student-gallery-area h3{margin:0 0 10px;color:#102544;font-size:15px}
-#teacherFrontStage,#hallRemoteStage{display:grid;grid-template-columns:1fr;align-items:start;width:100%;min-height:120px;padding:0;background:transparent;border-radius:0;gap:10px;color:#52647a}
-#studentGallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;width:100%;align-items:start;color:#52647a}
-.live-gallery .remote-video-card{width:100%;max-width:none;min-width:0;background:#102544;border-radius:10px;overflow:hidden;box-shadow:0 3px 12px #10254418}
-.live-gallery .remote-video-card video{display:block;width:100%;height:220px;object-fit:contain;background:#172c47}
-.live-gallery .teacher-remote-card video,.live-gallery .bea-local-teacher-card video{height:220px}
-.live-gallery .remote-video-name{font-size:13px;padding:9px 10px}
-.live-gallery .remote-video-status{font-size:11px;padding:0 10px 9px}
-#teacherEmptyMessage,#remoteEmptyMessage{padding:18px;background:#e9eff6;border:1px dashed #b8c7d8;border-radius:10px;text-align:center;color:#52647a;font-size:13px}
-#teacherFrontStage video,#studentGallery video{object-fit:contain!important;background:#172c47}
-@media(max-width:700px){.live-gallery{grid-template-columns:1fr;padding:12px}.live-gallery .stadium-title,.live-gallery .teacher-front-area,.live-gallery .student-gallery-area{grid-column:1}#studentGallery{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}.live-gallery .remote-video-card video,.live-gallery .teacher-remote-card video,.live-gallery .bea-local-teacher-card video{height:190px}}
+.live-gallery {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr) !important;
+  grid-template-areas: "teacher students" !important;
+  grid-template-rows: auto !important;
+  align-items: start !important;
+  gap: 18px !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  padding: 14px !important;
+  margin-top: 18px !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  position: relative !important;
+}
+.stadium-title { grid-column: 1 / -1 !important; grid-area: auto !important; }
+.teacher-front-area { grid-area: teacher !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important; background: transparent !important; border: 0 !important; }
+.student-gallery-area { grid-area: students !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important; background: transparent !important; border: 0 !important; }
+.teacher-front-area h3, .student-gallery-area h3 { color: var(--navy) !important; margin: 0 0 10px !important; }
+#teacherFrontStage, #studentGallery {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  align-items: start !important;
+  gap: 12px !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: var(--ink) !important;
+}
+#teacherFrontStage { grid-template-columns: minmax(0, 1fr) !important; }
+.remote-video-card, #beaLocalTeacherTile {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--ink) !important;
+}
+#teacherFrontStage video, #studentGallery video, #hallRemoteStage video {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9 !important;
+  max-width: none !important;
+  object-fit: contain !important;
+  background: #111 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.remote-video-name, .remote-video-status {
+  padding: 6px 2px !important;
+  color: var(--ink) !important;
+  background: transparent !important;
+  text-align: left !important;
+}
+#beaSharedClassroomCanvas { display: none !important; }
+@media (max-width: 700px) {
+  .live-gallery {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas: "teacher" "students" !important;
+    gap: 18px !important;
+    padding: 8px !important;
+  }
+  #studentGallery { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  #teacherFrontStage video, #studentGallery video { height: auto !important; aspect-ratio: 16 / 9 !important; }
+}
+
+
+/* =========================================================
+   BEA CAMERA VISIBILITY REPAIR — NOVEMBER 2026
+   Keep the real teacher and student camera elements visible.
+   No artificial classroom scene or canvas overlay is used.
+========================================================= */
+.live-gallery {
+  display: grid !important;
+  grid-template-columns: minmax(220px, 0.85fr) minmax(300px, 1.4fr) !important;
+  grid-template-areas: "teacher students" !important;
+  align-items: start !important;
+  position: relative !important;
+  overflow: visible !important;
+  min-height: 160px !important;
+  background: transparent !important;
+}
+.live-gallery > .teacher-front-area,
+.live-gallery > .student-gallery-area {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 2 !important;
+  pointer-events: auto !important;
+}
+#teacherFrontStage, #studentGallery {
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 3 !important;
+  min-height: 120px !important;
+}
+#teacherFrontStage video, #studentGallery video, #hallRemoteStage video {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9 !important;
+  object-fit: contain !important;
+  background: #111 !important;
+}
+#beaSharedClassroomCanvas { display: none !important; visibility: hidden !important; }
+@media (max-width: 700px) {
+  .live-gallery {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas: "teacher" "students" !important;
+  }
+  #studentGallery { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
 
 </style>
 </head>
@@ -555,6 +632,12 @@ main {
           </div>
         </div>
 <div class="live-gallery">
+<!-- BEA: One shared classroom display -->
+<canvas
+  id="beaSharedClassroomCanvas"
+  aria-label="BEA shared classroom stage"
+  style="display:none;"
+></canvas>
   <h3 class="stadium-title">
     🏫 BOSCO ENGLISH ACADEMY — LIVE CLASSROOM
   </h3>
@@ -1381,7 +1464,7 @@ async function startVideo(which){
   if(teacher && currentParticipantRole==='teacher')showLocalTeacherAtFront(fresh);
 if(teacher && currentParticipantRole==='student')showLocalStudentInGallery(fresh);
   await addStreamToExistingPeers(fresh);
-  video.style.display='block';video.style.visibility='visible';video.style.opacity='1';video.style.zIndex='5';placeholder.style.display='none';tag.style.display='block';
+  video.style.display='block';placeholder.style.display='none';tag.style.display='block';
   const s=fresh.getVideoTracks()[0].getSettings();status.textContent='Camera active: '+(s.width||'?')+' × '+(s.height||'?')+(s.frameRate?' · '+Math.round(s.frameRate)+' FPS':'');
   updateOverallStatus();refreshCameras();
  }catch(e){console.error(e);status.textContent='Camera could not start.';alert('Unable to start '+which+' camera: '+(e.name==='NotAllowedError'?'Allow camera permission.':e.name==='OverconstrainedError'?'Try Auto or 720p.':e.message));}
@@ -1544,6 +1627,71 @@ async function cleanup(){
 window.addEventListener('beforeunload',()=>{cleanup();});
 refreshCameras();
 </script>
+<!-- BEA: Live person-segmentation engine -->
+<script type="module">
+import {
+  FilesetResolver,
+  ImageSegmenter
+} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs";
+
+async function initializeBEASegmentation() {
+  try {
+    console.log("BEA: Loading person-segmentation engine...");
+
+    const vision = await FilesetResolver.forVisionTasks(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+    );
+
+    const modelURL =
+      "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter_landscape/float16/latest/selfie_segmenter_landscape.tflite";
+
+    let segmenter;
+
+    try {
+      segmenter = await ImageSegmenter.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: modelURL,
+          delegate: "GPU"
+        },
+        runningMode: "VIDEO",
+        outputCategoryMask: true,
+        outputConfidenceMasks: false
+      });
+    } catch (gpuError) {
+      console.warn("BEA: GPU unavailable. Trying CPU...", gpuError);
+
+      segmenter = await ImageSegmenter.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: modelURL,
+          delegate: "CPU"
+        },
+        runningMode: "VIDEO",
+        outputCategoryMask: true,
+        outputConfidenceMasks: false
+      });
+    }
+
+    window.BEA_SEGMENTATION_ENGINE = {
+      FilesetResolver,
+      ImageSegmenter,
+      segmenter,
+      ready: true
+    };
+
+    console.log("BEA: AI segmentation engine READY.");
+
+  } catch (error) {
+    console.error("BEA: Segmentation engine failed to load:", error);
+
+    window.BEA_SEGMENTATION_ENGINE = {
+      ready: false,
+      error
+    };
+  }
+}
+
+initializeBEASegmentation();
+</script>
 <script>
 window.addEventListener('error', function(e) {
   let box = document.getElementById('beaRepairNotice');
@@ -1563,6 +1711,5 @@ window.addEventListener('error', function(e) {
     ' — Line: ' + e.lineno;
 });
 </script>
-
 </body>
 </html>
