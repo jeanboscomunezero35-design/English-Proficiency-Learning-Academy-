@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BEA Virtual Classroom | Bosco English Academy</title>
 <!-- Updated with the requested horizontal one-scene classroom design; existing BEA classroom JavaScript preserved. -->
+
+<style>
+
 /* BEA — Make student waiting message visible */
 #studentGallery {
   color: #d8e5f3 !important;
@@ -16,7 +19,6 @@
   font-size: 15px;
   padding: 20px;
 }
-<style>
 :root{--navy:#102544;--blue:#1769aa;--sky:#eaf4ff;--gold:#f2b544;--muted:#65758b;--line:#dce5ef;--ink:#23354d;--green:#16834a}
 *{box-sizing:border-box}
 body{margin:0;background:#f4f7fb;color:var(--ink);font-family:Arial,sans-serif}
@@ -51,17 +53,132 @@ h1{margin:0;color:var(--navy);font-size:clamp(25px,4vw,36px)}.intro p{margin:8px
 button,.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:700;cursor:pointer;font-size:13px}
 .primary{background:var(--blue);color:white}.secondary{background:var(--sky);color:#15558a}.dark{background:#e9edf3;color:#34445a}.danger{background:#fff0ef;color:#b42318}
 button:disabled{opacity:.45;cursor:not-allowed}
-.live-gallery{margin-top:18px;padding:15px;background:#f0f5fb;border:1px solid #dce5ef;border-radius:12px}
-.teacher-front-area,.student-gallery-area,.hall-view-area{width:100%;margin-top:16px}
-.teacher-front-area h3,.student-gallery-area h3,.hall-view-area h3{color:var(--navy);margin:0 0 12px;font-size:16px}
-#teacherFrontStage,#hallRemoteStage{display:flex;flex-direction:column;align-items:center;width:100%;gap:12px;background:#0b1930;padding:12px;border-radius:12px;min-height:85px;color:#d8e5f3}
-.student-gallery-area{background:#0b1930;padding:12px;border-radius:12px}
-.remote-video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;width:100%}
-.remote-video-card{background:#102544;border-radius:10px;overflow:hidden;color:white;width:100%}
-.remote-video-card video{width:100%;height:220px;object-fit:contain;display:block;background:#172c47}
-.teacher-remote-card{max-width:950px}.teacher-remote-card video{height:480px}
-.hall-remote-card{max-width:950px}.hall-remote-card video{height:350px}
-.remote-video-name{padding:10px;font-size:14px;font-weight:bold;color:white}.remote-video-status{font-size:12px;color:#c5d6eb;padding:0 10px 10px}
+/* BEA STADIUM — TEACHER LEFT, STUDENTS RIGHT */
+
+.live-gallery{
+  margin-top:18px;
+  padding:18px;
+  background:#f0f5fb;
+  border:1px solid #dce5ef;
+  border-radius:12px;
+  display:grid;
+  grid-template-columns:minmax(260px,0.8fr) minmax(0,1.7fr);
+  gap:18px;
+  align-items:stretch;
+}
+
+.stadium-title{
+  grid-column:1/-1;
+}
+
+.teacher-front-area{
+  grid-column:1;
+  width:100%;
+  margin-top:0;
+  min-width:0;
+}
+
+.student-gallery-area{
+  grid-column:2;
+  width:100%;
+  margin-top:0;
+  min-width:0;
+  background:#0b1930;
+  padding:12px;
+  border-radius:12px;
+}
+
+.teacher-front-area h3,
+.student-gallery-area h3,
+.hall-view-area h3{
+  color:var(--navy);
+  margin:0 0 12px;
+  font-size:16px;
+}
+
+#teacherFrontStage,
+#hallRemoteStage{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:100%;
+  gap:12px;
+  background:#0b1930;
+  padding:12px;
+  border-radius:12px;
+  min-height:85px;
+  color:#d8e5f3;
+}
+
+.remote-video-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+  width:100%;
+}
+
+.remote-video-card{
+  background:#102544;
+  border-radius:10px;
+  overflow:hidden;
+  color:white;
+  width:100%;
+}
+
+.remote-video-card video{
+  width:100%;
+  height:220px;
+  object-fit:contain;
+  display:block;
+  background:#172c47;
+}
+
+.teacher-remote-card{
+  max-width:none;
+  width:100%;
+}
+
+.teacher-remote-card video{
+  height:350px;
+}
+
+.hall-remote-card{
+  max-width:950px;
+}
+
+.hall-remote-card video{
+  height:350px;
+}
+
+.remote-video-name{
+  padding:10px;
+  font-size:14px;
+  font-weight:bold;
+  color:white;
+}
+
+.remote-video-status{
+  font-size:12px;
+  color:#c5d6eb;
+  padding:0 10px 10px;
+}
+
+/* Stack sections on narrow phone screens */
+@media(max-width:650px){
+  .live-gallery{
+    grid-template-columns:1fr;
+  }
+
+  .stadium-title,
+  .teacher-front-area,
+  .student-gallery-area{
+    grid-column:1;
+  }
+
+  .teacher-remote-card video{
+    height:260px;
+  }
+}
 .board-wrap{padding:16px;border-top:1px solid var(--line)}
 .board-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.board-title h3{margin:0;color:var(--navy);font-size:15px}
 .board-surface{position:relative;width:100%;border-radius:10px;overflow:hidden;background:white;border:1px solid #d9e1ea}
@@ -77,20 +194,6 @@ canvas{width:100%;height:300px;background:white;touch-action:none;display:block;
 .board-instruction{font-size:12px;color:#65758b;margin-top:10px;line-height:1.5}
 .side{display:flex;flex-direction:column;gap:18px}.entry{padding:16px}
 .entry label{display:block;font-size:12px;font-weight:bold;color:#52647a;margin:12px 0 6px}
-<div class="room-actions">
-  <button class="primary" id="createRoomBtn">
-    ＋ Create classroom
-  </button>
-
-  <button class="secondary" id="joinRoomBtn">
-    ↪ Join classroom
-  </button>
-
-  <button class="secondary" id="quickOpenBtn"
-          style="grid-column:1/-1">
-    ⚡ Quick Open classroom
-  </button>
-</div>
 input,select,textarea{border:1px solid #d4deea;border-radius:8px;padding:10px;font:inherit;color:var(--ink);background:white}
 input,select{width:100%}
 .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
@@ -115,165 +218,284 @@ footer{text-align:center;color:#7b899b;font-size:11px;padding:25px}
 @media(max-width:460px){main{padding:0 12px}.features{grid-template-columns:1fr 1fr}.controls button{flex:1}.mode-grid,.room-actions{grid-template-columns:1fr}.pen-tool{flex:1}}
 
 /* ==============================================
-   BEA — ONE CONTINUOUS FACE-TO-FACE STADIUM
+   BEA — NATURAL FACE-TO-FACE CLASSROOM
+   Teacher on the left, students on the right
 ============================================== */
 
 main {
-  max-width: none;
-  width: 100%;
-  padding: 0 20px;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
 }
 
 .layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    gap: 16px !important;
+}
+
+/* One shared horizontal classroom scene */
+.live-gallery {
+    display: grid !important;
+    grid-template-columns: minmax(0, 34%) minmax(0, 66%) !important;
+    grid-template-rows: auto minmax(480px, auto) !important;
+    grid-template-areas:
+        "title title"
+        "teacher students" !important;
+
+    width: 100% !important;
+    min-height: 600px !important;
+    padding: 16px !important;
+    gap: 12px !important;
+
+    background: #e8edf0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+}
+
+/* Classroom heading */
+.stadium-title {
+    grid-area: title !important;
+    color: #102544 !important;
+    text-align: center !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Teacher's position — front left */
+.teacher-front-area {
+    grid-area: teacher !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-width: 0 !important;
+    padding: 4px !important;
+
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Teacher video stage */
+#teacherFrontStage {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 100% !important;
+    min-height: 380px !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Remove visible teacher video frames */
+#teacherFrontStage video,
+#teacherFrontStage .teacher-remote-card,
+#teacherFrontStage .remote-video-card {
+    display: block !important;
+    width: 100% !important;
+    max-width: 440px !important;
+    height: 380px !important;
+
+    object-fit: contain !important;
+    background: transparent !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Students' position — right side */
+.student-gallery-area {
+    grid-area: students !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+
+    min-width: 0 !important;
+    padding: 4px !important;
+
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Students arranged in horizontal rows */
+#studentGallery {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-content: center !important;
+    align-items: center !important;
+    justify-items: center !important;
+
+    width: 100% !important;
+    min-height: 420px !important;
+    gap: 20px 14px !important;
+    padding: 8px !important;
+
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Remove individual student video cards */
+#studentGallery .remote-video-card,
+#studentGallery .student-video-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+}
+
+/* Student video feeds */
+#studentGallery video {
+    display: block !important;
+    width: 100% !important;
+    max-width: 250px !important;
+    height: 190px !important;
+
+    object-fit: contain !important;
+    background: transparent !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Keep student names readable */
+#studentGallery .remote-video-name,
+#studentGallery .student-name {
+    color: #102544 !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Remove decorative backgrounds from video containers */
+.teacher-front-area *,
+.student-gallery-area * {
+    box-shadow: none;
+}
+
+/* Keep the existing hall-camera controls and functionality.
+   This does not delete or change their JavaScript. */
+
+/* Phone and narrow-screen layout */
+@media (max-width: 700px) {
+
+    .live-gallery {
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-rows: auto auto auto !important;
+        grid-template-areas:
+            "title"
+            "teacher"
+            "students" !important;
+
+        min-height: auto !important;
+        padding: 10px !important;
+        gap: 12px !important;
+    }
+
+    #teacherFrontStage {
+        min-height: 250px !important;
+    }
+
+    #teacherFrontStage video,
+    #teacherFrontStage .teacher-remote-card,
+    #teacherFrontStage .remote-video-card {
+        height: 250px !important;
+        max-width: 100% !important;
+    }
+
+    #studentGallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        min-height: auto !important;
+        gap: 14px 8px !important;
+    }
+
+    #studentGallery video {
+        height: 140px !important;
+        max-width: 100% !important;
+    }
+}  
+/* BEA shared classroom stage */
+#beaSharedClassroomCanvas {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .live-gallery {
-  display: grid !important;
-  grid-template-columns: minmax(0, 38%) minmax(0, 62%) !important;
-  grid-template-rows: auto 1fr !important;
-  grid-template-areas:
-    "title title"
-    "teacher students" !important;
-
-  width: 100% !important;
-  max-width: 100% !important;
-  min-height: 650px !important;
-  padding: 25px !important;
-  gap: 15px !important;
-  box-sizing: border-box !important;
-  overflow: hidden !important;
-
-  background: radial-gradient(ellipse at center, #345d80, #102544) !important;
-  border: 6px solid #f2b544 !important;
-  border-radius: 100px / 55px !important;
+  position: relative;
 }
 
-.stadium-title {
-  grid-area: title;
-  text-align: center;
-  color: white;
-  margin: 0;
+
+/* =========================================================
+   BEA COMPLETE ONE-SCENE CLASSROOM — NOVEMBER 2026
+   One shared canvas; no individual visible video cards.
+========================================================= */
+.layout{grid-template-columns:minmax(0,1fr)!important;width:100%!important}
+.live-gallery{
+  position:relative!important;display:block!important;width:100%!important;
+  height:clamp(480px,62vw,760px)!important;min-height:480px!important;
+  margin:16px 0 0!important;padding:0!important;overflow:hidden!important;
+  border:0!important;border-radius:16px!important;background:#102b3b!important;
+  box-shadow:0 12px 32px rgba(8,25,43,.18)!important;
+}
+#beaSharedClassroomCanvas{
+  display:block!important;position:absolute!important;inset:0!important;
+  width:100%!important;height:100%!important;z-index:30!important;
+  object-fit:fill!important;pointer-events:none!important;background:#102b3b!important;
+}
+.live-gallery>.stadium-title,.live-gallery>.teacher-front-area,
+.live-gallery>.student-gallery-area,.live-gallery>.hall-view-area{
+  visibility:hidden!important;pointer-events:none!important;
+}
+/* Camera controls remain available, but the old preview rectangles are removed. */
+.camera-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+.camera-card{background:#f3f7fb!important;color:#20364e!important;border:1px solid #dce5ef!important;border-radius:12px!important;box-shadow:none!important}
+.camera-heading,.camera-screen{display:none!important}
+.camera-controls{padding:12px!important;grid-template-columns:1fr!important}
+.camera-controls label{color:#334c67!important}
+.camera-status{color:#52647a!important}
+.camera-card .camera-actions button{min-width:74px!important}
+@media(max-width:700px){
+  .live-gallery{height:520px!important;min-height:520px!important}
+  .camera-grid{grid-template-columns:1fr!important}
 }
 
-.teacher-front-area {
-  grid-area: teacher;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-width: 0;
-  background: transparent !important;
-  border: none !important;
-  padding: 10px !important;
-}
-
-.student-gallery-area {
-  grid-area: students;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  min-width: 0;
-  background: transparent !important;
-  border: none !important;
-  padding: 10px !important;
-}
-
-.teacher-front-area h3,
-.student-gallery-area h3 {
-  color: #ffe0a0 !important;
-  text-align: center;
-  font-size: 15px;
-}
-
-#teacherFrontStage {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  min-height: 350px !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-#studentGallery {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  align-content: center !important;
-  gap: 12px !important;
-  width: 100% !important;
-  min-height: 350px !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-.remote-video-card {
-  min-width: 0;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-#teacherFrontStage .remote-video-card {
-  width: 100% !important;
-  max-width: 480px !important;
-}
-
-#teacherFrontStage video {
-  width: 100% !important;
-  height: 320px !important;
-  object-fit: cover !important;
-  border: 3px solid #f2b544 !important;
-  border-radius: 18px !important;
-}
-
-#studentGallery .remote-video-card video {
-  display: block !important;
-  width: 100% !important;
-  height: 150px !important;
-  object-fit: cover !important;
-  border: 2px solid #d5e4f3 !important;
-  border-radius: 12px !important;
-}
-
-.remote-video-name {
-  color: white !important;
-  text-align: center;
-}
-
-.hall-view-area,
-#hallRemoteStage {
-  display: none !important;
-}
-
-@media (max-width: 700px) {
-  .live-gallery {
-    grid-template-columns: 1fr !important;
-    grid-template-rows: auto auto auto !important;
-    grid-template-areas:
-      "title"
-      "teacher"
-      "students" !important;
-    border-radius: 35px !important;
-    padding: 15px !important;
-  }
-
-  #teacherFrontStage {
-    min-height: 250px !important;
-  }
-
-  #teacherFrontStage video {
-    height: 230px !important;
-  }
-
-  #studentGallery {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-  
 </style>
 </head>
 <body>
@@ -311,7 +533,12 @@ main {
           </div>
         </div>
 <div class="live-gallery">
-
+<!-- BEA: One shared classroom display -->
+<canvas
+  id="beaSharedClassroomCanvas"
+  aria-label="BEA shared classroom stage"
+  style="display:none;"
+></canvas>
   <h3 class="stadium-title">
     🏫 BOSCO ENGLISH ACADEMY — LIVE CLASSROOM
   </h3>
@@ -346,31 +573,7 @@ main {
   </div>
 
 </div>
-    <!-- RIGHT: STUDENTS FACING TEACHER -->
-    <div class="student-gallery-area">
-      <h3>👥 STUDENTS — FACING THE TEACHER</h3>
-
-      <div class="remote-video-grid" id="studentGallery">
-        <div id="remoteEmptyMessage">
-          Waiting for students to connect...
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- HIDDEN WHOLE HALL CAMERA — PRESERVED -->
-  <div class="hall-view-area" style="display:none">
-    <h3>Whole Hall Camera</h3>
-    <div id="hallRemoteStage">
-      <div id="hallEmptyMessage">
-        Waiting for the hall camera...
-      </div>
-    </div>
-  </div>
-
-</div>
-
+  
 </div><!-- END CAMERA STAGE -->
 
 </section><!-- END TEACHING PANEL -->
@@ -424,7 +627,6 @@ main {
 </div>
 <!-- END INTERACTIVE CHALKBOARD -->
 
-<aside class="side"> 
 <aside class="side">
   <section class="panel">
     <div class="panel-head">
@@ -554,7 +756,9 @@ async function connectToClassroom(code,role,name){
   const {data:{session},error}=await beaSupabase.auth.getSession();
   if(error)throw error;
   if(!session){setEntry('Please log in to your Bosco English Academy account first.');return;}
-  const user=session.user;currentParticipantId=user.id;
+  const user=session.user;
+currentParticipantId=user.id+':'+crypto.randomUUID();
+ 
   if(role==='teacher'){name=user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||name;role='teacher';}else role='student';
   currentParticipantRole=role;$('displayName').value=name;$('role').value=role==='teacher'?'Teacher':'Student';
   if(classroomChannel){await beaSupabase.removeChannel(classroomChannel);classroomChannel=null;}
@@ -565,45 +769,306 @@ async function connectToClassroom(code,role,name){
    .on('presence',{event:'sync'},()=>updatePresence(classroomChannel.presenceState()))
    .on('broadcast',{event:'class-chat'},({payload})=>{if(payload?.senderId!==currentParticipantId)addMessage(payload?.name||'Participant',payload?.message||'');})
    .on('broadcast',{event:'webrtc-signal'},({payload})=>handleRtcSignal(payload))
-   .on('broadcast',{event:'class-hand'},({payload})=>{if(payload?.senderId!==currentParticipantId){if(connectedParticipants[payload.senderId])connectedParticipants[payload.senderId].hand=!!payload.raised;updateParticipantList();addMessage('BEA Assistant',(payload.name||'A participant')+(payload.raised?' raised a hand.':' lowered a hand.'),true);}})
+  .on('broadcast',{event:'camera-stopped'},({payload})=>{
+
+ if(payload?.senderId !== currentParticipantId){
+
+  removeRemoteVideoForParticipant(
+   payload.senderId,
+   payload.streamType
+  );
+
+ }
+
+})
+  
+    .on('broadcast',{event:'class-hand'},({payload})=>{if(payload?.senderId!==currentParticipantId){if(connectedParticipants[payload.senderId])connectedParticipants[payload.senderId].hand=!!payload.raised;updateParticipantList();addMessage('BEA Assistant',(payload.name||'A participant')+(payload.raised?' raised a hand.':' lowered a hand.'),true);}})
    .on('broadcast',{event:'board-op'},({payload})=>{if(payload?.senderId!==currentParticipantId)applyRemoteBoardOperation(payload.op);})
    .subscribe(async status=>{
     if(status==='SUBSCRIBED'){
-     await classroomChannel.track({id:currentParticipantId,name,role,hand:false,joinedAt:new Date().toISOString()});
-     setEntry('Connected to '+code+'. Share the invitation link with your students.');$('roomBadge').textContent='Connected · '+code;cameraStatus.textContent='● Connected to '+code;
-    }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){setEntry('Could not connect. Check Supabase URL, anon key and Realtime settings.');}
-   });
- }catch(e){console.error('BEA classroom connection:',e);setEntry('Connection error: '+e.message);}
-}
-async function sendRtcSignal(to,signal){
- if(!classroomChannel)return;
- const streamTypes={};[teacherStream,hallStream,microphoneStream].filter(Boolean).forEach(s=>{streamTypes[s.id]=s===teacherStream?'teacher':s===hallStream?'hall':'audio';});
- await classroomChannel.send({type:'broadcast',event:'webrtc-signal',payload:{from:currentParticipantId,to,name:$('displayName').value,role:currentParticipantRole,streamTypes,signal}});
-}
-function showLocalTeacherAtFront(stream){
- const stage=$('teacherFrontStage');if(!stage||!stream)return;
- const empty=$('teacherEmptyMessage');if(empty)empty.remove();
- let card=$('beaLocalTeacherTile');
- if(!card){card=document.createElement('div');card.id='beaLocalTeacherTile';card.className='remote-video-card bea-local-teacher-card';
-  const v=document.createElement('video');v.id='beaLocalTeacherVideo';v.autoplay=true;v.playsInline=true;v.muted=true;
-  const label=document.createElement('div');label.className='remote-video-name';label.textContent='👨‍🏫 Teacher — Jean Bosco';
-  const status=document.createElement('div');status.className='remote-video-status';status.textContent='● Your live teaching camera';card.append(v,label,status);stage.prepend(card);
+        await classroomChannel.track({
+            id:currentParticipantId,
+            name,
+            role,
+            hand:false,
+            joinedAt:new Date().toISOString()
+        });
+
+        // Register a camera that was started before joining.
+        if(currentParticipantRole==='teacher' && teacherStream){
+            showLocalTeacherAtFront(teacherStream);
+        }
+
+        if(currentParticipantRole==='student' && teacherStream){
+            showLocalStudentInGallery(teacherStream);
+        }
+
+        setEntry('Connected to '+code+'. Share the invitation link with your students.');
+        $('roomBadge').textContent='Connected · '+code;
+        cameraStatus.textContent='● Connected to '+code;
+
+    }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
+        setEntry('Could not connect. Check Supabase URL, anon key and Realtime settings.');
+    }
+});
+
+ }catch(e){
+  console.error('BEA classroom connection:',e);
+  setEntry('Could not connect to classroom: '+(e.message||e));
  }
- const v=$('beaLocalTeacherVideo');if(v.srcObject!==stream){v.srcObject=stream;v.play().catch(()=>{});}
 }
-function removeLocalTeacherFromFront(){const tile=$('beaLocalTeacherTile');if(tile)tile.remove();updateEmptyMessages();}
+
+async function sendRtcSignal(to,signal,streamTypes){
+ if(!classroomChannel)return;
+
+ await classroomChannel.send({
+  type:'broadcast',
+  event:'webrtc-signal',
+  payload:{
+   from:currentParticipantId,
+   to,
+   name:$('displayName').value,
+   role:currentParticipantRole,
+   streamTypes,
+   signal
+  }
+ });
+}
+
+function showLocalTeacherAtFront(stream) {
+  const stage = $('teacherFrontStage');
+  if (!stage || !stream) return;
+
+  const empty = $('teacherEmptyMessage');
+  if (empty) empty.remove();
+
+  let card = $('beaLocalTeacherTile');
+
+  if (!card) {
+    card = document.createElement('div');
+    card.id = 'beaLocalTeacherTile';
+    card.className = 'remote-video-card bea-local-teacher-card';
+
+    const video = document.createElement('video');
+    video.id = 'beaLocalTeacherVideo';
+    video.autoplay = true;
+    video.playsInline = true;
+    video.muted = true;
+
+    const label = document.createElement('div');
+    label.className = 'remote-video-name';
+    label.textContent = '👨‍🏫 Teacher — Jean Bosco';
+
+    const status = document.createElement('div');
+    status.className = 'remote-video-status';
+    status.textContent = '● Your live teaching camera';
+
+    card.append(video, label, status);
+    stage.prepend(card);
+  }
+
+  const video = $('beaLocalTeacherVideo');
+
+  if (video.srcObject !== stream) {
+    video.srcObject = stream;
+    video.play().catch(() => {});
+  }
+
+  window.BEA_CLASSROOM_SOURCES =
+    window.BEA_CLASSROOM_SOURCES || new Map();
+
+  window.BEA_CLASSROOM_SOURCES.set('local_teacher', {
+    id: 'local_teacher',
+    name: 'Jean Bosco',
+    role: 'teacher',
+    video: video
+  });
+
+  console.log('BEA TEACHER CAMERA REGISTERED');
+}
+function showLocalStudentInGallery(stream) {
+  if (!stream) return;
+
+  let video = document.getElementById('beaLocalStudentVideo');
+
+  if (!video) {
+    video = document.createElement('video');
+    video.id = 'beaLocalStudentVideo';
+    video.autoplay = true;
+    video.playsInline = true;
+    video.muted = true;
+
+    video.style.position = 'fixed';
+    video.style.left = '-10000px';
+    video.style.top = '0';
+    video.style.width = '2px';
+    video.style.height = '2px';
+    video.style.opacity = '0';
+    video.style.pointerEvents = 'none';
+
+    document.body.appendChild(video);
+  }
+
+  if (video.srcObject !== stream) {
+    video.srcObject = stream;
+    video.play().catch(() => {});
+  }
+
+  window.BEA_CLASSROOM_SOURCES =
+    window.BEA_CLASSROOM_SOURCES || new Map();
+
+  window.BEA_CLASSROOM_SOURCES.set('local_student', {
+    id: 'local_student',
+    name: $('displayName')?.value.trim() || 'Student',
+    role: 'student',
+    video: video
+  });
+}
+function removeLocalStudentFromGallery() {
+  const video = document.getElementById('beaLocalStudentVideo');
+
+  if (video) {
+    video.pause();
+    video.srcObject = null;
+    video.remove();
+  }
+
+  if (window.BEA_CLASSROOM_SOURCES) {
+    window.BEA_CLASSROOM_SOURCES.delete('local_student');
+  }
+}
+function removeLocalTeacherFromFront() {
+  const tile = $('beaLocalTeacherTile');
+
+  if (tile) {
+    const video = tile.querySelector('video');
+
+    if (video) {
+      video.pause();
+      video.srcObject = null;
+    }
+
+    tile.remove();
+  }
+
+  if (window.BEA_CLASSROOM_SOURCES) {
+    window.BEA_CLASSROOM_SOURCES.delete('local_teacher');
+  }
+
+  updateEmptyMessages();
+}
 function destinationFor(type){return type==='teacher'?'teacherFrontStage':type==='hall'?'hallRemoteStage':'studentGallery';}
-function showRemoteVideo(id,name,stream,role,type){
- const key=id+'_'+stream.id;if(remoteVideoTiles[key])return;
- if(type==='teacher' && id===currentParticipantId)return;
- const target=$(destinationFor(type));if(!target)return;
- const empty=target.querySelector('[id$="EmptyMessage"]');if(empty)empty.remove();
- const card=document.createElement('div');card.className='remote-video-card '+(type==='teacher'?'teacher-remote-card':type==='hall'?'hall-remote-card':'student-remote-card');
- const video=document.createElement('video');video.autoplay=true;video.playsInline=true;video.controls=true;video.srcObject=stream;
- const label=document.createElement('div');label.className='remote-video-name';label.textContent=type==='teacher'?'👨‍🏫 Teacher — '+name:type==='hall'?'🏫 Whole Hall — '+name:'👤 Student — '+name;
- const status=document.createElement('div');status.className='remote-video-status';status.textContent='● Live connection';
- card.append(video,label,status);target.appendChild(card);remoteVideoTiles[key]=card;
+function showRemoteVideo(id, name, stream, role, type) {
+
+  const displayType = type === 'hall'
+    ? 'hall'
+    : String(role).toLowerCase() === 'teacher'
+      ? 'teacher'
+      : 'student';
+
+  const key = id + '_' + stream.id;
+
+  window.BEA_CLASSROOM_SOURCES =
+    window.BEA_CLASSROOM_SOURCES || new Map();
+
+  if (remoteVideoTiles[key]) {
+    const existingVideo =
+      remoteVideoTiles[key].querySelector('video');
+
+    if (existingVideo) {
+      if (existingVideo.srcObject !== stream) {
+        existingVideo.srcObject = stream;
+        existingVideo.play().catch(() => {});
+      }
+
+      window.BEA_CLASSROOM_SOURCES.set(key, {
+        id,
+        name,
+        role: displayType,
+        video: existingVideo
+      });
+    }
+
+    return;
+  }
+
+  if (displayType === 'teacher' &&
+      id === currentParticipantId) return;
+
+  const target = $(destinationFor(displayType));
+  if (!target) return;
+
+  const empty = target.querySelector('[id$="EmptyMessage"]');
+  if (empty) empty.remove();
+
+  const card = document.createElement('div');
+  card.dataset.participantId = id;
+  card.dataset.streamType = displayType;
+  card.className = 'remote-video-card';
+
+  const video = document.createElement('video');
+  video.autoplay = true;
+  video.playsInline = true;
+  video.muted = true;
+  video.srcObject = stream;
+
+  const label = document.createElement('div');
+  label.className = 'remote-video-name';
+  label.textContent =
+    (displayType === 'teacher' ? 'Teacher — ' :
+     displayType === 'hall' ? 'Whole Hall — ' : 'Student — ') + name;
+
+  card.append(video, label);
+  target.appendChild(card);
+
+  remoteVideoTiles[key] = card;
+
+  window.BEA_CLASSROOM_SOURCES.set(key, {
+    id,
+    name,
+    role: displayType,
+    video
+  });
+
+  video.play().catch(() => {});
+
+  console.log('BEA VIDEO REGISTERED:', name, displayType);
 }
+function removeRemoteVideoForParticipant(id, streamType) {
+
+  Object.keys(remoteVideoTiles).forEach(key => {
+
+    const card = remoteVideoTiles[key];
+
+    if (
+      card &&
+      card.dataset.participantId === id &&
+      card.dataset.streamType === streamType
+    ) {
+
+      const video = card.querySelector('video');
+
+      if (video) {
+        video.pause();
+        video.srcObject = null;
+      }
+
+      card.remove();
+      delete remoteVideoTiles[key];
+
+      if (window.BEA_CLASSROOM_SOURCES) {
+        window.BEA_CLASSROOM_SOURCES.delete(key);
+      }
+    }
+
+  });
+
+  updateEmptyMessages();
+
+  console.log('BEA REMOTE CAMERA REMOVED:', id, streamType);
+}
+
+
 function createPeerConnection(id,name,role='student'){
 console.error('BEA NEW WEBRTC CODE IS RUNNING');
   if(peerConnections[id])return peerConnections[id];
@@ -765,6 +1230,7 @@ async function startRtcOffer(person){
   );
 
   await negotiatePeer(conn,person.id);
+   
 
  }catch(e){
   console.error('BEA offer error:',e);
@@ -897,17 +1363,85 @@ async function startVideo(which){
   if(old){await removeStreamFromPeers(old);old.getTracks().forEach(t=>t.stop());}
   if(teacher)teacherStream=fresh;else hallStream=fresh;
   if(teacher && currentParticipantRole==='teacher')showLocalTeacherAtFront(fresh);
+if(teacher && currentParticipantRole==='student')showLocalStudentInGallery(fresh);
   await addStreamToExistingPeers(fresh);
-  video.style.display='block';placeholder.style.display='none';tag.style.display='block';
+  video.style.display='block';video.style.visibility='visible';video.style.opacity='1';video.style.zIndex='5';placeholder.style.display='none';tag.style.display='block';
   const s=fresh.getVideoTracks()[0].getSettings();status.textContent='Camera active: '+(s.width||'?')+' × '+(s.height||'?')+(s.frameRate?' · '+Math.round(s.frameRate)+' FPS':'');
   updateOverallStatus();refreshCameras();
  }catch(e){console.error(e);status.textContent='Camera could not start.';alert('Unable to start '+which+' camera: '+(e.name==='NotAllowedError'?'Allow camera permission.':e.name==='OverconstrainedError'?'Try Auto or 720p.':e.message));}
 }
 async function stopVideo(which){
- const teacher=which==='teacher',video=teacher?teacherCamera:hallCamera,stream=teacher?teacherStream:hallStream;
- if(stream){await removeStreamFromPeers(stream);stream.getTracks().forEach(t=>t.stop());}
- video.pause();video.srcObject=null;video.style.display='none';$(teacher?'teacherPlaceholder':'hallPlaceholder').style.display='block';$(teacher?'teacherLiveTag':'hallLiveTag').style.display='none';
- if(teacher){teacherStream=null;removeLocalTeacherFromFront();}else hallStream=null;$(teacher?'teacherStatus':'hallStatus').textContent='Camera stopped.';updateOverallStatus();
+
+ const teacher = which === 'teacher';
+
+ const video = teacher ? teacherCamera : hallCamera;
+
+ const stream = teacher ? teacherStream : hallStream;
+
+ const streamType = teacher
+  ? (currentParticipantRole === 'teacher' ? 'teacher' : 'student')
+  : 'hall';
+
+ // Tell other participants to remove this camera image.
+ if(classroomChannel && stream){
+
+  try{
+
+   await classroomChannel.send({
+    type:'broadcast',
+    event:'camera-stopped',
+    payload:{
+     senderId:currentParticipantId,
+     streamType:streamType
+    }
+   });
+
+  }catch(e){
+
+   console.error('BEA camera stop notification:',e);
+
+  }
+
+ }
+
+ // Remove this camera track from existing connections.
+ if(stream){
+
+  await removeStreamFromPeers(stream);
+
+  stream.getTracks().forEach(track=>{
+   track.stop();
+  });
+
+ }
+
+ // Clear the local camera.
+ video.pause();
+ video.srcObject = null;
+ video.style.display = 'none';
+
+ $(teacher ? 'teacherPlaceholder' : 'hallPlaceholder').style.display = 'block';
+
+ $(teacher ? 'teacherLiveTag' : 'hallLiveTag').style.display = 'none';
+
+if(teacher){
+  teacherStream=null;
+
+  if(currentParticipantRole==='teacher'){
+    removeLocalTeacherFromFront();
+  }else if(currentParticipantRole==='student'){
+    removeLocalStudentFromGallery();
+  }
+
+}else{
+  hallStream=null;
+}
+ $(teacher ? 'teacherStatus' : 'hallStatus').textContent = 'Camera stopped.';
+
+ updateOverallStatus();
+
+ console.log('BEA CAMERA STOPPED:',streamType);
+
 }
 $('startTeacher').onclick=()=>startVideo('teacher');
 $('startHall').onclick=()=>startVideo('hall');
@@ -994,5 +1528,274 @@ async function cleanup(){
 window.addEventListener('beforeunload',()=>{cleanup();});
 refreshCameras();
 </script>
+<!-- BEA: Live person-segmentation engine -->
+<script type="module">
+import {
+  FilesetResolver,
+  ImageSegmenter
+} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs";
+
+async function initializeBEASegmentation() {
+  try {
+    console.log("BEA: Loading person-segmentation engine...");
+
+    const vision = await FilesetResolver.forVisionTasks(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+    );
+
+    const modelURL =
+      "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter_landscape/float16/latest/selfie_segmenter_landscape.tflite";
+
+    let segmenter;
+
+    try {
+      segmenter = await ImageSegmenter.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: modelURL,
+          delegate: "GPU"
+        },
+        runningMode: "VIDEO",
+        outputCategoryMask: true,
+        outputConfidenceMasks: false
+      });
+    } catch (gpuError) {
+      console.warn("BEA: GPU unavailable. Trying CPU...", gpuError);
+
+      segmenter = await ImageSegmenter.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: modelURL,
+          delegate: "CPU"
+        },
+        runningMode: "VIDEO",
+        outputCategoryMask: true,
+        outputConfidenceMasks: false
+      });
+    }
+
+    window.BEA_SEGMENTATION_ENGINE = {
+      FilesetResolver,
+      ImageSegmenter,
+      segmenter,
+      ready: true
+    };
+
+    console.log("BEA: AI segmentation engine READY.");
+
+  } catch (error) {
+    console.error("BEA: Segmentation engine failed to load:", error);
+
+    window.BEA_SEGMENTATION_ENGINE = {
+      ready: false,
+      error
+    };
+  }
+}
+
+initializeBEASegmentation();
+</script>
+<script>
+window.addEventListener('error', function(e) {
+  let box = document.getElementById('beaRepairNotice');
+
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'beaRepairNotice';
+    box.style.cssText =
+      'position:fixed;bottom:10px;left:10px;right:10px;' +
+      'z-index:999999;background:#fff0ef;color:#8a1c1c;' +
+      'padding:14px;border:2px solid #b42318;' +
+      'font: bold 14px Arial;';
+    document.body.appendChild(box);
+  }
+
+  box.textContent = 'BEA ERROR: ' + e.message +
+    ' — Line: ' + e.lineno;
+});
+</script>
+
+<script>
+/* =========================================================
+   BEA SHARED CLASSROOM RENDERER
+   Uses the existing live video elements and MediaPipe loader.
+   Does not replace Supabase, WebRTC, room, chat or whiteboard code.
+========================================================= */
+(function(){
+  'use strict';
+  const canvas=document.getElementById('beaSharedClassroomCanvas');
+  const stage=document.querySelector('.live-gallery');
+  if(!canvas||!stage)return;
+  const ctx=canvas.getContext('2d',{alpha:false});
+  const W=1600,H=900;
+  canvas.width=W;canvas.height=H;
+  const feeds=new Map();
+  let engine=null,lastStatus='',lastFrame=0;
+
+  function roundedRect(c,x,y,w,h,r,fill,stroke){
+    c.beginPath();c.roundRect(x,y,w,h,r);
+    if(fill){c.fillStyle=fill;c.fill();}
+    if(stroke){c.strokeStyle=stroke;c.lineWidth=2;c.stroke();}
+  }
+  function drawRoom(){
+    const sky=ctx.createLinearGradient(0,0,0,H);
+    sky.addColorStop(0,'#18384a');sky.addColorStop(.55,'#24485a');sky.addColorStop(1,'#b7c6bd');
+    ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+    // High classroom roof and structural beams.
+    ctx.fillStyle='#102a3a';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(W,0);ctx.lineTo(1430,155);ctx.lineTo(170,155);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='rgba(226,238,229,.28)';ctx.lineWidth=8;
+    for(let x=90;x<W;x+=235){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(800+(x-800)*.48,155);ctx.stroke();}
+    // Windows and rear wall.
+    for(let x=205;x<1450;x+=300){
+      roundedRect(ctx,x,80,190,112,8,'#8fb8c0','#d5e3db');
+      ctx.fillStyle='rgba(232,246,235,.35)';ctx.fillRect(x+8,88,174,96);
+      ctx.strokeStyle='#e2e9dd';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x+95,88);ctx.lineTo(x+95,184);ctx.moveTo(x+8,136);ctx.lineTo(x+182,136);ctx.stroke();
+    }
+    // Main teaching wall / board.
+    roundedRect(ctx,470,205,660,185,14,'#173d3b','#d6c69b');
+    ctx.fillStyle='#f3e8c8';ctx.font='bold 32px Arial';ctx.textAlign='center';ctx.fillText('BOSCO ENGLISH ACADEMY',800,258);
+    ctx.fillStyle='#f8f4e8';ctx.font='26px Arial';ctx.fillText('BUILDING CONFIDENCE IN ENGLISH',800,310);
+    ctx.font='20px Arial';ctx.fillText('LISTEN  •  SPEAK  •  READ  •  WRITE',800,352);
+    // Floor with perspective.
+    const floor=ctx.createLinearGradient(0,420,0,H);floor.addColorStop(0,'#b6b39a');floor.addColorStop(1,'#6d887d');
+    ctx.fillStyle=floor;ctx.beginPath();ctx.moveTo(0,420);ctx.lineTo(W,420);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='rgba(35,64,60,.24)';ctx.lineWidth=3;
+    for(let i=0;i<9;i++){const y=455+i*55;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    for(let x=-500;x<2100;x+=260){ctx.beginPath();ctx.moveTo(800+(x-800)*.15,420);ctx.lineTo(x,H);ctx.stroke();}
+    // Desk silhouettes make the scene read as a real classroom.
+    for(let row=0;row<2;row++)for(let col=0;col<7;col++){
+      const x=575+col*145+(row?45:0),y=585+row*135;
+      ctx.fillStyle='rgba(44,61,56,.35)';ctx.beginPath();ctx.ellipse(x,y+48,54,13,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#745b43';ctx.beginPath();ctx.moveTo(x-48,y);ctx.lineTo(x+48,y);ctx.lineTo(x+38,y+24);ctx.lineTo(x-38,y+24);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#4d493d';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x-34,y+22);ctx.lineTo(x-38,y+55);ctx.moveTo(x+34,y+22);ctx.lineTo(x+38,y+55);ctx.stroke();
+    }
+    // Front teaching zone and subtle floor markers.
+    ctx.fillStyle='rgba(240,229,190,.15)';ctx.beginPath();ctx.ellipse(300,690,230,95,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(16,37,68,.75)';ctx.font='bold 25px Arial';ctx.textAlign='left';ctx.fillText('TEACHER',80,850);
+    ctx.textAlign='center';ctx.fillText('LEARNERS',1080,850);
+    ctx.textAlign='left';ctx.font='bold 22px Arial';ctx.fillStyle='#fff';ctx.fillText('BEA • LIVE CLASSROOM',38,48);
+  }
+
+  function getSources(){
+    const map=window.BEA_CLASSROOM_SOURCES;
+    if(!(map instanceof Map))return [];
+    const list=[];
+    for(const item of map.values()){
+      if(!item||!item.video||!item.video.srcObject)continue;
+      if(item.video.readyState<2||!item.video.videoWidth||!item.video.videoHeight)continue;
+      const role=String(item.role||'student').toLowerCase();
+      if(role==='hall')continue;
+      list.push(item);
+    }
+    // One teacher on the left; all remaining participants are learners.
+    list.sort((a,b)=>(String(a.role).toLowerCase()==='teacher'?-1:0)-(String(b.role).toLowerCase()==='teacher'?-1:0));
+    return list;
+  }
+
+  function prepareFeed(item){
+    let feed=feeds.get(item.id);
+    if(!feed){
+      const personCanvas=document.createElement('canvas');
+      const maskCanvas=document.createElement('canvas');
+      feed={id:item.id,personCanvas,personCtx:personCanvas.getContext('2d'),maskCanvas,maskCtx:maskCanvas.getContext('2d'),lastSegment:0,ready:false,source:null,name:item.name||'Learner',role:item.role||'student',lastVideoTime:-1};
+      feeds.set(item.id,feed);
+    }
+    feed.source=item.video;feed.name=item.name||feed.name;feed.role=item.role||feed.role;
+    return feed;
+  }
+
+  function fitDimensions(feed){
+    const video=feed.source;
+    const width=640;
+    const height=Math.max(240,Math.round(width*video.videoHeight/video.videoWidth));
+    if(feed.personCanvas.width!==width||feed.personCanvas.height!==height){feed.personCanvas.width=width;feed.personCanvas.height=height;}
+    feed.personCtx.clearRect(0,0,width,height);
+    feed.personCtx.drawImage(video,0,0,width,height);
+  }
+
+  function segmentFeed(feed,now){
+    if(!engine||!engine.segmenter)return;
+    if(now-feed.lastSegment<190||feed.source.currentTime===feed.lastVideoTime)return;
+    feed.lastSegment=now;feed.lastVideoTime=feed.source.currentTime;
+    try{
+      fitDimensions(feed);
+      const result=engine.segmenter.segmentForVideo(feed.personCanvas,now);
+      const mask=result.categoryMask;
+      if(!mask){feed.ready=false;return;}
+      const mw=mask.width,mh=mask.height,values=mask.getAsUint8Array();
+      if(feed.maskCanvas.width!==mw||feed.maskCanvas.height!==mh){feed.maskCanvas.width=mw;feed.maskCanvas.height=mh;}
+      const image=feed.maskCtx.createImageData(mw,mh);
+      for(let i=0;i<values.length;i++){
+        const j=i*4;image.data[j]=255;image.data[j+1]=255;image.data[j+2]=255;image.data[j+3]=values[i]>0?255:0;
+      }
+      feed.maskCtx.putImageData(image,0,0);
+      feed.personCtx.save();feed.personCtx.globalCompositeOperation='destination-in';
+      feed.personCtx.drawImage(feed.maskCanvas,0,0,feed.personCanvas.width,feed.personCanvas.height);
+      feed.personCtx.restore();feed.ready=true;
+      if(mask.close)mask.close();
+    }catch(error){
+      feed.ready=false;console.warn('BEA person cut-out:',error);
+    }
+  }
+
+  function drawCutout(feed,x,y,w,h){
+    if(!feed.ready)return;
+    const sw=feed.personCanvas.width,sh=feed.personCanvas.height;
+    // Fill portrait position without stretching the person's proportions.
+    const scale=Math.max(w/sw,h/sh),dw=sw*scale,dh=sh*scale;
+    const sx=(dw-w)/2/scale,sy=Math.max(0,(dh-h)/scale*.12);
+    const cropW=w/scale,cropH=Math.min(sh-sy,h/scale);
+    ctx.save();ctx.shadowColor='rgba(0,0,0,.25)';ctx.shadowBlur=18;ctx.shadowOffsetY=8;
+    ctx.drawImage(feed.personCanvas,sx,sy,cropW,cropH,x,y,w,h);ctx.restore();
+  }
+
+  function labelPerson(name,x,y,w,teacher){
+    ctx.save();ctx.textAlign='center';ctx.font=teacher?'bold 22px Arial':'bold 17px Arial';
+    const label=String(name|| (teacher?'Teacher':'Learner')).slice(0,24);
+    const tw=Math.min(w,Math.max(120,ctx.measureText(label).width+28));
+    roundedRect(ctx,x+w/2-tw/2,y-32,tw,34,12,teacher?'#f2b544':'rgba(15,42,55,.88)',null);
+    ctx.fillStyle=teacher?'#102544':'#fff';ctx.fillText(label,x+w/2,y-9);ctx.restore();
+  }
+
+  function drawPeople(people,now){
+    const teacher=people.find(p=>String(p.role).toLowerCase()==='teacher');
+    const students=people.filter(p=>String(p.role).toLowerCase()!=='teacher');
+    if(teacher){const f=prepareFeed(teacher);segmentFeed(f,now);drawCutout(f,80,280,390,510);labelPerson(teacher.name||'Jean Bosco',80,280,390,true);}
+    const slots=[
+      [600,275,220,300],[900,275,220,300],[1200,275,220,300],
+      [600,590,220,250],[900,590,220,250],[1200,590,220,250],
+      [480,570,200,240],[1450,570,130,230]
+    ];
+    students.slice(0,slots.length).forEach((p,i)=>{
+      const [x,y,w,h]=slots[i],f=prepareFeed(p);segmentFeed(f,now);drawCutout(f,x,y,w,h);labelPerson(p.name||'Learner '+(i+1),x,y,w,false);
+    });
+    const active=people.length;
+    if(!active){ctx.save();ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='bold 30px Arial';ctx.fillText('Waiting for the teacher and learners to join...',800,520);ctx.restore();}
+    else if(!teacher){ctx.save();ctx.textAlign='left';ctx.fillStyle='#ffe6a8';ctx.font='bold 19px Arial';ctx.fillText('Teacher camera not connected yet',55,245);ctx.restore();}
+  }
+
+  function drawStatus(now){
+    const e=window.BEA_SEGMENTATION_ENGINE;
+    let message='AI person cut-out is loading...';
+    if(e&&e.ready){message='Live classroom • AI background removal active';}
+    else if(e&&e.error){message='AI cut-out unavailable — check internet/model access';}
+    if(message!==lastStatus){lastStatus=message;console.log('BEA SCENE:',message);}
+    ctx.save();ctx.textAlign='right';ctx.font='bold 15px Arial';ctx.fillStyle='rgba(255,255,255,.88)';ctx.fillText(message,W-28,H-24);ctx.restore();
+  }
+
+  function frame(now){
+    if(now-lastFrame<30){requestAnimationFrame(frame);return;}
+    lastFrame=now;
+    engine=window.BEA_SEGMENTATION_ENGINE&&window.BEA_SEGMENTATION_ENGINE.ready?window.BEA_SEGMENTATION_ENGINE:null;
+    drawRoom();
+    const people=getSources();
+    drawPeople(people,now);
+    drawStatus(now);
+    requestAnimationFrame(frame);
+  }
+
+  window.BEA_SHARED_CLASSROOM={canvas,feeds,start:()=>requestAnimationFrame(frame)};
+  requestAnimationFrame(frame);
+})();
+</script>
+
 </body>
 </html>
