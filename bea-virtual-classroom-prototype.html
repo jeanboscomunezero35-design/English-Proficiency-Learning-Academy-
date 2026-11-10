@@ -496,6 +496,28 @@ main {
   .camera-grid{grid-template-columns:1fr!important}
 }
 
+
+/* =========================================================
+   BEA NATURAL LIVE CLASSROOM — REAL CAMERA BACKGROUNDS
+   Teacher on the left; learners on the right. No synthetic
+   classroom, desks, chairs, walls, or background replacement.
+========================================================= */
+.live-gallery{display:grid;grid-template-columns:minmax(240px,.9fr) minmax(0,1.6fr);gap:16px;align-items:start;background:#f4f7fb;border:1px solid #dce5ef;padding:16px;border-radius:14px}
+.live-gallery .stadium-title{grid-column:1/-1;margin:0 0 2px;color:#102544;font-size:18px}
+.live-gallery .teacher-front-area{grid-column:1;min-width:0;margin:0;padding:0;background:transparent}
+.live-gallery .student-gallery-area{grid-column:2;min-width:0;margin:0;padding:12px;background:#eef3f8;border:1px solid #dce5ef;border-radius:12px}
+.live-gallery .teacher-front-area h3,.live-gallery .student-gallery-area h3{margin:0 0 10px;color:#102544;font-size:15px}
+#teacherFrontStage,#hallRemoteStage{display:grid;grid-template-columns:1fr;align-items:start;width:100%;min-height:120px;padding:0;background:transparent;border-radius:0;gap:10px;color:#52647a}
+#studentGallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;width:100%;align-items:start;color:#52647a}
+.live-gallery .remote-video-card{width:100%;max-width:none;min-width:0;background:#102544;border-radius:10px;overflow:hidden;box-shadow:0 3px 12px #10254418}
+.live-gallery .remote-video-card video{display:block;width:100%;height:220px;object-fit:contain;background:#172c47}
+.live-gallery .teacher-remote-card video,.live-gallery .bea-local-teacher-card video{height:220px}
+.live-gallery .remote-video-name{font-size:13px;padding:9px 10px}
+.live-gallery .remote-video-status{font-size:11px;padding:0 10px 9px}
+#teacherEmptyMessage,#remoteEmptyMessage{padding:18px;background:#e9eff6;border:1px dashed #b8c7d8;border-radius:10px;text-align:center;color:#52647a;font-size:13px}
+#teacherFrontStage video,#studentGallery video{object-fit:contain!important;background:#172c47}
+@media(max-width:700px){.live-gallery{grid-template-columns:1fr;padding:12px}.live-gallery .stadium-title,.live-gallery .teacher-front-area,.live-gallery .student-gallery-area{grid-column:1}#studentGallery{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}.live-gallery .remote-video-card video,.live-gallery .teacher-remote-card video,.live-gallery .bea-local-teacher-card video{height:190px}}
+
 </style>
 </head>
 <body>
@@ -533,12 +555,6 @@ main {
           </div>
         </div>
 <div class="live-gallery">
-<!-- BEA: One shared classroom display -->
-<canvas
-  id="beaSharedClassroomCanvas"
-  aria-label="BEA shared classroom stage"
-  style="display:none;"
-></canvas>
   <h3 class="stadium-title">
     🏫 BOSCO ENGLISH ACADEMY — LIVE CLASSROOM
   </h3>
@@ -1528,71 +1544,6 @@ async function cleanup(){
 window.addEventListener('beforeunload',()=>{cleanup();});
 refreshCameras();
 </script>
-<!-- BEA: Live person-segmentation engine -->
-<script type="module">
-import {
-  FilesetResolver,
-  ImageSegmenter
-} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs";
-
-async function initializeBEASegmentation() {
-  try {
-    console.log("BEA: Loading person-segmentation engine...");
-
-    const vision = await FilesetResolver.forVisionTasks(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
-    );
-
-    const modelURL =
-      "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter_landscape/float16/latest/selfie_segmenter_landscape.tflite";
-
-    let segmenter;
-
-    try {
-      segmenter = await ImageSegmenter.createFromOptions(vision, {
-        baseOptions: {
-          modelAssetPath: modelURL,
-          delegate: "GPU"
-        },
-        runningMode: "VIDEO",
-        outputCategoryMask: true,
-        outputConfidenceMasks: false
-      });
-    } catch (gpuError) {
-      console.warn("BEA: GPU unavailable. Trying CPU...", gpuError);
-
-      segmenter = await ImageSegmenter.createFromOptions(vision, {
-        baseOptions: {
-          modelAssetPath: modelURL,
-          delegate: "CPU"
-        },
-        runningMode: "VIDEO",
-        outputCategoryMask: true,
-        outputConfidenceMasks: false
-      });
-    }
-
-    window.BEA_SEGMENTATION_ENGINE = {
-      FilesetResolver,
-      ImageSegmenter,
-      segmenter,
-      ready: true
-    };
-
-    console.log("BEA: AI segmentation engine READY.");
-
-  } catch (error) {
-    console.error("BEA: Segmentation engine failed to load:", error);
-
-    window.BEA_SEGMENTATION_ENGINE = {
-      ready: false,
-      error
-    };
-  }
-}
-
-initializeBEASegmentation();
-</script>
 <script>
 window.addEventListener('error', function(e) {
   let box = document.getElementById('beaRepairNotice');
@@ -1611,190 +1562,6 @@ window.addEventListener('error', function(e) {
   box.textContent = 'BEA ERROR: ' + e.message +
     ' — Line: ' + e.lineno;
 });
-</script>
-
-<script>
-/* =========================================================
-   BEA SHARED CLASSROOM RENDERER
-   Uses the existing live video elements and MediaPipe loader.
-   Does not replace Supabase, WebRTC, room, chat or whiteboard code.
-========================================================= */
-(function(){
-  'use strict';
-  const canvas=document.getElementById('beaSharedClassroomCanvas');
-  const stage=document.querySelector('.live-gallery');
-  if(!canvas||!stage)return;
-  const ctx=canvas.getContext('2d',{alpha:false});
-  const W=1600,H=900;
-  canvas.width=W;canvas.height=H;
-  const feeds=new Map();
-  let engine=null,lastStatus='',lastFrame=0;
-
-  function roundedRect(c,x,y,w,h,r,fill,stroke){
-    c.beginPath();c.roundRect(x,y,w,h,r);
-    if(fill){c.fillStyle=fill;c.fill();}
-    if(stroke){c.strokeStyle=stroke;c.lineWidth=2;c.stroke();}
-  }
-  function drawRoom(){
-    const sky=ctx.createLinearGradient(0,0,0,H);
-    sky.addColorStop(0,'#18384a');sky.addColorStop(.55,'#24485a');sky.addColorStop(1,'#b7c6bd');
-    ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
-    // High classroom roof and structural beams.
-    ctx.fillStyle='#102a3a';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(W,0);ctx.lineTo(1430,155);ctx.lineTo(170,155);ctx.closePath();ctx.fill();
-    ctx.strokeStyle='rgba(226,238,229,.28)';ctx.lineWidth=8;
-    for(let x=90;x<W;x+=235){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(800+(x-800)*.48,155);ctx.stroke();}
-    // Windows and rear wall.
-    for(let x=205;x<1450;x+=300){
-      roundedRect(ctx,x,80,190,112,8,'#8fb8c0','#d5e3db');
-      ctx.fillStyle='rgba(232,246,235,.35)';ctx.fillRect(x+8,88,174,96);
-      ctx.strokeStyle='#e2e9dd';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x+95,88);ctx.lineTo(x+95,184);ctx.moveTo(x+8,136);ctx.lineTo(x+182,136);ctx.stroke();
-    }
-    // Main teaching wall / board.
-    roundedRect(ctx,470,205,660,185,14,'#173d3b','#d6c69b');
-    ctx.fillStyle='#f3e8c8';ctx.font='bold 32px Arial';ctx.textAlign='center';ctx.fillText('BOSCO ENGLISH ACADEMY',800,258);
-    ctx.fillStyle='#f8f4e8';ctx.font='26px Arial';ctx.fillText('BUILDING CONFIDENCE IN ENGLISH',800,310);
-    ctx.font='20px Arial';ctx.fillText('LISTEN  •  SPEAK  •  READ  •  WRITE',800,352);
-    // Floor with perspective.
-    const floor=ctx.createLinearGradient(0,420,0,H);floor.addColorStop(0,'#b6b39a');floor.addColorStop(1,'#6d887d');
-    ctx.fillStyle=floor;ctx.beginPath();ctx.moveTo(0,420);ctx.lineTo(W,420);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();ctx.fill();
-    ctx.strokeStyle='rgba(35,64,60,.24)';ctx.lineWidth=3;
-    for(let i=0;i<9;i++){const y=455+i*55;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-    for(let x=-500;x<2100;x+=260){ctx.beginPath();ctx.moveTo(800+(x-800)*.15,420);ctx.lineTo(x,H);ctx.stroke();}
-    // Desk silhouettes make the scene read as a real classroom.
-    for(let row=0;row<2;row++)for(let col=0;col<7;col++){
-      const x=575+col*145+(row?45:0),y=585+row*135;
-      ctx.fillStyle='rgba(44,61,56,.35)';ctx.beginPath();ctx.ellipse(x,y+48,54,13,0,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle='#745b43';ctx.beginPath();ctx.moveTo(x-48,y);ctx.lineTo(x+48,y);ctx.lineTo(x+38,y+24);ctx.lineTo(x-38,y+24);ctx.closePath();ctx.fill();
-      ctx.strokeStyle='#4d493d';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x-34,y+22);ctx.lineTo(x-38,y+55);ctx.moveTo(x+34,y+22);ctx.lineTo(x+38,y+55);ctx.stroke();
-    }
-    // Front teaching zone and subtle floor markers.
-    ctx.fillStyle='rgba(240,229,190,.15)';ctx.beginPath();ctx.ellipse(300,690,230,95,0,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='rgba(16,37,68,.75)';ctx.font='bold 25px Arial';ctx.textAlign='left';ctx.fillText('TEACHER',80,850);
-    ctx.textAlign='center';ctx.fillText('LEARNERS',1080,850);
-    ctx.textAlign='left';ctx.font='bold 22px Arial';ctx.fillStyle='#fff';ctx.fillText('BEA • LIVE CLASSROOM',38,48);
-  }
-
-  function getSources(){
-    const map=window.BEA_CLASSROOM_SOURCES;
-    if(!(map instanceof Map))return [];
-    const list=[];
-    for(const item of map.values()){
-      if(!item||!item.video||!item.video.srcObject)continue;
-      if(item.video.readyState<2||!item.video.videoWidth||!item.video.videoHeight)continue;
-      const role=String(item.role||'student').toLowerCase();
-      if(role==='hall')continue;
-      list.push(item);
-    }
-    // One teacher on the left; all remaining participants are learners.
-    list.sort((a,b)=>(String(a.role).toLowerCase()==='teacher'?-1:0)-(String(b.role).toLowerCase()==='teacher'?-1:0));
-    return list;
-  }
-
-  function prepareFeed(item){
-    let feed=feeds.get(item.id);
-    if(!feed){
-      const personCanvas=document.createElement('canvas');
-      const maskCanvas=document.createElement('canvas');
-      feed={id:item.id,personCanvas,personCtx:personCanvas.getContext('2d'),maskCanvas,maskCtx:maskCanvas.getContext('2d'),lastSegment:0,ready:false,source:null,name:item.name||'Learner',role:item.role||'student',lastVideoTime:-1};
-      feeds.set(item.id,feed);
-    }
-    feed.source=item.video;feed.name=item.name||feed.name;feed.role=item.role||feed.role;
-    return feed;
-  }
-
-  function fitDimensions(feed){
-    const video=feed.source;
-    const width=640;
-    const height=Math.max(240,Math.round(width*video.videoHeight/video.videoWidth));
-    if(feed.personCanvas.width!==width||feed.personCanvas.height!==height){feed.personCanvas.width=width;feed.personCanvas.height=height;}
-    feed.personCtx.clearRect(0,0,width,height);
-    feed.personCtx.drawImage(video,0,0,width,height);
-  }
-
-  function segmentFeed(feed,now){
-    if(!engine||!engine.segmenter)return;
-    if(now-feed.lastSegment<190||feed.source.currentTime===feed.lastVideoTime)return;
-    feed.lastSegment=now;feed.lastVideoTime=feed.source.currentTime;
-    try{
-      fitDimensions(feed);
-      const result=engine.segmenter.segmentForVideo(feed.personCanvas,now);
-      const mask=result.categoryMask;
-      if(!mask){feed.ready=false;return;}
-      const mw=mask.width,mh=mask.height,values=mask.getAsUint8Array();
-      if(feed.maskCanvas.width!==mw||feed.maskCanvas.height!==mh){feed.maskCanvas.width=mw;feed.maskCanvas.height=mh;}
-      const image=feed.maskCtx.createImageData(mw,mh);
-      for(let i=0;i<values.length;i++){
-        const j=i*4;image.data[j]=255;image.data[j+1]=255;image.data[j+2]=255;image.data[j+3]=values[i]>0?255:0;
-      }
-      feed.maskCtx.putImageData(image,0,0);
-      feed.personCtx.save();feed.personCtx.globalCompositeOperation='destination-in';
-      feed.personCtx.drawImage(feed.maskCanvas,0,0,feed.personCanvas.width,feed.personCanvas.height);
-      feed.personCtx.restore();feed.ready=true;
-      if(mask.close)mask.close();
-    }catch(error){
-      feed.ready=false;console.warn('BEA person cut-out:',error);
-    }
-  }
-
-  function drawCutout(feed,x,y,w,h){
-    if(!feed.ready)return;
-    const sw=feed.personCanvas.width,sh=feed.personCanvas.height;
-    // Fill portrait position without stretching the person's proportions.
-    const scale=Math.max(w/sw,h/sh),dw=sw*scale,dh=sh*scale;
-    const sx=(dw-w)/2/scale,sy=Math.max(0,(dh-h)/scale*.12);
-    const cropW=w/scale,cropH=Math.min(sh-sy,h/scale);
-    ctx.save();ctx.shadowColor='rgba(0,0,0,.25)';ctx.shadowBlur=18;ctx.shadowOffsetY=8;
-    ctx.drawImage(feed.personCanvas,sx,sy,cropW,cropH,x,y,w,h);ctx.restore();
-  }
-
-  function labelPerson(name,x,y,w,teacher){
-    ctx.save();ctx.textAlign='center';ctx.font=teacher?'bold 22px Arial':'bold 17px Arial';
-    const label=String(name|| (teacher?'Teacher':'Learner')).slice(0,24);
-    const tw=Math.min(w,Math.max(120,ctx.measureText(label).width+28));
-    roundedRect(ctx,x+w/2-tw/2,y-32,tw,34,12,teacher?'#f2b544':'rgba(15,42,55,.88)',null);
-    ctx.fillStyle=teacher?'#102544':'#fff';ctx.fillText(label,x+w/2,y-9);ctx.restore();
-  }
-
-  function drawPeople(people,now){
-    const teacher=people.find(p=>String(p.role).toLowerCase()==='teacher');
-    const students=people.filter(p=>String(p.role).toLowerCase()!=='teacher');
-    if(teacher){const f=prepareFeed(teacher);segmentFeed(f,now);drawCutout(f,80,280,390,510);labelPerson(teacher.name||'Jean Bosco',80,280,390,true);}
-    const slots=[
-      [600,275,220,300],[900,275,220,300],[1200,275,220,300],
-      [600,590,220,250],[900,590,220,250],[1200,590,220,250],
-      [480,570,200,240],[1450,570,130,230]
-    ];
-    students.slice(0,slots.length).forEach((p,i)=>{
-      const [x,y,w,h]=slots[i],f=prepareFeed(p);segmentFeed(f,now);drawCutout(f,x,y,w,h);labelPerson(p.name||'Learner '+(i+1),x,y,w,false);
-    });
-    const active=people.length;
-    if(!active){ctx.save();ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='bold 30px Arial';ctx.fillText('Waiting for the teacher and learners to join...',800,520);ctx.restore();}
-    else if(!teacher){ctx.save();ctx.textAlign='left';ctx.fillStyle='#ffe6a8';ctx.font='bold 19px Arial';ctx.fillText('Teacher camera not connected yet',55,245);ctx.restore();}
-  }
-
-  function drawStatus(now){
-    const e=window.BEA_SEGMENTATION_ENGINE;
-    let message='AI person cut-out is loading...';
-    if(e&&e.ready){message='Live classroom • AI background removal active';}
-    else if(e&&e.error){message='AI cut-out unavailable — check internet/model access';}
-    if(message!==lastStatus){lastStatus=message;console.log('BEA SCENE:',message);}
-    ctx.save();ctx.textAlign='right';ctx.font='bold 15px Arial';ctx.fillStyle='rgba(255,255,255,.88)';ctx.fillText(message,W-28,H-24);ctx.restore();
-  }
-
-  function frame(now){
-    if(now-lastFrame<30){requestAnimationFrame(frame);return;}
-    lastFrame=now;
-    engine=window.BEA_SEGMENTATION_ENGINE&&window.BEA_SEGMENTATION_ENGINE.ready?window.BEA_SEGMENTATION_ENGINE:null;
-    drawRoom();
-    const people=getSources();
-    drawPeople(people,now);
-    drawStatus(now);
-    requestAnimationFrame(frame);
-  }
-
-  window.BEA_SHARED_CLASSROOM={canvas,feeds,start:()=>requestAnimationFrame(frame)};
-  requestAnimationFrame(frame);
-})();
 </script>
 
 </body>
