@@ -752,6 +752,70 @@ main {
 @media (max-width: 700px) {
   .live-gallery { gap: 0 !important; }
 }
+
+
+/* BEA ALIGNMENT FIX — align teacher and learner columns at the same top edge.
+   Presentation-only CSS: camera streams, Supabase and WebRTC are untouched. */
+.live-gallery {
+  display: grid !important;
+  grid-template-columns: minmax(0, 34%) minmax(0, 66%) !important;
+  grid-template-rows: auto minmax(0, auto) !important;
+  grid-template-areas:
+    "title title"
+    "teacher students" !important;
+  align-items: start !important;
+  justify-items: stretch !important;
+  column-gap: 0 !important;
+  row-gap: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+.live-gallery > .stadium-title {
+  grid-area: title !important;
+  grid-column: 1 / -1 !important;
+  align-self: start !important;
+  margin: 0 0 10px !important;
+}
+.live-gallery > .teacher-front-area {
+  grid-area: teacher !important;
+  align-self: start !important;
+  justify-self: stretch !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+}
+.live-gallery > .student-gallery-area {
+  grid-area: students !important;
+  align-self: start !important;
+  justify-self: stretch !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+}
+.live-gallery > .teacher-front-area > h3,
+.live-gallery > .student-gallery-area > h3 {
+  display: block !important;
+  min-height: 22px !important;
+  margin: 0 0 10px !important;
+  padding: 0 !important;
+  line-height: 22px !important;
+}
+#teacherFrontStage, #studentGallery {
+  align-self: start !important;
+  align-content: start !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+.live-gallery > .hall-view-area { display: none !important; }
+@media (max-width: 700px) {
+  .live-gallery {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto auto !important;
+    grid-template-areas: "title" "teacher" "students" !important;
+  }
+}
+
 </style>
 </head>
 <body>
