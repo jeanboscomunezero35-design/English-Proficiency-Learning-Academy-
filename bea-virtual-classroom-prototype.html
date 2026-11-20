@@ -186,6 +186,8 @@ canvas{width:100%;height:300px;background:white;touch-action:none;display:block;
 .board-surface.chalk-mode #board{background:#263b32}
 #boardLivePreview{position:absolute;inset:0;width:100%;height:300px;z-index:3;pointer-events:none;background:transparent}
 #textEditor{position:absolute;display:none;z-index:5;left:0;top:0;width:100%;height:100%;padding:8px;border:1px dashed var(--gold);outline:none;resize:none;overflow:auto;background:transparent;font-size:25px;font-weight:bold;line-height:1.5;color:#173b67;font-family:Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
+#beaRemoteLiveText{position:absolute;inset:0;z-index:4;display:none;pointer-events:none;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.25;font-weight:700;color:#173b67;padding:0;margin:0;text-align:left;}
+body.bea-student #beaRemoteLiveText{display:block;}
 .board-tools{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .pen-tool{display:flex;align-items:center;gap:9px;min-height:43px;padding:6px 11px;background:#eaf4ff;border:1px solid #c5d9ed;border-radius:10px}
 .pen-tool label{font-size:12px;font-weight:700;color:#15558a;white-space:nowrap}
@@ -943,8 +945,9 @@ body.bea-student #board{cursor:default!important}
   <div class="board-surface" id="boardSurface">
     <canvas id="board" width="1100" height="360"></canvas>
     <canvas id="boardLivePreview" width="1100" height="360" aria-hidden="true"></canvas>
+    <div id="beaRemoteLiveText" aria-live="polite"></div>
 
-    <textarea
+      <textarea
       id="textEditor"
       spellcheck="false"
       placeholder="Start typing your lesson here..."
@@ -1157,7 +1160,7 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
         });
         document.body.classList.toggle('bea-student',currentParticipantRole!=='teacher');
         document.body.classList.toggle('bea-teacher',currentParticipantRole==='teacher');
-        if(currentParticipantRole!=='teacher'){setTimeout(requestBoardSnapshot,700); }
+        if(currentParticipantRole!=='teacher'){clearLiveTextPreview();setTimeout(requestBoardSnapshot,700); }
 
         // Register a camera that was started before joining.
         if(currentParticipantRole==='teacher' && teacherStream){
@@ -1895,16 +1898,37 @@ function applyRemoteBoardOperation(op){
  else if(op.type==='text')drawTextOp(op);
  else if(op.type==='clear')ctx.clearRect(0,0,canvas.width,canvas.height);
 }
-function clearLiveTextPreview(){livePreviewCtx.clearRect(0,0,livePreview.width,livePreview.height);}
+function clearLiveTextPreview(){
+ livePreviewCtx.clearRect(0,0,livePreview.width,livePreview.height);
+ const layer=$('beaRemoteLiveText');
+ if(layer){layer.textContent='';layer.style.display='none';}
+}
 function applyRemoteTextPreview(payload){
  const sender=payload?.senderId||'unknown';
  const incomingSequence=Number(payload?.sequence||0);
- if(incomingSequence && incomingSequence<(lastRemoteTextSequence[sender]||0))return;
+ if(incomingSequence && incomingSequence<=(lastRemoteTextSequence[sender]||0))return;
  if(incomingSequence)lastRemoteTextSequence[sender]=incomingSequence;
  clearLiveTextPreview();
  if(!payload?.text||!payload?.point)return;
  const op={type:'text',text:payload.text,x:payload.point.x,y:payload.point.y,color:payload.color||'#173b67',font:payload.font||'bold 24px Arial',lineH:payload.lineH||28};
+ // Draw to canvas and to a normal HTML overlay. The HTML overlay is more
+ // reliable on mobile browsers while the student's camera video is active.
  drawTextOpOnContext(livePreviewCtx,op);
+ const layer=$('beaRemoteLiveText');
+ if(layer){
+  const sx=surface.clientWidth/canvas.width, sy=surface.clientHeight/canvas.height;
+  layer.textContent=payload.text;
+  layer.style.display='block';
+  layer.style.left=(op.x*sx)+'px';
+  layer.style.top=(op.y*sy)+'px';
+  layer.style.right='8px';
+  layer.style.bottom='8px';
+  layer.style.padding='0';
+  layer.style.color=op.color;
+  layer.style.font=op.font;
+  layer.style.lineHeight=(op.lineH*sy)+'px';
+  layer.style.maxWidth=Math.max(40,surface.clientWidth-op.x*sx-12)+'px';
+ }
 }
 function drawTextOpOnContext(targetCtx,op){
  targetCtx.save();targetCtx.fillStyle=op.color||'#173b67';targetCtx.font=op.font||'bold 24px Arial';targetCtx.textBaseline='top';
@@ -1930,15 +1954,19 @@ function openEditor(p){if(!isTeacher())return;editorPoint=p;editor.value='';edit
 function currentLiveTextOperation(value){return {type:'text',text:value,x:editorPoint?.x||0,y:editorPoint?.y||0,color:$('penColor').value,font:(activeTool==='handwriting'?'italic ':'bold ')+(Number($('penSize').value)*5)+'px '+(activeTool==='handwriting'?'cursive':'Arial'),lineH:Number($('penSize').value)*7};}
 function broadcastLiveText(){
  if(!isTeacher()||!classroomChannel||!editorPoint)return;
- const payload={senderId:currentParticipantId,sequence:++liveTextSequence,text:editor.value,point:{x:editorPoint.x,y:editorPoint.y},color:$('penColor').value,font:(activeTool==='handwriting'?'italic ':'bold ')+(Number($('penSize').value)*5)+'px '+(activeTool==='handwriting'?'cursive':'Arial'),lineH:Number($('penSize').value)*7};
- // Serialize broadcasts so fast typing cannot deliver older previews after newer ones.
- liveTextSendQueue=liveTextSendQueue.then(()=>classroomChannel.send({type:'broadcast',event:'board-text-live',payload})).catch(err=>console.warn('BEA live board text broadcast failed:',err));
+ const payload={senderId:currentParticipantId,role:'teacher',sequence:++liveTextSequence,text:editor.value,point:{x:editorPoint.x,y:editorPoint.y},color:$('penColor').value,font:(activeTool==='handwriting'?'italic ':'bold ')+(Number($('penSize').value)*5)+'px '+(activeTool==='handwriting'?'cursive':'Arial'),lineH:Number($('penSize').value)*7};
+ // Queue updates in order so a slower mobile connection cannot show stale text.
+ liveTextSendQueue=liveTextSendQueue.then(async()=>{
+  if(!classroomChannel||!isTeacher())return;
+  const result=await classroomChannel.send({type:'broadcast',event:'board-text-live',payload});
+  if(result!=='ok' && result?.status!=='ok')console.warn('BEA live board text broadcast status:',result);
+ }).catch(err=>console.warn('BEA live board text broadcast failed:',err));
 }
 editor.addEventListener('input',()=>{
  if(!isTeacher())return;
  clearTimeout(liveTextTimer);
- // Send each edit immediately so learners see the teacher type naturally.
- broadcastLiveText();
+ // Broadcast each current text state quickly while the teacher types.
+ liveTextTimer=setTimeout(broadcastLiveText,45);
 });
 function commitText(){
  if(editor.style.display!=='block')return;
@@ -1950,7 +1978,7 @@ function commitText(){
   boardSend(op);
  }
  if(classroomChannel&&isTeacher()){
-  const payload={senderId:currentParticipantId,sequence:++liveTextSequence,text:'',point:editorPoint};
+  const payload={senderId:currentParticipantId,role:'teacher',sequence:++liveTextSequence,text:'',point:editorPoint};
   liveTextSendQueue=liveTextSendQueue.then(()=>classroomChannel.send({type:'broadcast',event:'board-text-live',payload})).catch(err=>console.warn('BEA live board text clear failed:',err));
  }
  editor.style.display='none';editor.value='';editorPoint=null;
