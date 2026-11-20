@@ -807,7 +807,7 @@ main {
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
-.live-gallery > .hall-view-area { display: none !important; }
+
 @media (max-width: 700px) {
   .live-gallery {
     grid-template-columns: minmax(0, 1fr) !important;
@@ -849,56 +849,37 @@ main {
 }
 
 
-/* BEA COMPLETE CLASSROOM VIEW: teacher, learners, whole hall and shared board. */
-.live-gallery {
-  grid-template-columns: minmax(220px, 34%) minmax(0, 66%) !important;
-  grid-template-rows: auto auto auto !important;
-  grid-template-areas: "title title" "teacher students" "hall hall" !important;
-  align-items: start !important;
-  overflow: visible !important;
-}
-.live-gallery > .stadium-title { grid-area: title !important; }
-.live-gallery > .teacher-front-area { grid-area: teacher !important; }
-.live-gallery > .student-gallery-area { grid-area: students !important; }
+/* BEA VERIFIED SOURCE-LEVEL PRESENTATION FIXES */
 .live-gallery > .hall-view-area {
-  grid-area: hall !important;
-  display: flex !important;
-  flex-direction: column !important;
-  min-width: 0 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  grid-column: 1 / -1 !important;
   width: 100% !important;
-  margin-top: 14px !important;
-  padding: 12px !important;
-  background: #f2f6fa !important;
-  border-radius: 12px !important;
+  min-width: 0 !important;
+  position: relative !important;
 }
+.hall-view-area h3 { color: var(--navy) !important; }
 #hallRemoteStage {
   display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
   width: 100% !important;
-  min-height: 100px !important;
-  background: transparent !important;
-  padding: 0 !important;
+  min-height: 120px !important;
+  background: #0b1930 !important;
 }
-#hallRemoteStage .remote-video-card { max-width: none !important; }
+#hallRemoteStage .remote-video-card { width: 100% !important; min-width: 0 !important; }
 #hallRemoteStage video {
-  display: block !important;
-  width: 100% !important;
-  height: auto !important;
-  aspect-ratio: 16 / 9 !important;
-  object-fit: contain !important;
-  background: #111 !important;
+  display: block !important; width: 100% !important; max-width: 100% !important;
+  height: auto !important; aspect-ratio: 16 / 9 !important;
+  object-fit: contain !important; background: #101b2b !important;
 }
-.board-wrap { width: 100%; }
-#boardSyncStatus { font-weight: 700; }
+.board-wrap { display: block !important; visibility: visible !important; }
+#board { touch-action: none; }
+#textEditor[readonly] { cursor: not-allowed; }
 @media (max-width: 700px) {
-  .live-gallery {
-    grid-template-columns: minmax(0, 1fr) !important;
-    grid-template-rows: auto auto auto auto !important;
-    grid-template-areas: "title" "teacher" "students" "hall" !important;
-  }
-  .live-gallery > .hall-view-area { margin-top: 10px !important; }
+  .live-gallery > .hall-view-area { grid-column: 1 / -1 !important; }
+  #hallRemoteStage { grid-template-columns: minmax(0, 1fr) !important; }
 }
-
 </style>
 </head>
 <body>
@@ -908,7 +889,7 @@ main {
 </header>
 <main>
   <div class="intro"><div><h1>Jean Bosco's Virtual Teaching Room</h1><p>A classroom without walls — learn together from anywhere.</p></div><span class="status" id="connectionStatus">● Ready</span></div>
-  <div class="notice"><b>Live classroom:</b> Sign in to your BEA account, create or join a room, then start your cameras and microphone. Students need to allow camera/microphone permissions. The shared teaching board lets the teacher write live while students follow in read-only mode. For reliable connections across different networks, a TURN relay may also be required.</div>
+  <div class="notice"><b>Live classroom:</b> Sign in to your BEA account, create or join a room, then start your cameras and microphone. Students need to allow camera/microphone permissions. For reliable connections across different networks, configure a TURN relay in addition to the built-in STUN server. The teacher controls the shared board; students see live updates after joining the same classroom.</div>
   <div class="layout">
     <section class="panel">
       <div class="panel-head"><h2>Live teaching area</h2><span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Teacher and student views</span></div>
@@ -935,13 +916,6 @@ main {
             </div>
           </div>
         </div>
-        <div class="camera-global-controls" aria-label="Classroom device controls">
-          <button class="secondary" id="refreshCameras" type="button">↻ Refresh cameras</button>
-          <button class="primary" id="startMic" type="button">🎤 Start microphone</button>
-          <button class="dark" id="stopMic" type="button">Mute / stop microphone</button>
-          <button class="danger" id="stopAllCameras" type="button">Stop all cameras</button>
-        </div>
-        <p class="camera-note" id="deviceStatus">Choose your teacher and hall cameras above. Start the microphone when you are ready to speak.</p>
 <div class="live-gallery">
 <!-- BEA: One shared classroom display -->
 <canvas
@@ -986,12 +960,16 @@ main {
   
 </div><!-- END CAMERA STAGE -->
 
+</section><!-- END TEACHING PANEL -->
+
 <!-- BEA INTERACTIVE CHALKBOARD -->
 <div class="board-wrap">
 
   <div class="board-title">
     <h3>✍️ Interactive Teaching Board</h3>
-    <span id="boardSyncStatus" style="font-size:11px;color:#718096">Teacher editing enabled</span>
+    <span style="font-size:11px;color:#718096">
+      Draw, type and explain
+    </span>
   </div>
 
   <div class="board-surface" id="boardSurface">
@@ -1025,6 +1003,8 @@ main {
     <button class="dark" id="clearBtn">Clear board</button>
   </div>
 
+  <p id="boardSyncStatus" aria-live="polite" style="font-size:12px;color:#52657d;margin:6px 0 0">Board sync starts when you join a classroom.</p>
+
   <p class="board-instruction" id="boardInstruction">
     Marker selected: draw with your mouse, finger or stylus.
     Choose Text to type.
@@ -1032,10 +1012,6 @@ main {
 
 </div>
 <!-- END INTERACTIVE CHALKBOARD -->
-
-</section><!-- END TEACHING PANEL -->
-
-
 
 <aside class="side">
   <section class="panel">
@@ -1121,13 +1097,7 @@ const $=id=>document.getElementById(id);
 const teacherCamera=$('teacherCamera'), hallCamera=$('hallCamera');
 const teacherSelect=$('teacherCameraSelect'), hallSelect=$('hallCameraSelect');
 const cameraStatus=$('connectionStatus'), messages=$('messages');
-const RTC_CONFIG={
- iceServers:[
-  {urls:'stun:stun.l.google.com:19302'}
-  // Add your TURN provider's server URL, username and credential here
-  // if connections must work reliably across restrictive networks.
- ]
-};
+const RTC_CONFIG={iceServers:[{urls:'stun:stun.l.google.com:19302'}]};
 
 function hasSupabaseConfig(){
  return /^https:\/\/.+/.test(SUPABASE_URL) && SUPABASE_ANON_KEY.length>30 &&
@@ -1149,10 +1119,9 @@ function removeRemoteParticipant(id){
  if(peerConnections[id]){clearInterval(peerConnections[id].statsTimer);peerConnections[id].pc.close();delete peerConnections[id];}
 }
 function updateEmptyMessages(){
- const teacherStage=$('teacherFrontStage'),studentStage=$('studentGallery'),hallStage=$('hallRemoteStage');
+ const teacherStage=$('teacherFrontStage'),studentStage=$('studentGallery');
  if(teacherStage && !teacherStage.querySelector('.remote-video-card'))teacherStage.innerHTML="<div id='teacherEmptyMessage'>Teacher's live camera will appear here.</div>";
  if(studentStage && !studentStage.querySelector('.remote-video-card'))studentStage.innerHTML='<div id="remoteEmptyMessage">Students will appear here when they join.</div>';
- if(hallStage && !hallStage.querySelector('.remote-video-card'))hallStage.innerHTML='<div id="hallEmptyMessage">Waiting for the hall camera...</div>';
 }
 function updatePresence(state){
  console.log('BEA PRESENCE:', state);
@@ -1235,8 +1204,7 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
 
         boardSyncReady=true;
         updateBoardPermissions();
-        if(currentParticipantRole==='student'){setTimeout(requestBoardSnapshot,500);setTimeout(requestBoardSnapshot,1800);setTimeout(requestBoardSnapshot,3600);}
-        if(currentParticipantRole==='teacher')setTimeout(sendBoardSnapshot,700);
+        if(currentParticipantRole==='student')setTimeout(requestBoardSnapshot,500);
         setEntry('Connected to '+code+'. Share the invitation link with your students.');
         $('roomBadge').textContent='Connected · '+code;
         cameraStatus.textContent='● Connected to '+code;
@@ -1252,15 +1220,9 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
  }
 }
 
-function getLocalStreamTypes(){
- const types={};
- if(teacherStream)types[teacherStream.id]=currentParticipantRole==='teacher'?'teacher':'student';
- if(hallStream)types[hallStream.id]='hall';
- if(microphoneStream)types[microphoneStream.id]='audio';
- return types;
-}
 async function sendRtcSignal(to,signal,streamTypes){
  if(!classroomChannel)return;
+
  await classroomChannel.send({
   type:'broadcast',
   event:'webrtc-signal',
@@ -1269,7 +1231,7 @@ async function sendRtcSignal(to,signal,streamTypes){
    to,
    name:$('displayName').value,
    role:currentParticipantRole,
-   streamTypes:streamTypes||getLocalStreamTypes(),
+   streamTypes,
    signal
   }
  });
@@ -1904,10 +1866,10 @@ if($('stopAllCameras')){
 }
 navigator.mediaDevices?.addEventListener?.('devicechange',refreshCameras);
 async function startMic(){
- try{if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone not supported.');const fresh=await navigator.mediaDevices.getUserMedia({audio:true,video:false});if(microphoneStream)microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=fresh;await addStreamToExistingPeers(fresh);$('startMic').textContent='🎤 Microphone active';$('deviceStatus').textContent='Microphone is active. Your voice can be heard by connected participants.';updateOverallStatus();}
+ try{if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone not supported.');const fresh=await navigator.mediaDevices.getUserMedia({audio:true,video:false});if(microphoneStream)microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=fresh;await addStreamToExistingPeers(fresh);$('startMic').textContent='🎤 Microphone active';updateOverallStatus();}
  catch(e){alert('Unable to start microphone: '+e.message);}
 }
-async function stopMic(){if(microphoneStream){await removeStreamFromPeers(microphoneStream);microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=null;}$('startMic').textContent='🎤 Start microphone';$('deviceStatus').textContent='Microphone stopped.';updateOverallStatus();}
+async function stopMic(){if(microphoneStream){await removeStreamFromPeers(microphoneStream);microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=null;}$('startMic').textContent='🎤 Start microphone';updateOverallStatus();}
 if($('startMic')) $('startMic').onclick=startMic;
 if($('stopMic')) $('stopMic').onclick=stopMic;
 function updateOverallStatus(){cameraStatus.textContent=(currentRoomCode?'● Connected · ':'● ')+(teacherStream?'Teacher camera · ':'')+(hallStream?'Hall camera · ':'')+(microphoneStream?'Microphone':'Ready');}
@@ -1945,7 +1907,6 @@ function updateBoardPermissions(){
  });
  canvas.style.pointerEvents=allowed?'auto':'none';
  editor.readOnly=!allowed;
- if(!allowed){editor.style.display='none';editor.value='';editorPoint=null;}
  $('boardInstruction').textContent=allowed
   ? 'Teacher board: changes are shared live with students.'
   : 'Live classroom board: the teacher controls writing; updates appear here automatically.';
@@ -2187,4 +2148,3 @@ window.addEventListener('error', function(e) {
 </script>
 </body>
 </html>
-
