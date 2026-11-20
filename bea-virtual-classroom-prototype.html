@@ -5,7 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BEA Virtual Classroom | Bosco English Academy</title>
 <!-- Updated with the requested horizontal one-scene classroom design; existing BEA classroom JavaScript preserved. -->
+/* =====================================================
+   BEA STUDENT DISPLAY REPAIR
+   Wide landscape videos filling the student area
+===================================================== */
 
+#studentGallery {
+    display: grid !important;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, 240px), 1fr)
+    ) !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    align-content: start !important;
+    align-items: start !important;
+    justify-items: stretch !important;
+    gap: 12px !important;
+    padding: 0 !important;
+}
+
+#studentGallery .remote-video-card,
+#studentGallery .student-video-card {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+#studentGallery video {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+    object-fit: cover !important;
+    background: #172c47 !important;
+    border-radius: 8px !important;
+}
+
+@media (max-width: 700px) {
+    #studentGallery {
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(min(100%, 180px), 1fr)
+        ) !important;
+    }
+}
 <style>
 
 /* BEA — Make student waiting message visible */
