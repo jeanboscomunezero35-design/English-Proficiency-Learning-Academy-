@@ -1831,7 +1831,8 @@ $('handBtn').onclick=()=>setHand(true);$('lowerHandBtn').onclick=()=>setHand(fal
 /* Shared whiteboard: teacher edits, all participants receive live operations. */
 const canvas=$('board'),ctx=canvas.getContext('2d'),surface=$('boardSurface'),editor=$('textEditor');
 const livePreview=$('boardLivePreview'),livePreviewCtx=livePreview.getContext('2d');
-let liveTextTimer=null;
+let liveTextTimer=null, liveTextSequence=0, lastRemoteTextSequence=Object.create(null);
+let liveTextSendQueue=Promise.resolve();
 let activeTool='marker',drawing=false,lastPoint=null,editorPoint=null,strokePoints=[];
 const isTeacher=()=>currentParticipantRole==='teacher';
 function boardSend(op){
@@ -1871,6 +1872,10 @@ function applyRemoteBoardOperation(op){
 }
 function clearLiveTextPreview(){livePreviewCtx.clearRect(0,0,livePreview.width,livePreview.height);}
 function applyRemoteTextPreview(payload){
+ const sender=payload?.senderId||'unknown';
+ const incomingSequence=Number(payload?.sequence||0);
+ if(incomingSequence && incomingSequence<(lastRemoteTextSequence[sender]||0))return;
+ if(incomingSequence)lastRemoteTextSequence[sender]=incomingSequence;
  clearLiveTextPreview();
  if(!payload?.text||!payload?.point)return;
  const op={type:'text',text:payload.text,x:payload.point.x,y:payload.point.y,color:payload.color||'#173b67',font:payload.font||'bold 24px Arial',lineH:payload.lineH||28};
@@ -1900,11 +1905,31 @@ function openEditor(p){if(!isTeacher())return;editorPoint=p;editor.value='';edit
 function currentLiveTextOperation(value){return {type:'text',text:value,x:editorPoint?.x||0,y:editorPoint?.y||0,color:$('penColor').value,font:(activeTool==='handwriting'?'italic ':'bold ')+(Number($('penSize').value)*5)+'px '+(activeTool==='handwriting'?'cursive':'Arial'),lineH:Number($('penSize').value)*7};}
 function broadcastLiveText(){
  if(!isTeacher()||!classroomChannel||!editorPoint)return;
- const value=editor.value;
- classroomChannel.send({type:'broadcast',event:'board-text-live',payload:{senderId:currentParticipantId,text:value,point:editorPoint,color:$('penColor').value,font:(activeTool==='handwriting'?'italic ':'bold ')+(Number($('penSize').value)*5)+'px '+(activeTool==='handwriting'?'cursive':'Arial'),lineH:Number($('penSize').value)*7}});
+ const payload={senderId:currentParticipantId,sequence:++liveTextSequence,text:editor.value,point:{x:editorPoint.x,y:editorPoint.y},color:$('penColor').value,font:(activeTool==='handwriting'?'italic ':'bold ')+(Number($('penSize').value)*5)+'px '+(activeTool==='handwriting'?'cursive':'Arial'),lineH:Number($('penSize').value)*7};
+ // Serialize broadcasts so fast typing cannot deliver older previews after newer ones.
+ liveTextSendQueue=liveTextSendQueue.then(()=>classroomChannel.send({type:'broadcast',event:'board-text-live',payload})).catch(err=>console.warn('BEA live board text broadcast failed:',err));
 }
-editor.addEventListener('input',()=>{if(!isTeacher())return;clearTimeout(liveTextTimer);liveTextTimer=setTimeout(broadcastLiveText,90);});
-function commitText(){if(editor.style.display!=='block')return;clearTimeout(liveTextTimer);const value=editor.value.trim();if(value&&editorPoint){const op=currentLiveTextOperation(value);drawTextOp(op);boardSend(op);}if(classroomChannel&&isTeacher())classroomChannel.send({type:'broadcast',event:'board-text-live',payload:{senderId:currentParticipantId,text:'',point:editorPoint}});editor.style.display='none';editor.value='';editorPoint=null;}
+editor.addEventListener('input',()=>{
+ if(!isTeacher())return;
+ clearTimeout(liveTextTimer);
+ // A short delay groups key events slightly while keeping the writing visibly live.
+ liveTextTimer=setTimeout(broadcastLiveText,45);
+});
+function commitText(){
+ if(editor.style.display!=='block')return;
+ clearTimeout(liveTextTimer);
+ const value=editor.value.trim();
+ if(value&&editorPoint){
+  const op=currentLiveTextOperation(value);
+  drawTextOp(op);
+  boardSend(op);
+ }
+ if(classroomChannel&&isTeacher()){
+  const payload={senderId:currentParticipantId,sequence:++liveTextSequence,text:'',point:editorPoint};
+  liveTextSendQueue=liveTextSendQueue.then(()=>classroomChannel.send({type:'broadcast',event:'board-text-live',payload})).catch(err=>console.warn('BEA live board text clear failed:',err));
+ }
+ editor.style.display='none';editor.value='';editorPoint=null;
+}
 editor.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey){e.preventDefault();commitText();}if(e.key==='Escape'){editor.value='';commitText();}});
 $('penSize').addEventListener('input',e=>$('penSizeValue').textContent=e.target.value);
 $('clearBtn').onclick=()=>{if(!isTeacher())return;if(confirm('Are you sure you want to clear the entire board?')){editor.style.display='none';editor.value='';editorPoint=null;ctx.clearRect(0,0,canvas.width,canvas.height);clearLiveTextPreview();boardSend({type:'clear'});$('boardInstruction').textContent='Board cleared. Select a tool to continue.';}};
