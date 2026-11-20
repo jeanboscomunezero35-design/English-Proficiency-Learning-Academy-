@@ -2006,23 +2006,33 @@ if($('stopAllCameras')){
 }
 navigator.mediaDevices?.addEventListener?.('devicechange',refreshCameras);
 async function startMic(){
- try{if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone not supported.');const fresh=await navigator.mediaDevices.getUserMedia({audio:true,video:false});if(microphoneStream)microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=fresh;await addStreamToExistingPeers(fresh);$('startMic').textContent='🎤 Microphone active';updateOverallStatus();}
- catch(e){alert('Unable to start microphone: '+e.message);}
+ try{
+  if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone is not supported by this browser.');
+  const fresh=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+  if(microphoneStream)microphoneStream.getTracks().forEach(t=>t.stop());
+  microphoneStream=fresh; microphoneStream.getAudioTracks().forEach(track=>track.enabled=true);
+  await addStreamToExistingPeers(fresh);
+  $('startMic').textContent='🎤 Microphone active';
+  $('muteMic').disabled=false; $('muteMic').textContent='🔇 Mute';
+  $('micStatusBadge').textContent='Microphone active'; $('micStatusText').textContent='Your microphone is on.';
+  updateOverallStatus();
+ }catch(e){alert('Unable to start microphone: '+e.message);}
 }
-async function stopMic(){if(microphoneStream){await removeStreamFromPeers(microphoneStream);microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=null;}$('startMic').textContent='🎤 Start microphone';updateOverallStatus();}
+async function stopMic(){
+ if(microphoneStream){await removeStreamFromPeers(microphoneStream);microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=null;}
+ $('startMic').textContent='🎙️ Start microphone'; $('muteMic').disabled=true; $('muteMic').textContent='🔇 Mute';
+ $('micStatusBadge').textContent='Microphone off'; $('micStatusText').textContent='Microphone is off.'; updateOverallStatus();
+}
 if($('startMic')) $('startMic').onclick=startMic;
 if($('stopMic')) $('stopMic').onclick=stopMic;
 if($('muteMic')) $('muteMic').onclick=()=>{
- const track=microphoneStream?.getAudioTracks()[0];if(!track)return;
+ const track=microphoneStream?.getAudioTracks().find(t=>t.readyState==='live');
+ if(!track){$('muteMic').disabled=true;$('micStatusBadge').textContent='Microphone off';return;}
  track.enabled=!track.enabled;
  $('muteMic').textContent=track.enabled?'🔇 Mute':'🎙️ Unmute';
  $('micStatusBadge').textContent=track.enabled?'Microphone active':'Muted';
  $('micStatusText').textContent=track.enabled?'Your microphone is on.':'Your microphone is muted; you can still hear the class.';
 };
-const originalStartMic=startMic;
-startMic=async function(){await originalStartMic();const track=microphoneStream?.getAudioTracks()[0];if(track){$('muteMic').disabled=false;$('muteMic').textContent='🔇 Mute';$('micStatusBadge').textContent='Microphone active';$('micStatusText').textContent='Your microphone is on.';}};
-const originalStopMic=stopMic;
-stopMic=async function(){await originalStopMic();$('muteMic').disabled=true;$('muteMic').textContent='🔇 Mute';$('micStatusBadge').textContent='Microphone off';$('micStatusText').textContent='Microphone is off.';};
 function updateOverallStatus(){cameraStatus.textContent=(currentRoomCode?'● Connected · ':'● ')+(teacherStream?'Teacher camera · ':'')+(hallStream?'Hall camera · ':'')+(microphoneStream?'Microphone':'Ready');}
 document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedMode=b.dataset.mode;});
 $('createRoomBtn').onclick=()=>{if($('role').value!=='Teacher'){setEntry('Choose Teacher to create a classroom.');return;}connectToClassroom(makeRoomCode(),'Teacher',$('displayName').value);};
@@ -2155,10 +2165,33 @@ $('beaWritingStyle').addEventListener('change',updateTypedStyle);updateTypedStyl
 let latestTeacherRichHtml='';let richTextBroadcastTimer=null;
 async function broadcastRichLesson(){if(!isTeacher())return;const html=beaSanitizeRichHtml(richEditor.innerHTML);latestTeacherRichHtml=html;const style=$('beaWritingStyle').value;const target=$('beaStudentColumnWritingText');target.innerHTML=html;target.style.fontFamily=style==='chalk'?'Georgia,serif':'Arial,sans-serif';target.style.color=style==='chalk'?'#f8f3df':'#173b67';target.style.textShadow=style==='chalk'?'0 0 1px currentColor':'none';if(classroomChannel)await classroomChannel.send({type:'broadcast',event:'board-richtext',payload:{senderId:currentParticipantId,html,style}});}
 richEditor.addEventListener('input',()=>{if(!isTeacher())return;clearTimeout(richTextBroadcastTimer);richTextBroadcastTimer=setTimeout(()=>broadcastRichLesson().catch(console.warn),55);});
-function formatSelection(command,value=null){richEditor.focus();document.execCommand(command,false,value);}
+let beaSavedSelection=null;
+function beaRememberEditorSelection(){
+ const sel=window.getSelection();
+ if(sel&&sel.rangeCount&&richEditor.contains(sel.anchorNode)&&richEditor.contains(sel.focusNode))beaSavedSelection=sel.getRangeAt(0).cloneRange();
+}
+document.addEventListener('selectionchange',beaRememberEditorSelection);
+['beaTextColour','beaHighlight'].forEach(id=>$(id).addEventListener('pointerdown',beaRememberEditorSelection));
+function beaRestoreEditorSelection(){
+ richEditor.focus(); if(!beaSavedSelection)return false;
+ const sel=window.getSelection();sel.removeAllRanges();sel.addRange(beaSavedSelection);return true;
+}
+function formatSelection(command,value=null){
+ beaRestoreEditorSelection();document.execCommand(command,false,value);
+ beaRememberEditorSelection();richEditor.dispatchEvent(new Event('input',{bubbles:true}));
+}
+document.querySelectorAll('[data-format]').forEach(b=>b.addEventListener('pointerdown',beaRememberEditorSelection));
 document.querySelectorAll('[data-format]').forEach(b=>b.addEventListener('click',()=>formatSelection(b.dataset.format)));
 $('beaTextColour').addEventListener('input',e=>formatSelection('foreColor',e.target.value));
-$('beaHighlight').addEventListener('input',e=>formatSelection('hiliteColor',e.target.value));
+$('beaHighlight').addEventListener('input',e=>{
+ const colour=e.target.value;if(!beaRestoreEditorSelection())return;
+ const sel=window.getSelection();if(!sel||!sel.rangeCount||sel.isCollapsed)return;
+ const range=sel.getRangeAt(0);if(!richEditor.contains(range.commonAncestorContainer))return;
+ const span=document.createElement('span');span.style.backgroundColor=colour;
+ try{span.appendChild(range.extractContents());range.insertNode(span);sel.removeAllRanges();const next=document.createRange();next.selectNodeContents(span);sel.addRange(next);beaSavedSelection=next.cloneRange();}
+ catch(err){document.execCommand('hiliteColor',false,colour);}
+ richEditor.dispatchEvent(new Event('input',{bubbles:true}));
+});
 $('beaFontSize').addEventListener('change',e=>{richEditor.focus();const size=e.target.value+'px';document.execCommand('fontSize',false,'7');richEditor.querySelectorAll('font[size="7"]').forEach(n=>{n.removeAttribute('size');n.style.fontSize=size;});});
 function setBoardAccessUi(){const teacher=currentParticipantRole==='teacher';$('beaTeacherBoardControls').style.display=teacher?'block':'none';$('beaStudentAnswerTools').style.display=(!teacher&&beaAllowStudentWriting)?'block':'none';richEditor.contentEditable=teacher?'true':'false';richEditor.style.opacity=teacher?'1':'.75';}
 function appendStudentAnswer(name,answer){const wall=$('beaAnswerList');if(!wall)return;const empty=wall.querySelector('p');if(empty)empty.remove();const item=document.createElement('div');item.className='bea-answer-item';const who=document.createElement('small');who.textContent=name||'Student';const body=document.createElement('div');body.textContent=answer;item.append(who,body);if(isTeacher()){const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Remove';remove.addEventListener('click',()=>item.remove());item.append(remove);}wall.append(item);} 
