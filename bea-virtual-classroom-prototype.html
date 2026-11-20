@@ -909,8 +909,25 @@ body.bea-student #board{cursor:default!important}
 .bea-student-writing-heading{font-size:11px;font-weight:800;letter-spacing:.04em;color:#805b13;margin-bottom:8px}
 .bea-student-writing-text{font-size:clamp(16px,2vw,23px);font-weight:700;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;min-height:58px}
 /* Students read the writing in their column; the separate board remains the teacher's workspace. */
-body.bea-student .board-wrap{display:none!important}
+body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-instruction, body.bea-student .bea-type-toolbar, body.bea-student #beaTeacherTypedEditor, body.bea-student .bea-type-actions, body.bea-student #beaTeacherBoardControls{display:none!important}
 @media(max-width:700px){.bea-student-column-writing{margin:0 0 10px;padding:10px;min-height:100px}.bea-student-writing-text{font-size:17px}}
+
+/* BEA typed chalk/marker board and collaborative answer tools */
+.bea-type-board{margin:12px 0;padding:14px;border:1px solid #d5dfeb;border-radius:12px;background:#f7f9fc;color:#172b45}
+.bea-type-toolbar,.bea-type-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.bea-type-toolbar label{font-size:12px;font-weight:700}.bea-type-toolbar select,.bea-type-toolbar input{min-height:38px}
+.bea-rich-editor{min-height:110px;padding:14px;border:2px solid #263b32;border-radius:8px;background:#263b32;color:#fff;font-size:22px;line-height:1.5;outline-offset:3px;overflow-wrap:anywhere}
+.bea-rich-editor[data-style="marker"]{font-family:Arial,sans-serif;font-weight:800;letter-spacing:.01em;text-shadow:0 0 1px currentColor}
+.bea-rich-editor[data-style="chalk"]{font-family:Georgia,serif;font-weight:600;letter-spacing:.025em;text-shadow:0 0 1px currentColor,0 0 2px currentColor}
+.bea-student-answer-tools{display:none;margin-top:14px;padding:12px;border:1px dashed #8aa6c5;border-radius:8px;background:#fff}
+.bea-student-answer-tools textarea{width:100%;box-sizing:border-box;margin:8px 0}
+.bea-student-answers{margin-top:12px;padding:12px;background:#fff;border:1px solid #dce5ef;border-radius:8px;overflow-wrap:anywhere}
+.bea-answer-item{padding:9px;margin-top:8px;border-left:4px solid #1769aa;background:#f1f6fc;border-radius:5px;white-space:pre-wrap}
+.bea-answer-item small{display:block;color:#52677f;font-weight:700;margin-bottom:4px}
+.bea-teacher-board-controls{display:none;margin-top:12px;padding:10px;background:#eaf4ff;border-radius:8px;font-size:13px}
+.bea-teacher-board-controls label{display:flex;gap:8px;align-items:center;font-weight:700}.bea-teacher-board-controls span{display:block;margin-top:6px;color:#425b78}
+#beaStudentColumnWritingText{white-space:pre-wrap}
+@media(max-width:600px){.bea-type-toolbar{gap:6px}.bea-rich-editor{font-size:18px;min-height:100px}}
 </style>
 </head>
 <body>
@@ -920,7 +937,7 @@ body.bea-student .board-wrap{display:none!important}
 </header>
 <main>
   <div class="intro"><div><h1>Jean Bosco's Virtual Teaching Room</h1><p>A classroom without walls — learn together from anywhere.</p></div><span class="status" id="connectionStatus">● Ready</span></div>
-  <div class="notice"><b>Live classroom:</b> Sign in to your BEA account, create or join a room, then start your cameras and microphone. Students need to allow camera/microphone permissions. For reliable connections across different networks, configure a TURN relay in addition to the built-in STUN server. The shared whiteboard appears here for everyone in the room. Only the teacher can write on it.</div>
+  <div class="notice"><b>Live classroom:</b> Sign in to your BEA account, create or join a room, then start your cameras and microphone. Students need to allow camera/microphone permissions. For reliable connections across different networks, configure a TURN relay in addition to the built-in STUN server. The shared teaching board supports teacher-led lessons and student answers when the teacher enables Interactive Mode.</div>
   <div class="layout">
     <section class="panel">
       <div class="panel-head"><h2>Live teaching area</h2><span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Teacher and student views</span></div>
@@ -1000,10 +1017,33 @@ body.bea-student .board-wrap{display:none!important}
 
   <div class="board-title">
     <h3>✍️ Interactive Teaching Board</h3>
-    <span style="font-size:11px;color:#718096">
-      Draw, type and explain
-    </span>
+    <span style="font-size:11px;color:#718096">Type, format, explain and collaborate</span>
   </div>
+
+  <section class="bea-type-board" aria-label="Live typed lesson board">
+    <div class="bea-type-toolbar">
+      <label for="beaWritingStyle">Writing style</label>
+      <select id="beaWritingStyle"><option value="chalk">🖍️ Chalk</option><option value="marker">🖊️ Marker</option></select>
+      <button type="button" class="secondary" data-format="bold"><b>B</b></button>
+      <button type="button" class="secondary" data-format="italic"><i>I</i></button>
+      <button type="button" class="secondary" data-format="underline"><u>U</u></button>
+      <label for="beaTextColour">Text colour</label><input type="color" id="beaTextColour" value="#ffffff" aria-label="Text colour">
+      <label for="beaHighlight">Highlight</label><input type="color" id="beaHighlight" value="#f2d45c" aria-label="Highlight colour">
+      <label for="beaFontSize">Size</label><select id="beaFontSize"><option value="18">18</option><option value="22" selected>22</option><option value="28">28</option><option value="34">34</option><option value="42">42</option></select>
+    </div>
+    <div id="beaTeacherTypedEditor" class="bea-rich-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Type the lesson for students">Type your lesson here. Select words to format them.</div>
+    <div class="bea-type-actions"><button type="button" class="primary" id="beaPublishTypedText">Publish lesson text</button><button type="button" class="secondary" id="beaClearTypedText">Clear typed lesson</button></div>
+    <div class="bea-student-answer-tools" id="beaStudentAnswerTools">
+      <label for="beaStudentAnswerInput"><b>✏️ Your answer</b></label>
+      <textarea id="beaStudentAnswerInput" rows="3" placeholder="Type your answer here..."></textarea>
+      <button type="button" class="primary" id="beaSubmitStudentAnswer">Submit answer</button>
+    </div>
+    <div id="beaStudentAnswers" class="bea-student-answers" aria-live="polite"><b>Student contributions</b><button type="button" class="secondary" id="beaClearStudentAnswers" style="display:none;float:right">Clear responses</button><div id="beaAnswerList"><p>No answers submitted yet.</p></div></div>
+    <div class="bea-teacher-board-controls" id="beaTeacherBoardControls">
+      <label><input type="checkbox" id="beaAllowStudentWriting"> Allow students to type answers on the shared board</label>
+      <span id="beaBoardModeStatus">Teaching mode: teacher writes; students observe.</span>
+    </div>
+  </section>
 
   <div class="board-surface" id="boardSurface">
     <canvas id="board" width="1100" height="360"></canvas>
@@ -1018,8 +1058,8 @@ body.bea-student .board-wrap{display:none!important}
   </div>
 
   <div class="board-tools">
-    <button class="secondary tool-button active" id="markerBtn">🖊️ Marker</button>
-    <button class="secondary tool-button" id="chalkBtn">🖍️ Chalk</button>
+    <button class="secondary tool-button active" id="markerBtn" style="display:none">Marker drawing (legacy)</button>
+    <button class="secondary tool-button" id="chalkBtn" style="display:none">Chalk drawing (legacy)</button>
     <button class="secondary tool-button" id="handwritingBtn">✍️ Handwriting</button>
     <button class="secondary tool-button" id="textBtn">⌨️ Text</button>
 
@@ -1100,6 +1140,19 @@ body.bea-student .board-wrap{display:none!important}
 
       <p id="entryMessage" class="room-state">Teachers create a room. Students enter its classroom code or open the invitation link.</p>
       <div class="participant-list" id="participantList"><strong>Participants:</strong> Not connected yet.</div>
+    </div>
+  </section>
+
+  <section class="panel" id="beaAudioPanel">
+    <div class="panel-head"><h2>🎙️ Classroom microphone</h2><span class="badge" id="micStatusBadge">Microphone off</span></div>
+    <div class="entry">
+      <p class="camera-note">Allow microphone permission to speak with the class. Use mute when you want to listen quietly.</p>
+      <div class="room-actions">
+        <button class="primary" id="startMic">🎙️ Start microphone</button>
+        <button class="dark" id="muteMic" disabled>🔇 Mute</button>
+        <button class="secondary" id="stopMic">Stop microphone</button>
+      </div>
+      <div class="camera-status" id="micStatusText" aria-live="polite">Microphone is off.</div>
     </div>
   </section>
 
@@ -1214,6 +1267,10 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
    .on('broadcast',{event:'board-text-live'},({payload})=>{if(payload?.senderId!==currentParticipantId)applyRemoteTextPreview(payload);})
    .on('broadcast',{event:'board-snapshot-request'},({payload})=>{if(currentParticipantRole==='teacher' && payload?.senderId!==currentParticipantId)sendBoardSnapshot();})
    .on('broadcast',{event:'board-snapshot'},({payload})=>{if(payload?.senderId!==currentParticipantId && payload?.image)applyBoardSnapshot(payload.image);})
+   .on('broadcast',{event:'board-access'},({payload})=>{if(payload?.senderId!==currentParticipantId){beaAllowStudentWriting=!!payload?.enabled;$('beaStudentAnswerTools').style.display=beaAllowStudentWriting?'block':'none';$('beaBoardModeStatus').textContent=beaAllowStudentWriting?'Interactive mode: students may submit typed answers.':'Teaching mode: teacher writes; students observe.';}})
+   .on('broadcast',{event:'board-access-request'},({payload})=>{if(currentParticipantRole==='teacher'&&payload?.senderId!==currentParticipantId){classroomChannel.send({type:'broadcast',event:'board-access',payload:{senderId:currentParticipantId,enabled:beaAllowStudentWriting}});classroomChannel.send({type:'broadcast',event:'board-richtext',payload:{senderId:currentParticipantId,html:latestTeacherRichHtml,style:$('beaWritingStyle').value}});}})
+   .on('broadcast',{event:'student-board-answer'},({payload})=>{if(payload?.senderId!==currentParticipantId&&payload?.answer)appendStudentAnswer(payload.name,payload.answer);})
+   .on('broadcast',{event:'board-richtext'},({payload})=>{if(payload?.senderId!==currentParticipantId){const safe=beaSanitizeRichHtml(payload.html||'');$('beaStudentColumnWritingText').innerHTML=safe||"The teacher's writing will appear here as the lesson continues.";const target=$('beaStudentColumnWritingText');target.style.fontFamily=payload.style==='chalk'?'Georgia,serif':'Arial,sans-serif';target.style.color=payload.style==='chalk'?'#f8f3df':'#173b67';target.style.textShadow=payload.style==='chalk'?'0 0 1px currentColor':'none';}})
    .subscribe(async status=>{
     if(status==='SUBSCRIBED'){
         await classroomChannel.track({
@@ -1225,7 +1282,11 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
         });
         document.body.classList.toggle('bea-student',currentParticipantRole!=='teacher');
         document.body.classList.toggle('bea-teacher',currentParticipantRole==='teacher');
-        if(currentParticipantRole!=='teacher'){clearLiveTextPreview();setTimeout(requestBoardSnapshot,700); }
+        setBoardAccessUi();
+        $('beaTeacherBoardControls').style.display=currentParticipantRole==='teacher'?'block':'none';
+        $('beaClearStudentAnswers').style.display=currentParticipantRole==='teacher'?'inline-block':'none';
+        $('beaStudentAnswerTools').style.display=currentParticipantRole!=='teacher'&&beaAllowStudentWriting?'block':'none';
+        if(currentParticipantRole!=='teacher'){clearLiveTextPreview();setTimeout(requestBoardSnapshot,700);setTimeout(()=>classroomChannel?.send({type:'broadcast',event:'board-access-request',payload:{senderId:currentParticipantId}}),900); }
 
         // Register a camera that was started before joining.
         if(currentParticipantRole==='teacher' && teacherStream){
@@ -1903,6 +1964,17 @@ async function startMic(){
 async function stopMic(){if(microphoneStream){await removeStreamFromPeers(microphoneStream);microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=null;}$('startMic').textContent='🎤 Start microphone';updateOverallStatus();}
 if($('startMic')) $('startMic').onclick=startMic;
 if($('stopMic')) $('stopMic').onclick=stopMic;
+if($('muteMic')) $('muteMic').onclick=()=>{
+ const track=microphoneStream?.getAudioTracks()[0];if(!track)return;
+ track.enabled=!track.enabled;
+ $('muteMic').textContent=track.enabled?'🔇 Mute':'🎙️ Unmute';
+ $('micStatusBadge').textContent=track.enabled?'Microphone active':'Muted';
+ $('micStatusText').textContent=track.enabled?'Your microphone is on.':'Your microphone is muted; you can still hear the class.';
+};
+const originalStartMic=startMic;
+startMic=async function(){await originalStartMic();const track=microphoneStream?.getAudioTracks()[0];if(track){$('muteMic').disabled=false;$('muteMic').textContent='🔇 Mute';$('micStatusBadge').textContent='Microphone active';$('micStatusText').textContent='Your microphone is on.';}};
+const originalStopMic=stopMic;
+stopMic=async function(){await originalStopMic();$('muteMic').disabled=true;$('muteMic').textContent='🔇 Mute';$('micStatusBadge').textContent='Microphone off';$('micStatusText').textContent='Microphone is off.';};
 function updateOverallStatus(){cameraStatus.textContent=(currentRoomCode?'● Connected · ':'● ')+(teacherStream?'Teacher camera · ':'')+(hallStream?'Hall camera · ':'')+(microphoneStream?'Microphone':'Ready');}
 document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedMode=b.dataset.mode;});
 $('createRoomBtn').onclick=()=>{if($('role').value!=='Teacher'){setEntry('Choose Teacher to create a classroom.');return;}connectToClassroom(makeRoomCode(),'Teacher',$('displayName').value);};
@@ -2014,6 +2086,39 @@ function sendBoardSnapshot(){
  classroomChannel.send({type:'broadcast',event:'board-snapshot',payload:{senderId:currentParticipantId,image:small.toDataURL('image/jpeg',0.45)}});
 }
 function requestBoardSnapshot(){if(classroomChannel&&currentParticipantRole!=='teacher')classroomChannel.send({type:'broadcast',event:'board-snapshot-request',payload:{senderId:currentParticipantId}});}
+
+/* Collaborative typed board: chalk/marker are text appearances, not drawing modes. */
+let beaAllowStudentWriting=false, beaAnswerCounter=0;
+const richEditor=$('beaTeacherTypedEditor');
+function beaSanitizeRichHtml(html){
+ const doc=new DOMParser().parseFromString(String(html||''),'text/html');
+ const allowed=new Set(['B','STRONG','I','EM','U','BR','P','DIV','SPAN','UL','OL','LI']);
+ const walk=node=>{[...node.childNodes].forEach(child=>{
+  if(child.nodeType===Node.ELEMENT_NODE){
+   if(!allowed.has(child.tagName)){child.replaceWith(document.createTextNode(child.textContent||''));return;}
+   [...child.attributes].forEach(a=>{if(a.name!=='style')child.removeAttribute(a.name);});
+   if(child.hasAttribute('style')){const color=child.style.color,background=child.style.backgroundColor,fontSize=child.style.fontSize;child.removeAttribute('style');if(/^#[0-9a-f]{3,8}$/i.test(color)||/^rgb/.test(color))child.style.color=color;if(/^#[0-9a-f]{3,8}$/i.test(background)||/^rgb/.test(background))child.style.backgroundColor=background;if(/^([1-5]?\d|6\d)px$/.test(fontSize))child.style.fontSize=fontSize;}
+   walk(child);
+  }else if(child.nodeType!==Node.TEXT_NODE)child.remove();
+ });};walk(doc.body);return doc.body.innerHTML;
+}
+function updateTypedStyle(){const style=$('beaWritingStyle').value;richEditor.dataset.style=style;richEditor.style.background=style==='chalk'?'#263b32':'#173b67';}
+$('beaWritingStyle').addEventListener('change',updateTypedStyle);updateTypedStyle();
+let latestTeacherRichHtml='';let richTextBroadcastTimer=null;
+async function broadcastRichLesson(){if(!isTeacher())return;const html=beaSanitizeRichHtml(richEditor.innerHTML);latestTeacherRichHtml=html;const style=$('beaWritingStyle').value;const target=$('beaStudentColumnWritingText');target.innerHTML=html;target.style.fontFamily=style==='chalk'?'Georgia,serif':'Arial,sans-serif';target.style.color=style==='chalk'?'#f8f3df':'#173b67';target.style.textShadow=style==='chalk'?'0 0 1px currentColor':'none';if(classroomChannel)await classroomChannel.send({type:'broadcast',event:'board-richtext',payload:{senderId:currentParticipantId,html,style}});}
+richEditor.addEventListener('input',()=>{if(!isTeacher())return;clearTimeout(richTextBroadcastTimer);richTextBroadcastTimer=setTimeout(()=>broadcastRichLesson().catch(console.warn),55);});
+function formatSelection(command,value=null){richEditor.focus();document.execCommand(command,false,value);}
+document.querySelectorAll('[data-format]').forEach(b=>b.addEventListener('click',()=>formatSelection(b.dataset.format)));
+$('beaTextColour').addEventListener('input',e=>formatSelection('foreColor',e.target.value));
+$('beaHighlight').addEventListener('input',e=>formatSelection('hiliteColor',e.target.value));
+$('beaFontSize').addEventListener('change',e=>{richEditor.focus();const size=e.target.value+'px';document.execCommand('fontSize',false,'7');richEditor.querySelectorAll('font[size="7"]').forEach(n=>{n.removeAttribute('size');n.style.fontSize=size;});});
+function setBoardAccessUi(){const teacher=currentParticipantRole==='teacher';$('beaTeacherBoardControls').style.display=teacher?'block':'none';$('beaStudentAnswerTools').style.display=(!teacher&&beaAllowStudentWriting)?'block':'none';richEditor.contentEditable=teacher?'true':'false';richEditor.style.opacity=teacher?'1':'.75';}
+function appendStudentAnswer(name,answer){const wall=$('beaAnswerList');if(!wall)return;const empty=wall.querySelector('p');if(empty)empty.remove();const item=document.createElement('div');item.className='bea-answer-item';const who=document.createElement('small');who.textContent=name||'Student';const body=document.createElement('div');body.textContent=answer;item.append(who,body);if(isTeacher()){const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Remove';remove.addEventListener('click',()=>item.remove());item.append(remove);}wall.append(item);} 
+$('beaClearStudentAnswers').addEventListener('click',()=>{if(isTeacher()&&confirm('Clear all student responses from this view?'))$('beaAnswerList').innerHTML='<p>No answers submitted yet.</p>';});
+$('beaAllowStudentWriting').addEventListener('change',async e=>{if(!isTeacher())return;beaAllowStudentWriting=!!e.target.checked;$('beaBoardModeStatus').textContent=beaAllowStudentWriting?'Interactive mode: students may submit typed answers.':'Teaching mode: teacher writes; students observe.';if(classroomChannel)await classroomChannel.send({type:'broadcast',event:'board-access',payload:{senderId:currentParticipantId,enabled:beaAllowStudentWriting}});});
+$('beaSubmitStudentAnswer').addEventListener('click',async()=>{const answer=$('beaStudentAnswerInput').value.trim();if(!answer)return;if(!beaAllowStudentWriting){$('beaStudentAnswerInput').value='';return;}const payload={senderId:currentParticipantId,name:$('displayName').value.trim()||'Student',answer,id:++beaAnswerCounter};appendStudentAnswer(payload.name,payload.answer);if(classroomChannel)await classroomChannel.send({type:'broadcast',event:'student-board-answer',payload});$('beaStudentAnswerInput').value='';});
+$('beaPublishTypedText').addEventListener('click',()=>broadcastRichLesson());
+$('beaClearTypedText').addEventListener('click',async()=>{if(!isTeacher())return;richEditor.innerHTML='';latestTeacherRichHtml='';$('beaStudentColumnWritingText').textContent="The teacher's writing will appear here as the lesson continues.";if(classroomChannel)await classroomChannel.send({type:'broadcast',event:'board-richtext',payload:{senderId:currentParticipantId,html:'',style:'chalk'}});});
 canvas.addEventListener('pointerdown',e=>{
  if(!isTeacher())return;e.preventDefault();
  if(activeTool==='text'){openEditor(canvasPoint(e));return;}
