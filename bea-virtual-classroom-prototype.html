@@ -2044,7 +2044,14 @@ navigator.mediaDevices?.addEventListener?.('devicechange',refreshCameras);
 async function startMic(){
  try{
   if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone is not supported by this browser.');
-  const fresh=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+  const fresh=await navigator.mediaDevices.getUserMedia({
+   audio:{
+    echoCancellation:true,
+    noiseSuppression:true,
+    autoGainControl:true
+   },
+   video:false
+  });
   if(microphoneStream)microphoneStream.getTracks().forEach(t=>t.stop());
   microphoneStream=fresh; microphoneStream.getAudioTracks().forEach(track=>track.enabled=true);
   await addStreamToExistingPeers(fresh);
