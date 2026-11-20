@@ -928,6 +928,13 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
 .bea-teacher-board-controls label{display:flex;gap:8px;align-items:center;font-weight:700}.bea-teacher-board-controls span{display:block;margin-top:6px;color:#425b78}
 #beaStudentColumnWritingText{white-space:pre-wrap}
 @media(max-width:600px){.bea-type-toolbar{gap:6px}.bea-rich-editor{font-size:18px;min-height:100px}}
+
+/* Microphone controls placed directly beneath participant video cards */
+.bea-video-mic-controls{display:flex;gap:7px;justify-content:center;align-items:center;flex-wrap:wrap;width:100%;margin:7px auto 10px}
+.bea-video-mic-controls button{border:0;border-radius:7px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;background:#1769aa;color:#fff}
+.bea-video-mic-controls button.is-muted{background:#8a3440}
+.bea-video-mic-status{font-size:11px;font-weight:700;color:#52647a;text-align:center}
+
 </style>
 </head>
 <body>
@@ -1008,6 +1015,7 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
         Waiting for students to connect...
       </div>
     </div>
+    <div id="beaOwnMicDock" class="bea-video-mic-controls" style="justify-content:flex-start;margin-top:12px"><span class="bea-video-mic-status">Your microphone:</span><button type="button" id="beaOwnMicButton">🎙️ Start microphone</button></div>
   </div>
 
 
@@ -1346,6 +1354,29 @@ async function sendRtcSignal(to,signal,streamTypes){
  });
 }
 
+function beaMicControlButton(label, onClick, muted=false){
+ const wrap=document.createElement('div');wrap.className='bea-video-mic-controls';
+ const btn=document.createElement('button');btn.type='button';btn.textContent=label;
+ if(muted)btn.classList.add('is-muted');
+ btn.addEventListener('click',onClick);wrap.appendChild(btn);return wrap;
+}
+function updateMicCardControls(){
+ const track=microphoneStream?.getAudioTracks().find(t=>t.readyState==='live');
+ document.querySelectorAll('[data-bea-local-mic-control]').forEach(w=>{
+  const b=w.querySelector('button');if(!b)return;
+  b.textContent=track?(track.enabled?'🔇 Mute microphone':'🎙️ Unmute microphone'):'🎙️ Start microphone';
+  b.classList.toggle('is-muted',!!track&&!track.enabled);
+ });
+}
+function toggleLocalMicFromCard(){
+ const track=microphoneStream?.getAudioTracks().find(t=>t.readyState==='live');
+ if(!track){startMic();return;}
+ track.enabled=!track.enabled;
+ $('muteMic').textContent=track.enabled?'🔇 Mute':'🎙️ Unmute';
+ $('micStatusBadge').textContent=track.enabled?'Microphone active':'Muted';
+ $('micStatusText').textContent=track.enabled?'Your microphone is on.':'Your microphone is muted.';
+ updateMicCardControls();
+}
 function showLocalTeacherAtFront(stream) {
   const stage = $('teacherFrontStage');
   if (!stage || !stream) return;
@@ -1375,6 +1406,7 @@ function showLocalTeacherAtFront(stream) {
     status.textContent = '● Your live teaching camera';
 
     card.append(video, label, status);
+    const mic=beaMicControlButton('🎙️ Start microphone',toggleLocalMicFromCard);mic.dataset.beaLocalMicControl='true';card.appendChild(mic);
     stage.prepend(card);
   }
 
@@ -1530,6 +1562,10 @@ function showRemoteVideo(id, name, stream, role, type) {
      displayType === 'hall' ? 'Whole Hall — ' : 'Student — ') + name;
 
   card.append(video, label);
+  if(displayType==='student'){
+    const audioBtn=beaMicControlButton('🔊 Mute this student audio',()=>{const a=$('remoteAudio_'+id);if(!a)return;a.muted=!a.muted;audioBtn.querySelector('button').textContent=a.muted?'🔈 Unmute this student audio':'🔊 Mute this student audio';audioBtn.querySelector('button').classList.toggle('is-muted',a.muted);});
+    audioBtn.title='Controls whether this device hears this student; it does not switch off the student’s microphone.';card.appendChild(audioBtn);
+  }
   target.appendChild(card);
 
   remoteVideoTiles[key] = card;
@@ -2015,14 +2051,16 @@ async function startMic(){
   $('startMic').textContent='🎤 Microphone active';
   $('muteMic').disabled=false; $('muteMic').textContent='🔇 Mute';
   $('micStatusBadge').textContent='Microphone active'; $('micStatusText').textContent='Your microphone is on.';
+  updateMicCardControls();if($('beaOwnMicButton'))$('beaOwnMicButton').textContent='🔇 Mute microphone';
   updateOverallStatus();
  }catch(e){alert('Unable to start microphone: '+e.message);}
 }
 async function stopMic(){
  if(microphoneStream){await removeStreamFromPeers(microphoneStream);microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=null;}
  $('startMic').textContent='🎙️ Start microphone'; $('muteMic').disabled=true; $('muteMic').textContent='🔇 Mute';
- $('micStatusBadge').textContent='Microphone off'; $('micStatusText').textContent='Microphone is off.'; updateOverallStatus();
+ $('micStatusBadge').textContent='Microphone off'; $('micStatusText').textContent='Microphone is off.'; updateMicCardControls();if($('beaOwnMicButton'))$('beaOwnMicButton').textContent='🎙️ Start microphone'; updateOverallStatus();
 }
+if($('beaOwnMicButton'))$('beaOwnMicButton').onclick=toggleLocalMicFromCard;
 if($('startMic')) $('startMic').onclick=startMic;
 if($('stopMic')) $('stopMic').onclick=stopMic;
 if($('muteMic')) $('muteMic').onclick=()=>{
@@ -2032,6 +2070,7 @@ if($('muteMic')) $('muteMic').onclick=()=>{
  $('muteMic').textContent=track.enabled?'🔇 Mute':'🎙️ Unmute';
  $('micStatusBadge').textContent=track.enabled?'Microphone active':'Muted';
  $('micStatusText').textContent=track.enabled?'Your microphone is on.':'Your microphone is muted; you can still hear the class.';
+ updateMicCardControls();if($('beaOwnMicButton'))$('beaOwnMicButton').textContent=track.enabled?'🔇 Mute microphone':'🎙️ Unmute microphone';
 };
 function updateOverallStatus(){cameraStatus.textContent=(currentRoomCode?'● Connected · ':'● ')+(teacherStream?'Teacher camera · ':'')+(hallStream?'Hall camera · ':'')+(microphoneStream?'Microphone':'Ready');}
 document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedMode=b.dataset.mode;});
