@@ -5,58 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BEA Virtual Classroom | Bosco English Academy</title>
 <!-- Updated with the requested horizontal one-scene classroom design; existing BEA classroom JavaScript preserved. -->
-/* =====================================================
-   BEA STUDENT DISPLAY REPAIR
-   Wide landscape videos filling the student area
-===================================================== */
 
-#studentGallery {
-    display: grid !important;
-    grid-template-columns: repeat(
-        auto-fit,
-        minmax(min(100%, 240px), 1fr)
-    ) !important;
-
-    width: 100% !important;
-    min-width: 0 !important;
-    align-content: start !important;
-    align-items: start !important;
-    justify-items: stretch !important;
-    gap: 12px !important;
-    padding: 0 !important;
-}
-
-#studentGallery .remote-video-card,
-#studentGallery .student-video-card {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-}
-
-#studentGallery video {
-    display: block !important;
-    width: 100% !important;
-    max-width: none !important;
-    height: auto !important;
-    aspect-ratio: 16 / 9 !important;
-    object-fit: cover !important;
-    background: #172c47 !important;
-    border-radius: 8px !important;
-}
-
-@media (max-width: 700px) {
-    #studentGallery {
-        grid-template-columns: repeat(
-            auto-fit,
-            minmax(min(100%, 180px), 1fr)
-        ) !important;
-    }
-}
 <style>
 
 /* BEA — Make student waiting message visible */
@@ -810,11 +759,10 @@ main {
 .live-gallery {
   display: grid !important;
   grid-template-columns: minmax(0, 34%) minmax(0, 66%) !important;
-  grid-template-rows: auto auto auto !important;
+  grid-template-rows: auto minmax(0, auto) !important;
   grid-template-areas:
     "title title"
-    "teacher students"
-    "hall students" !important;
+    "teacher students" !important;
   align-items: start !important;
   justify-items: stretch !important;
   column-gap: 0 !important;
@@ -839,28 +787,11 @@ main {
 }
 .live-gallery > .student-gallery-area {
   grid-area: students !important;
-  grid-row: 2 / 4 !important;
   align-self: start !important;
   justify-self: stretch !important;
   margin: 0 !important;
   padding: 0 !important;
   min-width: 0 !important;
-}
-.live-gallery > .hall-view-area {
-  display: block !important;
-  grid-area: hall !important;
-  align-self: start !important;
-  justify-self: stretch !important;
-  min-width: 0 !important;
-  margin: 14px 0 0 !important;
-  padding: 0 !important;
-}
-.live-gallery > .hall-view-area > h3 {
-  display: block !important;
-  min-height: 22px !important;
-  margin: 0 0 10px !important;
-  padding: 0 !important;
-  line-height: 22px !important;
 }
 .live-gallery > .teacher-front-area > h3,
 .live-gallery > .student-gallery-area > h3 {
@@ -876,46 +807,12 @@ main {
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
-/* Whole-hall camera is shown below the teacher in the left column. */
+.live-gallery > .hall-view-area { display: none !important; }
 @media (max-width: 700px) {
   .live-gallery {
     grid-template-columns: minmax(0, 1fr) !important;
-    grid-template-rows: auto auto auto auto !important;
-    grid-template-areas: "title" "teacher" "hall" "students" !important;
-  }
-  .live-gallery > .student-gallery-area { grid-row: auto !important; }
-  .live-gallery > .hall-view-area { margin-top: 14px !important; }
-}
-
-
-/* BEA FINAL PRESENTATION TUNE — remove the student name strip and give
-   live learner feeds more visible screen area. CSS only: no camera,
-   Supabase, WebRTC, attendance, chat or whiteboard logic is changed. */
-#studentGallery .remote-video-name,
-#studentGallery .student-name {
-  display: none !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-}
-#studentGallery .remote-video-card,
-#studentGallery .student-video-card {
-  align-self: start !important;
-  justify-content: flex-start !important;
-  gap: 0 !important;
-}
-#studentGallery video {
-  width: 100% !important;
-  max-width: none !important;
-  height: clamp(260px, 42vw, 420px) !important;
-  object-fit: contain !important;
-  background: transparent !important;
-}
-@media (max-width: 700px) {
-  #studentGallery video {
-    height: clamp(220px, 65vw, 340px) !important;
+    grid-template-rows: auto auto auto !important;
+    grid-template-areas: "title" "teacher" "students" !important;
   }
 }
 
@@ -1153,7 +1050,7 @@ function updateParticipantList(){
 function removeRemoteParticipant(id){
  Object.keys(remoteVideoTiles).filter(k=>k.startsWith(id+'_')).forEach(k=>{remoteVideoTiles[k].remove();delete remoteVideoTiles[k];});
  const audio=$('remoteAudio_'+id);if(audio)audio.remove();
- if(peerConnections[id]){clearInterval(peerConnections[id].statsTimer);clearTimeout(peerConnections[id].recoveryTimer);peerConnections[id].pc.close();delete peerConnections[id];}
+ if(peerConnections[id]){clearInterval(peerConnections[id].statsTimer);peerConnections[id].pc.close();delete peerConnections[id];}
 }
 function updateEmptyMessages(){
  const teacherStage=$('teacherFrontStage'),studentStage=$('studentGallery');
@@ -1187,7 +1084,6 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
   if(classroomChannel){await beaSupabase.removeChannel(classroomChannel);classroomChannel=null;}
   Object.keys(peerConnections).forEach(removeRemoteParticipant);connectedParticipants={};currentRoomCode=code;$('roomCode').value=code;showRoomLink(code);
   setEntry('Connecting to classroom '+code+'...');
-  boardSyncReady=false;updateBoardPermissions();
   classroomChannel=beaSupabase.channel('bea-classroom-'+code,{config:{presence:{key:currentParticipantId},broadcast:{self:false}}});
   classroomChannel
    .on('presence',{event:'sync'},()=>updatePresence(classroomChannel.presenceState()))
@@ -1207,19 +1103,7 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
 })
   
     .on('broadcast',{event:'class-hand'},({payload})=>{if(payload?.senderId!==currentParticipantId){if(connectedParticipants[payload.senderId])connectedParticipants[payload.senderId].hand=!!payload.raised;updateParticipantList();addMessage('BEA Assistant',(payload.name||'A participant')+(payload.raised?' raised a hand.':' lowered a hand.'),true);}})
-   .on('broadcast',{event:'board-op'},({payload})=>{
-    if(payload?.senderId!==currentParticipantId && currentParticipantRole==='student')applyRemoteBoardOperation(payload.op);
-   })
-   .on('broadcast',{event:'board-state-request'},({payload})=>{
-    if(payload?.senderId!==currentParticipantId && currentParticipantRole==='teacher')sendBoardSnapshot();
-   })
-   .on('broadcast',{event:'board-state'},({payload})=>{
-    if(payload?.senderId!==currentParticipantId && currentParticipantRole==='student' && payload?.data){
-     const img=new Image();
-     img.onload=()=>{ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);boardStyle=payload.style||'marker';surface.classList.toggle('chalk-mode',boardStyle==='chalk');};
-     img.src=payload.data;
-    }
-   })
+   .on('broadcast',{event:'board-op'},({payload})=>{if(payload?.senderId!==currentParticipantId)applyRemoteBoardOperation(payload.op);})
    .subscribe(async status=>{
     if(status==='SUBSCRIBED'){
         await classroomChannel.track({
@@ -1239,15 +1123,6 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
             showLocalStudentInGallery(teacherStream);
         }
 
-        boardSyncReady=true;
-        updateBoardPermissions();
-        if(currentParticipantRole==='student'){
-          setTimeout(requestBoardSnapshot,500);
-        }else if(currentParticipantRole==='teacher'){
-          // Send the current board after joining so learners already in the room
-          // also receive the latest board state.
-          setTimeout(sendBoardSnapshot,900);
-        }
         setEntry('Connected to '+code+'. Share the invitation link with your students.');
         $('roomBadge').textContent='Connected · '+code;
         cameraStatus.textContent='● Connected to '+code;
@@ -1263,12 +1138,6 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
  }
 }
 
-function getLocalStreamTypes(){
- const types={};
- if(teacherStream)types[teacherStream.id]=currentParticipantRole==='teacher'?'teacher':'student';
- if(hallStream)types[hallStream.id]='hall';
- return types;
-}
 async function sendRtcSignal(to,signal,streamTypes){
  if(!classroomChannel)return;
 
@@ -1280,9 +1149,7 @@ async function sendRtcSignal(to,signal,streamTypes){
    to,
    name:$('displayName').value,
    role:currentParticipantRole,
-   // Stream IDs let the receiving device distinguish the teacher camera,
-   // whole-hall camera and an individual learner camera.
-   streamTypes:streamTypes||getLocalStreamTypes(),
+   streamTypes,
    signal
   }
  });
@@ -1591,20 +1458,8 @@ console.error('BEA NEW WEBRTC CODE IS RUNNING');
  pc.onconnectionstatechange=()=>{
   console.log('BEA CONNECTION:',name,pc.connectionState);
 
-  if(pc.connectionState==='connected'){
-   clearTimeout(conn.recoveryTimer);
-   conn.recoveryTimer=null;
-  }else if(pc.connectionState==='disconnected'){
-   // Give short network interruptions time to recover before restarting ICE.
-   clearTimeout(conn.recoveryTimer);
-   conn.recoveryTimer=setTimeout(()=>{
-    if(pc.connectionState==='disconnected'||pc.connectionState==='failed'){
-     try{pc.restartIce();}catch(e){console.warn('BEA ICE restart:',e);}
-    }
-   },2500);
-  }else if(pc.connectionState==='failed'){
-   clearTimeout(conn.recoveryTimer);
-   try{pc.restartIce();}catch(e){console.warn('BEA ICE restart:',e);}
+  if(pc.connectionState==='failed'){
+   pc.restartIce();
   }
  };
 
@@ -1953,173 +1808,41 @@ async function setHand(raised){
 }
 $('handBtn').onclick=()=>setHand(true);$('lowerHandBtn').onclick=()=>setHand(false);
 
-/* BEA SHARED LIVE BOARD — teacher writes, every student sees the same board. */
+/* Whiteboard: Marker, chalk, handwriting, text and eraser. */
 const canvas=$('board'),ctx=canvas.getContext('2d'),surface=$('boardSurface'),editor=$('textEditor');
-let activeTool='marker',boardStyle='marker',drawing=false,lastPoint=null,editorPoint=null;
-let boardSyncReady=false;
-function boardTeacher(){
- return currentRoomCode
-   ? currentParticipantRole==='teacher'
-   : $('role').value.toLowerCase()==='teacher';
-}
-function updateBoardPermissions(){
- const allowed=boardTeacher();
- document.querySelectorAll('.board-tools button,.board-tools input').forEach(el=>{
-   el.disabled=!allowed;
-   el.title=allowed?'':'Only the teacher can edit the shared board.';
- });
- canvas.style.pointerEvents=allowed?'auto':'none';
- editor.readOnly=!allowed;
- $('boardInstruction').textContent=allowed
-  ? 'Teacher board: changes are shared live with students.'
-  : 'Live classroom board: the teacher controls writing; updates appear here automatically.';
- const status=$('boardSyncStatus');
- if(status)status.textContent=allowed?'Teacher editing enabled':'Live student view — read only';
-}
-function sendBoardOperation(op){
- if(!boardTeacher()||!classroomChannel||!boardSyncReady)return;
- classroomChannel.send({type:'broadcast',event:'board-op',payload:{senderId:currentParticipantId,op}})
-  .catch(e=>console.warn('BEA board broadcast:',e));
-}
-function canvasPoint(e){
- const r=canvas.getBoundingClientRect();
- return {x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height};
-}
+let activeTool='marker',drawing=false,lastPoint=null,editorPoint=null;
+function canvasPoint(e){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height};}
 function chooseTool(tool){
- if(!boardTeacher())return;
  if(editor.style.display==='block')commitText();
- activeTool=tool;
- if(['marker','chalk','handwriting'].includes(tool))boardStyle=tool;
- document.querySelectorAll('.tool-button').forEach(b=>b.classList.remove('active'));
- const map={marker:'markerBtn',chalk:'chalkBtn',handwriting:'handwritingBtn',text:'textBtn',eraser:'eraseBtn'};
- $(map[tool]).classList.add('active');
- surface.classList.toggle('chalk-mode',boardStyle==='chalk');
- $('boardInstruction').textContent=tool==='text'
-  ? 'Text selected: click the board, type, then press Ctrl + Enter.'
-  : tool==='eraser'?'Eraser selected: drag over writing to erase it.'
-  : tool.toUpperCase()+' selected. Your writing is shared live with students.';
+ activeTool=tool;document.querySelectorAll('.tool-button').forEach(b=>b.classList.remove('active'));
+ const map={marker:'markerBtn',chalk:'chalkBtn',handwriting:'handwritingBtn',text:'textBtn',eraser:'eraseBtn'};$(map[tool]).classList.add('active');
+ surface.classList.toggle('chalk-mode',tool==='chalk');
+ $('boardInstruction').textContent=tool==='text'?'Text selected: click the board, type, then press Ctrl + Enter.':tool==='eraser'?'Eraser selected: drag over writing to erase it.':' '+tool.toUpperCase()+' selected: draw with mouse, finger or stylus.';
  canvas.style.cursor=tool==='text'?'text':tool==='eraser'?'cell':'crosshair';
- sendBoardOperation({type:'style',style:boardStyle});
 }
-$('markerBtn').onclick=()=>chooseTool('marker');
-$('chalkBtn').onclick=()=>chooseTool('chalk');
-$('handwritingBtn').onclick=()=>chooseTool('handwriting');
-$('textBtn').onclick=()=>chooseTool('text');
-$('eraseBtn').onclick=()=>chooseTool('eraser');
-
-function renderBoardSegment(a,b,style,color,size){
- ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=Number(size);ctx.strokeStyle=color;
- if(style==='eraser'){ctx.globalCompositeOperation='destination-out';ctx.lineWidth=Number(size)*4;}
- else if(style==='chalk'){ctx.globalAlpha=.78;ctx.shadowColor=color;ctx.shadowBlur=4;ctx.lineWidth=Number(size)*1.5;}
- else if(style==='handwriting'){ctx.lineWidth=Number(size)*.8;}
+$('markerBtn').onclick=()=>chooseTool('marker');$('chalkBtn').onclick=()=>chooseTool('chalk');$('handwritingBtn').onclick=()=>chooseTool('handwriting');$('textBtn').onclick=()=>chooseTool('text');$('eraseBtn').onclick=()=>chooseTool('eraser');
+function drawSegment(a,b){
+ ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=Number($('penSize').value);ctx.strokeStyle=$('penColor').value;
+ if(activeTool==='eraser'){ctx.globalCompositeOperation='destination-out';ctx.lineWidth=Number($('penSize').value)*4;}
+ else if(activeTool==='chalk'){ctx.globalAlpha=.72;ctx.shadowColor=$('penColor').value;ctx.shadowBlur=4;ctx.lineWidth=Number($('penSize').value)*1.5;}
+ else if(activeTool==='handwriting'){ctx.lineWidth=Number($('penSize').value)*.8;}
  ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.restore();
 }
-function drawSegment(a,b){
- const style=activeTool==='eraser'?'eraser':boardStyle;
- const color=$('penColor').value,size=Number($('penSize').value);
- renderBoardSegment(a,b,style,color,size);
- sendBoardOperation({type:'segment',a,b,style,color,size});
-}
 canvas.addEventListener('pointerdown',e=>{
- if(!boardTeacher())return;
- e.preventDefault();
- if(activeTool==='text'){openEditor(canvasPoint(e));return;}
- drawing=true;lastPoint=canvasPoint(e);canvas.setPointerCapture(e.pointerId);
- drawSegment(lastPoint,{x:lastPoint.x+.1,y:lastPoint.y+.1});
+ e.preventDefault();if(activeTool==='text'){openEditor(canvasPoint(e));return;}
+ drawing=true;lastPoint=canvasPoint(e);canvas.setPointerCapture(e.pointerId);drawSegment(lastPoint,{x:lastPoint.x+.1,y:lastPoint.y+.1});
 });
-canvas.addEventListener('pointermove',e=>{
- if(!drawing||!boardTeacher())return;
- const p=canvasPoint(e);drawSegment(lastPoint,p);lastPoint=p;
-});
+canvas.addEventListener('pointermove',e=>{if(!drawing)return;const p=canvasPoint(e);drawSegment(lastPoint,p);lastPoint=p;});
 function stopDrawing(){drawing=false;lastPoint=null;}
-canvas.addEventListener('pointerup',stopDrawing);
-canvas.addEventListener('pointercancel',stopDrawing);
-canvas.addEventListener('pointerleave',()=>{if(drawing)stopDrawing();});
-function openEditor(p){
- if(!boardTeacher())return;
- editorPoint=p;editor.value='';editor.style.display='block';
- editor.style.paddingLeft=Math.max(8,p.x*canvas.clientWidth/canvas.width)+'px';
- editor.style.paddingTop=Math.max(8,p.y*canvas.clientHeight/canvas.height)+'px';
- editor.style.color=$('penColor').value;
- editor.style.fontFamily=boardStyle==='handwriting'?'"Comic Sans MS",cursive':'Arial,sans-serif';
- editor.focus();
-}
-function renderBoardText(op){
- ctx.save();ctx.fillStyle=op.color;
- ctx.font=(op.style==='handwriting'?'italic ':'bold ')+(Number(op.size)*5)+'px '+(op.style==='handwriting'?'cursive':'Arial');
- ctx.textBaseline='top';
- const max=canvas.width-op.x-12,lineH=Number(op.size)*7;let y=op.y;
- String(op.value).split('\n').forEach(par=>{
-  let line='';
-  par.split(/\s+/).forEach(word=>{
-   const test=line?line+' '+word:word;
-   if(ctx.measureText(test).width>max&&line){ctx.fillText(line,op.x,y);y+=lineH;line=word;}
-   else line=test;
-  });
-  if(line){ctx.fillText(line,op.x,y);y+=lineH;}
- });
- ctx.restore();
-}
-function commitText(){
- if(editor.style.display!=='block')return;
- const value=editor.value.trim();
- if(value&&editorPoint){
-  const op={type:'text',value,x:editorPoint.x,y:editorPoint.y,style:boardStyle,color:$('penColor').value,size:Number($('penSize').value)};
-  renderBoardText(op);sendBoardOperation(op);
- }
- editor.style.display='none';editor.value='';editorPoint=null;
-}
-editor.addEventListener('keydown',e=>{
- if(e.key==='Enter'&&e.ctrlKey){e.preventDefault();commitText();}
- if(e.key==='Escape'){editor.value='';commitText();}
-});
+canvas.addEventListener('pointerup',stopDrawing);canvas.addEventListener('pointercancel',stopDrawing);canvas.addEventListener('pointerleave',()=>{if(drawing)stopDrawing();});
+function openEditor(p){editorPoint=p;editor.value='';editor.style.display='block';editor.style.paddingLeft=Math.max(8,p.x*canvas.clientWidth/canvas.width)+'px';editor.style.paddingTop=Math.max(8,p.y*canvas.clientHeight/canvas.height)+'px';editor.style.color=$('penColor').value;editor.style.fontFamily=activeTool==='handwriting'?'"Comic Sans MS",cursive':'Arial,sans-serif';editor.focus();}
+function commitText(){if(editor.style.display!=='block')return;const value=editor.value.trim();if(value&&editorPoint){ctx.save();ctx.fillStyle=$('penColor').value;ctx.font=(activeTool==='handwriting'?'italic ':'bold ')+(Number($('penSize').value)*5)+'px '+(activeTool==='handwriting'?'cursive':'Arial');ctx.textBaseline='top';const max=canvas.width-editorPoint.x-12,lineH=Number($('penSize').value)*7;let y=editorPoint.y;value.split('\n').forEach(par=>{let line='';par.split(/\\s+/).forEach(word=>{const test=line?line+' '+word:word;if(ctx.measureText(test).width>max&&line){ctx.fillText(line,editorPoint.x,y);y+=lineH;line=word;}else line=test;});if(line){ctx.fillText(line,editorPoint.x,y);y+=lineH;}});ctx.restore();}editor.style.display='none';editor.value='';editorPoint=null;}
+editor.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey){e.preventDefault();commitText();}if(e.key==='Escape'){editor.value='';commitText();}});
 $('penSize').addEventListener('input',e=>$('penSizeValue').textContent=e.target.value);
-
-function applyRemoteBoardOperation(op){
- if(!op||!op.type)return;
- if(op.type==='segment')renderBoardSegment(op.a,op.b,op.style,op.color,op.size);
- else if(op.type==='text')renderBoardText(op);
- else if(op.type==='clear'){ctx.clearRect(0,0,canvas.width,canvas.height);}
- else if(op.type==='style'){
-  boardStyle=op.style||'marker';surface.classList.toggle('chalk-mode',boardStyle==='chalk');
- }
-}
-async function sendBoardSnapshot(){
- if(!classroomChannel||currentParticipantRole!=='teacher')return;
- try{
-  const temp=document.createElement('canvas');temp.width=canvas.width;temp.height=canvas.height;
-  const tctx=temp.getContext('2d');
-  if(surface.classList.contains('chalk-mode')){tctx.fillStyle='#263b32';tctx.fillRect(0,0,temp.width,temp.height);}
-  else {tctx.fillStyle='#ffffff';tctx.fillRect(0,0,temp.width,temp.height);}
-  tctx.drawImage(canvas,0,0);
-  let data=temp.toDataURL('image/jpeg',.55);
-  if(data.length>180000){
-   const small=document.createElement('canvas');small.width=800;small.height=Math.round(800*canvas.height/canvas.width);
-   small.getContext('2d').drawImage(temp,0,0,small.width,small.height);
-   data=small.toDataURL('image/jpeg',.5);
-  }
-  await classroomChannel.send({type:'broadcast',event:'board-state',payload:{senderId:currentParticipantId,data,style:boardStyle}});
- }catch(e){console.warn('BEA board snapshot could not be sent:',e);}
-}
-function requestBoardSnapshot(){
- if(!classroomChannel||currentParticipantRole!=='student')return;
- classroomChannel.send({type:'broadcast',event:'board-state-request',payload:{senderId:currentParticipantId}})
-  .catch(e=>console.warn('BEA board state request:',e));
-}
-$('clearBtn').onclick=()=>{
- if(!boardTeacher())return;
- if(confirm('Are you sure you want to clear the entire shared board?')){
-  editor.style.display='none';editor.value='';editorPoint=null;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  sendBoardOperation({type:'clear'});
-  $('boardInstruction').textContent='Board cleared. Students see the cleared board too.';
- }
-};
-$('role').addEventListener('change',updateBoardPermissions);
-updateBoardPermissions();
+$('clearBtn').onclick=()=>{if(confirm('Are you sure you want to clear the entire board?')){editor.style.display='none';editor.value='';editorPoint=null;ctx.clearRect(0,0,canvas.width,canvas.height);$('boardInstruction').textContent='Board cleared. Select a tool to continue.';}};
 async function cleanup(){
  if(classroomChannel&&beaSupabase)await beaSupabase.removeChannel(classroomChannel);
- Object.keys(peerConnections).forEach(id=>{const c=peerConnections[id];clearInterval(c.statsTimer);clearTimeout(c.recoveryTimer);c.pc.close();});
+ Object.keys(peerConnections).forEach(id=>{const c=peerConnections[id];clearInterval(c.statsTimer);c.pc.close();});
  [teacherStream,hallStream,microphoneStream].forEach(s=>s?.getTracks().forEach(t=>t.stop()));
 }
 window.addEventListener('beforeunload',()=>{cleanup();});
@@ -2212,3 +1935,33 @@ window.addEventListener('error', function(e) {
 </body>
 </html>
 
+/* BEA FINAL PRESENTATION TUNE — remove the student name strip and give
+   live learner feeds more visible screen area. CSS only: no camera,
+   Supabase, WebRTC, attendance, chat or whiteboard logic is changed. */
+#studentGallery .remote-video-name,
+#studentGallery .student-name {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+#studentGallery .remote-video-card,
+#studentGallery .student-video-card {
+  align-self: start !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+}
+#studentGallery video {
+  width: 100% !important;
+  max-width: none !important;
+  height: clamp(260px, 42vw, 420px) !important;
+  object-fit: contain !important;
+  background: transparent !important;
+}
+@media (max-width: 700px) {
+  #studentGallery video {
+    height: clamp(220px, 65vw, 340px) !important;
+  }
+}
