@@ -828,53 +828,30 @@ body.bea-student #board{cursor:default!important}
 .board-live-status{font-size:12px;color:#16834a;font-weight:700;margin-left:auto}
 
 
-
-/* BEA FIX: keep the teaching board in its own normal-flow row below cameras.
-   The live preview is layered ONLY over the board canvas, never over video tiles. */
+/* BEA FIX: keep the shared teaching board in normal document flow directly
+   below the live camera gallery. It must never occupy a participant video tile. */
+.stage { display:block !important; min-width:0; }
+.live-gallery { position:relative !important; display:grid !important; width:100% !important; }
 .board-wrap {
-  display: block !important;
-  position: relative !important;
-  z-index: 1 !important;
-  clear: both !important;
-  width: 100% !important;
-  margin: 18px 0 0 !important;
-  overflow: visible !important;
+  display:block !important; position:relative !important; isolation:isolate;
+  clear:both; float:none !important; width:100% !important; max-width:100%;
+  margin:18px 0 0 !important; padding:16px !important;
+  background:#fff !important; border:1px solid var(--line) !important;
+  border-radius:14px; overflow:visible !important; z-index:1;
 }
 .board-surface {
-  display: block !important;
-  position: relative !important;
-  isolation: isolate !important;
-  width: 100% !important;
-  height: 300px !important;
-  min-height: 300px !important;
-  overflow: hidden !important;
-  background: #fff !important;
+  position:relative !important; display:block !important; width:100% !important;
+  height:300px !important; min-height:300px !important; overflow:hidden !important;
+  background:#fff !important;
 }
-.board-surface > #board,
-.board-surface > #boardLivePreview {
-  position: absolute !important;
-  inset: 0 !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 0 !important;
-  max-width: 100% !important;
+#board, #boardLivePreview {
+  position:absolute !important; inset:0 !important; display:block !important;
+  width:100% !important; height:100% !important; min-height:0 !important;
 }
-.board-surface > #board { z-index: 1 !important; }
-.board-surface > #boardLivePreview {
-  z-index: 2 !important;
-  pointer-events: none !important;
-  background: transparent !important;
-}
-.board-surface > #textEditor {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 3 !important;
-  width: 100% !important;
-  height: 100% !important;
-}
-.live-gallery { position: relative !important; z-index: 0 !important; }
-
+#board { z-index:1; background:#fff; }
+#boardLivePreview { z-index:2; pointer-events:none !important; background:transparent !important; }
+#textEditor { z-index:3 !important; width:100% !important; height:100% !important; }
+@media (max-width:700px) { .board-surface { height:260px !important; min-height:260px !important; } }
 </style>
 </head>
 <body>
@@ -952,8 +929,6 @@ body.bea-student #board{cursor:default!important}
   </div>
 
 </div>
-  
-</div><!-- END CAMERA STAGE -->
 
 <!-- BEA INTERACTIVE CHALKBOARD -->
 <div class="board-wrap">
@@ -972,7 +947,7 @@ body.bea-student #board{cursor:default!important}
     <textarea
       id="textEditor"
       spellcheck="false"
-      placeholder="Start typing your lesson here... Students see your typing live."
+      placeholder="Start typing your lesson here..."
     ></textarea>
   </div>
 
@@ -1004,6 +979,8 @@ body.bea-student #board{cursor:default!important}
 
 </div>
 <!-- END INTERACTIVE CHALKBOARD -->
+
+</div><!-- END CAMERA STAGE: camera area followed by separate teaching board -->
 
 </section><!-- END TEACHING PANEL -->
 
@@ -1960,8 +1937,8 @@ function broadcastLiveText(){
 editor.addEventListener('input',()=>{
  if(!isTeacher())return;
  clearTimeout(liveTextTimer);
- // A short delay groups key events slightly while keeping the writing visibly live.
- liveTextTimer=setTimeout(broadcastLiveText,45);
+ // Send each edit immediately so learners see the teacher type naturally.
+ broadcastLiveText();
 });
 function commitText(){
  if(editor.style.display!=='block')return;
