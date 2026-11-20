@@ -1191,7 +1191,16 @@ const $=id=>document.getElementById(id);
 const teacherCamera=$('teacherCamera'), hallCamera=$('hallCamera');
 const teacherSelect=$('teacherCameraSelect'), hallSelect=$('hallCameraSelect');
 const cameraStatus=$('connectionStatus'), messages=$('messages');
-const RTC_CONFIG={iceServers:[{urls:'stun:stun.l.google.com:19302'}]};
+// Multiple STUN services improve candidate discovery across different networks.
+// A TURN relay may still be required on restrictive school/mobile networks.
+const RTC_CONFIG={
+ iceServers:[
+  {urls:'stun:stun.l.google.com:19302'},
+  {urls:'stun:stun.cloudflare.com:3478'},
+  {urls:'stun:stun1.l.google.com:19302'}
+ ],
+ iceCandidatePoolSize:10
+};
 
 function hasSupabaseConfig(){
  return /^https:\/\/.+/.test(SUPABASE_URL) && SUPABASE_ANON_KEY.length>30 &&
@@ -1224,7 +1233,15 @@ function updatePresence(state){
  connectedParticipants=next;updateParticipantList();
 console.log('BEA PARTICIPANTS:', next);
 console.log('BEA PEER CONNECTIONS:', peerConnections);
-Object.values(next).forEach(p=>{if(p.id!==currentParticipantId && currentParticipantId.localeCompare(p.id)<0 && !peerConnections[p.id])startRtcOffer(p);});
+Object.values(next).forEach(p=>{
+  if(p.id===currentParticipantId)return;
+  // Both participants prepare a peer connection; only one side creates the first offer.
+  const conn=createPeerConnection(p.id,p.name,p.role);
+  if(currentParticipantId.localeCompare(p.id)<0 && !conn.initialOfferStarted){
+   conn.initialOfferStarted=true;
+   startRtcOffer(p);
+  }
+ });
 }
 async function connectToClassroom(code,role,name){
  code=String(code||'').toUpperCase().trim();name=String(name||'').trim();role=String(role||'Student').toLowerCase();
@@ -1564,7 +1581,7 @@ function removeRemoteVideoForParticipant(id, streamType) {
 
 
 function createPeerConnection(id,name,role='student'){
-console.error('BEA NEW WEBRTC CODE IS RUNNING');
+console.log('BEA WebRTC peer connection created');
   if(peerConnections[id])return peerConnections[id];
 
  const pc=new RTCPeerConnection(RTC_CONFIG);
@@ -1579,6 +1596,9 @@ console.error('BEA NEW WEBRTC CODE IS RUNNING');
   negotiationPending:false,
   ignoreOffer:false,
   polite:currentParticipantId.localeCompare(id)>0,
+  initialOfferStarted:false,
+  offerRetryTimer:null,
+  offerRetryCount:0,
   statsTimer:null
  };
 
@@ -1632,8 +1652,13 @@ console.error('BEA NEW WEBRTC CODE IS RUNNING');
  pc.onconnectionstatechange=()=>{
   console.log('BEA CONNECTION:',name,pc.connectionState);
 
-  if(pc.connectionState==='failed'){
-   pc.restartIce();
+  if(pc.connectionState==='connected'){
+   if(conn.offerRetryTimer){clearInterval(conn.offerRetryTimer);conn.offerRetryTimer=null;}
+   conn.offerRetryCount=0;
+  }else if(pc.connectionState==='failed'){
+   console.warn('BEA peer connection failed; restarting ICE for',name);
+   try{pc.restartIce();}catch(e){console.warn('ICE restart could not start:',e);}
+   if(conn.polite===false && !conn.offerRetryTimer)startOfferRecovery(conn,id);
   }
  };
 
@@ -1715,20 +1740,34 @@ async function negotiatePeer(conn,id){
   }
  }
 }
+function startOfferRecovery(conn,id){
+ if(conn.offerRetryTimer)return;
+ conn.offerRetryTimer=setInterval(async()=>{
+  const pc=conn.pc;
+  if(pc.connectionState==='connected'||pc.connectionState==='closed'){
+   clearInterval(conn.offerRetryTimer);conn.offerRetryTimer=null;return;
+  }
+  if(conn.offerRetryCount>=5){
+   clearInterval(conn.offerRetryTimer);conn.offerRetryTimer=null;
+   console.warn('BEA video connection still unavailable. This network may require a TURN relay.');
+   return;
+  }
+  conn.offerRetryCount++;
+  try{
+   if(pc.signalingState==='have-local-offer'){
+    await pc.setLocalDescription({type:'rollback'});
+   }
+   if(pc.signalingState==='stable')await negotiatePeer(conn,id);
+  }catch(e){console.warn('BEA offer recovery attempt failed:',e);}
+ },5000);
+}
 async function startRtcOffer(person){
  try{
-  const conn=createPeerConnection(
-   person.id,
-   person.name,
-   person.role
-  );
-
+  const conn=createPeerConnection(person.id,person.name,person.role);
+  conn.initialOfferStarted=true;
   await negotiatePeer(conn,person.id);
-   
-
- }catch(e){
-  console.error('BEA offer error:',e);
- }
+  startOfferRecovery(conn,person.id);
+ }catch(e){console.error('BEA offer error:',e);}
 }
 async function handleRtcSignal(payload){
  if(!payload||payload.to!==currentParticipantId||!payload.signal)return;
@@ -1825,8 +1864,17 @@ async function handleRtcSignal(payload){
 }
 async function addStreamToExistingPeers(stream){
  for(const id of Object.keys(peerConnections)){
-  const pc=peerConnections[id].pc;
-  stream.getTracks().forEach(track=>{if(!pc.getSenders().some(s=>s.track===track))pc.addTrack(track,stream);});
+  const conn=peerConnections[id],pc=conn.pc;
+  let added=false;
+  stream.getTracks().forEach(track=>{
+   if(!pc.getSenders().some(sender=>sender.track===track)){
+    pc.addTrack(track,stream);added=true;
+   }
+  });
+  // Explicitly request renegotiation after adding a camera or microphone.
+  if(added && pc.signalingState==='stable'){
+   setTimeout(()=>negotiatePeer(conn,id),0);
+  }
  }
 }
 async function removeStreamFromPeers(stream){
