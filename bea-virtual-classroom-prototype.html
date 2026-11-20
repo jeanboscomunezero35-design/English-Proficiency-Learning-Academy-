@@ -183,7 +183,8 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .board-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.board-title h3{margin:0;color:var(--navy);font-size:15px}
 .board-surface{position:relative;width:100%;border-radius:10px;overflow:hidden;background:white;border:1px solid #d9e1ea}
 canvas{width:100%;height:300px;background:white;touch-action:none;display:block;cursor:crosshair}
-.board-surface.chalk-mode canvas{background:#263b32}
+.board-surface.chalk-mode #board{background:#263b32}
+#boardLivePreview{position:absolute;inset:0;width:100%;height:300px;z-index:3;pointer-events:none;background:transparent}
 #textEditor{position:absolute;display:none;z-index:5;left:0;top:0;width:100%;height:100%;padding:8px;border:1px dashed var(--gold);outline:none;resize:none;overflow:auto;background:transparent;font-size:25px;font-weight:bold;line-height:1.5;color:#173b67;font-family:Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
 .board-tools{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .pen-tool{display:flex;align-items:center;gap:9px;min-height:43px;padding:6px 11px;background:#eaf4ff;border:1px solid #c5d9ed;border-radius:10px}
@@ -918,6 +919,7 @@ body.bea-student #board{cursor:default!important}
 
   <div class="board-surface" id="boardSurface">
     <canvas id="board" width="1100" height="360"></canvas>
+    <canvas id="boardLivePreview" width="1100" height="360" aria-hidden="true"></canvas>
 
     <textarea
       id="textEditor"
@@ -1116,6 +1118,7 @@ currentParticipantId=user.id+':'+crypto.randomUUID();
   
     .on('broadcast',{event:'class-hand'},({payload})=>{if(payload?.senderId!==currentParticipantId){if(connectedParticipants[payload.senderId])connectedParticipants[payload.senderId].hand=!!payload.raised;updateParticipantList();addMessage('BEA Assistant',(payload.name||'A participant')+(payload.raised?' raised a hand.':' lowered a hand.'),true);}})
    .on('broadcast',{event:'board-op'},({payload})=>{if(payload?.senderId!==currentParticipantId)applyRemoteBoardOperation(payload.op);})
+   .on('broadcast',{event:'board-text-live'},({payload})=>{if(payload?.senderId!==currentParticipantId)applyRemoteTextPreview(payload);})
    .on('broadcast',{event:'board-snapshot-request'},({payload})=>{if(currentParticipantRole==='teacher' && payload?.senderId!==currentParticipantId)sendBoardSnapshot();})
    .on('broadcast',{event:'board-snapshot'},({payload})=>{if(payload?.senderId!==currentParticipantId && payload?.image)applyBoardSnapshot(payload.image);})
    .subscribe(async status=>{
@@ -1827,6 +1830,8 @@ $('handBtn').onclick=()=>setHand(true);$('lowerHandBtn').onclick=()=>setHand(fal
 
 /* Shared whiteboard: teacher edits, all participants receive live operations. */
 const canvas=$('board'),ctx=canvas.getContext('2d'),surface=$('boardSurface'),editor=$('textEditor');
+const livePreview=$('boardLivePreview'),livePreviewCtx=livePreview.getContext('2d');
+let liveTextTimer=null;
 let activeTool='marker',drawing=false,lastPoint=null,editorPoint=null,strokePoints=[];
 const isTeacher=()=>currentParticipantRole==='teacher';
 function boardSend(op){
@@ -1859,9 +1864,22 @@ function drawTextOp(op){
 }
 function applyRemoteBoardOperation(op){
  if(!op)return;
+ if(op.type==='text'||op.type==='clear')clearLiveTextPreview();
  if(op.type==='stroke'&&Array.isArray(op.points)&&op.points.length){for(let i=1;i<op.points.length;i++)drawSegment(op.points[i-1],op.points[i],op.style||{});}
  else if(op.type==='text')drawTextOp(op);
  else if(op.type==='clear')ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+function clearLiveTextPreview(){livePreviewCtx.clearRect(0,0,livePreview.width,livePreview.height);}
+function applyRemoteTextPreview(payload){
+ clearLiveTextPreview();
+ if(!payload?.text||!payload?.point)return;
+ const op={type:'text',text:payload.text,x:payload.point.x,y:payload.point.y,color:payload.color||'#173b67',font:payload.font||'bold 24px Arial',lineH:payload.lineH||28};
+ drawTextOpOnContext(livePreviewCtx,op);
+}
+function drawTextOpOnContext(targetCtx,op){
+ targetCtx.save();targetCtx.fillStyle=op.color||'#173b67';targetCtx.font=op.font||'bold 24px Arial';targetCtx.textBaseline='top';
+ const max=canvas.width-op.x-12,lineH=op.lineH||28;let y=op.y;
+ String(op.text||'').split('\n').forEach(par=>{let line='';par.split(/\s+/).forEach(word=>{const test=line?line+' '+word:word;if(targetCtx.measureText(test).width>max&&line){targetCtx.fillText(line,op.x,y);y+=lineH;line=word;}else line=test;});if(line){targetCtx.fillText(line,op.x,y);y+=lineH;}});targetCtx.restore();
 }
 function applyBoardSnapshot(image){const img=new Image();img.onload=()=>{ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);};img.src=image;}
 function sendBoardSnapshot(){
@@ -1879,10 +1897,17 @@ canvas.addEventListener('pointermove',e=>{if(!drawing||!isTeacher())return;const
 function stopDrawing(){if(drawing&&strokePoints.length){boardSend({type:'stroke',points:strokePoints,style:{tool:activeTool,color:$('penColor').value,size:Number($('penSize').value)}});}drawing=false;lastPoint=null;strokePoints=[];}
 canvas.addEventListener('pointerup',stopDrawing);canvas.addEventListener('pointercancel',stopDrawing);canvas.addEventListener('pointerleave',()=>{if(drawing)stopDrawing();});
 function openEditor(p){if(!isTeacher())return;editorPoint=p;editor.value='';editor.style.display='block';editor.style.paddingLeft=Math.max(8,p.x*canvas.clientWidth/canvas.width)+'px';editor.style.paddingTop=Math.max(8,p.y*canvas.clientHeight/canvas.height)+'px';editor.style.color=$('penColor').value;editor.style.fontFamily=activeTool==='handwriting'? '"Comic Sans MS",cursive':'Arial,sans-serif';editor.focus();}
-function commitText(){if(editor.style.display!=='block')return;const value=editor.value.trim();if(value&&editorPoint){const op={type:'text',text:value,x:editorPoint.x,y:editorPoint.y,color:$('penColor').value,font:(activeTool==='handwriting'?'italic ':'bold ')+(Number($('penSize').value)*5)+'px '+(activeTool==='handwriting'?'cursive':'Arial'),lineH:Number($('penSize').value)*7};drawTextOp(op);boardSend(op);}editor.style.display='none';editor.value='';editorPoint=null;}
+function currentLiveTextOperation(value){return {type:'text',text:value,x:editorPoint?.x||0,y:editorPoint?.y||0,color:$('penColor').value,font:(activeTool==='handwriting'?'italic ':'bold ')+(Number($('penSize').value)*5)+'px '+(activeTool==='handwriting'?'cursive':'Arial'),lineH:Number($('penSize').value)*7};}
+function broadcastLiveText(){
+ if(!isTeacher()||!classroomChannel||!editorPoint)return;
+ const value=editor.value;
+ classroomChannel.send({type:'broadcast',event:'board-text-live',payload:{senderId:currentParticipantId,text:value,point:editorPoint,color:$('penColor').value,font:(activeTool==='handwriting'?'italic ':'bold ')+(Number($('penSize').value)*5)+'px '+(activeTool==='handwriting'?'cursive':'Arial'),lineH:Number($('penSize').value)*7}});
+}
+editor.addEventListener('input',()=>{if(!isTeacher())return;clearTimeout(liveTextTimer);liveTextTimer=setTimeout(broadcastLiveText,90);});
+function commitText(){if(editor.style.display!=='block')return;clearTimeout(liveTextTimer);const value=editor.value.trim();if(value&&editorPoint){const op=currentLiveTextOperation(value);drawTextOp(op);boardSend(op);}if(classroomChannel&&isTeacher())classroomChannel.send({type:'broadcast',event:'board-text-live',payload:{senderId:currentParticipantId,text:'',point:editorPoint}});editor.style.display='none';editor.value='';editorPoint=null;}
 editor.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey){e.preventDefault();commitText();}if(e.key==='Escape'){editor.value='';commitText();}});
 $('penSize').addEventListener('input',e=>$('penSizeValue').textContent=e.target.value);
-$('clearBtn').onclick=()=>{if(!isTeacher())return;if(confirm('Are you sure you want to clear the entire board?')){editor.style.display='none';editor.value='';editorPoint=null;ctx.clearRect(0,0,canvas.width,canvas.height);boardSend({type:'clear'});$('boardInstruction').textContent='Board cleared. Select a tool to continue.';}};
+$('clearBtn').onclick=()=>{if(!isTeacher())return;if(confirm('Are you sure you want to clear the entire board?')){editor.style.display='none';editor.value='';editorPoint=null;ctx.clearRect(0,0,canvas.width,canvas.height);clearLiveTextPreview();boardSend({type:'clear'});$('boardInstruction').textContent='Board cleared. Select a tool to continue.';}};
 async function cleanup(){
  if(classroomChannel&&beaSupabase)await beaSupabase.removeChannel(classroomChannel);
  Object.keys(peerConnections).forEach(id=>{const c=peerConnections[id];clearInterval(c.statsTimer);c.pc.close();});
