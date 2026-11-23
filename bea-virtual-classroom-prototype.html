@@ -978,7 +978,7 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
           <button class="secondary" id="scanCameras" type="button">🔎 Scan available cameras</button>
           <span id="cameraDiscoveryStatus" class="camera-note" role="status" aria-live="polite">Camera list is ready to scan.</span>
         </div>
-        <div class="camera-note" style="margin:0 0 12px">BEA scans camera devices made available to your browser by the computer. This can include built-in cameras, USB/UVC webcams from different manufacturers, phones enabled through USB webcam mode or compatible phone-webcam software, DSLR/mirrorless/HDMI cameras connected through a capture card, and PTZ or wireless cameras exposed through a compatible webcam driver, virtual camera, or streaming bridge. A phone cable or network camera alone does not always make its camera available to a browser; install/enable the manufacturer's supported webcam connection or compatible bridge, then select <b>Scan available cameras</b>.</div>
+        <div class="camera-note" style="margin:0 0 12px">BEA supports cameras recognised by your computer, including built-in webcams, USB webcams, and professional cameras connected through a compatible capture card. A phone can also be used if it is enabled as a webcam and appears in your computer's camera list.</div>
         <div class="camera-grid">
           <div class="camera-card" id="teacherCard">
             <div class="camera-heading"><span>🎥 CAMERA 1 — TEACHER</span><span>Teacher view</span></div>
@@ -2055,9 +2055,7 @@ $('startHall').onclick=()=>startVideo('hall');
 $('stopTeacher').onclick=()=>stopVideo('teacher');
 $('stopHall').onclick=()=>stopVideo('hall');
 
-if($('scanCameras')){
-  $('scanCameras').onclick=()=>refreshCameras(true);
-}
+// Camera scan click is attached by the independent safety handler near the end of this page.
 if($('refreshCameras')){
   $('refreshCameras').onclick=()=>refreshCameras(false);
 }
@@ -2404,6 +2402,42 @@ window.addEventListener('error', function(e) {
   box.textContent = 'BEA ERROR: ' + e.message +
     ' — Line: ' + e.lineno;
 });
+</script>
+
+<script>
+/* BEA CAMERA SCAN BUTTON SAFETY HANDLER */
+(function () {
+  function attachBEACameraScan() {
+    const button = document.getElementById('scanCameras');
+    if (!button || button.dataset.beaScanAttached === 'yes') return;
+    button.dataset.beaScanAttached = 'yes';
+    button.addEventListener('click', async function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const status = document.getElementById('cameraDiscoveryStatus');
+      button.disabled = true;
+      button.textContent = '⏳ Scanning cameras…';
+      if (status) status.textContent = 'Checking camera access. Your browser may ask you to allow camera permission.';
+      try {
+        if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+          throw new Error('Camera scanning requires HTTPS and a supported browser. Open the BEA site using its secure https address.');
+        }
+        await refreshCameras(true);
+      } catch (error) {
+        console.error('BEA camera scan button:', error);
+        if (status) status.textContent = error && error.message ? error.message : 'Camera scan could not start. Check browser camera permissions.';
+      } finally {
+        button.disabled = false;
+        button.textContent = '🔎 Scan available cameras';
+      }
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachBEACameraScan, { once: true });
+  } else {
+    attachBEACameraScan();
+  }
+})();
 </script>
 </body>
 </html>
