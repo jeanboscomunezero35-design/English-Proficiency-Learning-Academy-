@@ -929,12 +929,37 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
 #beaStudentColumnWritingText{white-space:pre-wrap}
 @media(max-width:600px){.bea-type-toolbar{gap:6px}.bea-rich-editor{font-size:18px;min-height:100px}}
 
-/* Microphone controls placed directly beneath participant video cards */
-.bea-video-mic-controls{display:flex;gap:7px;justify-content:center;align-items:center;flex-wrap:wrap;width:100%;margin:7px auto 10px}
-.bea-video-mic-controls button{border:0;border-radius:7px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;background:#1769aa;color:#fff}
-.bea-video-mic-controls button.is-muted{background:#8a3440}
-.bea-video-mic-status{font-size:11px;font-weight:700;color:#52647a;text-align:center}
 
+/* BEA FINAL PRESENTATION TUNE — remove the student name strip and give
+   live learner feeds more visible screen area. CSS only: no camera,
+   Supabase, WebRTC, attendance, chat or whiteboard logic is changed. */
+#studentGallery .remote-video-name,
+#studentGallery .student-name {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+#studentGallery .remote-video-card,
+#studentGallery .student-video-card {
+  align-self: start !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+}
+#studentGallery video {
+  width: 100% !important;
+  max-width: none !important;
+  height: clamp(260px, 42vw, 420px) !important;
+  object-fit: contain !important;
+  background: transparent !important;
+}
+@media (max-width: 700px) {
+  #studentGallery video {
+    height: clamp(220px, 65vw, 340px) !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -949,6 +974,11 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
     <section class="panel">
       <div class="panel-head"><h2>Live teaching area</h2><span class="badge" style="background:#eef5fc;color:#28547c;border-color:#d5e5f5">Teacher and student views</span></div>
       <div class="stage">
+        <div class="camera-global-controls" style="margin:0 0 12px;align-items:center">
+          <button class="secondary" id="scanCameras" type="button">🔎 Scan available cameras</button>
+          <span id="cameraDiscoveryStatus" class="camera-note" role="status" aria-live="polite">Camera list is ready to scan.</span>
+        </div>
+        <div class="camera-note" style="margin:0 0 12px">BEA scans camera devices made available to your browser by the computer. This can include built-in cameras, USB/UVC webcams from different manufacturers, phones enabled through USB webcam mode or compatible phone-webcam software, DSLR/mirrorless/HDMI cameras connected through a capture card, and PTZ or wireless cameras exposed through a compatible webcam driver, virtual camera, or streaming bridge. A phone cable or network camera alone does not always make its camera available to a browser; install/enable the manufacturer's supported webcam connection or compatible bridge, then select <b>Scan available cameras</b>.</div>
         <div class="camera-grid">
           <div class="camera-card" id="teacherCard">
             <div class="camera-heading"><span>🎥 CAMERA 1 — TEACHER</span><span>Teacher view</span></div>
@@ -1015,7 +1045,6 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
         Waiting for students to connect...
       </div>
     </div>
-    <div id="beaOwnMicDock" class="bea-video-mic-controls" style="justify-content:flex-start;margin-top:12px"><span class="bea-video-mic-status">Your microphone:</span><button type="button" id="beaOwnMicButton">🎙️ Start microphone</button></div>
   </div>
 
 
@@ -1354,29 +1383,6 @@ async function sendRtcSignal(to,signal,streamTypes){
  });
 }
 
-function beaMicControlButton(label, onClick, muted=false){
- const wrap=document.createElement('div');wrap.className='bea-video-mic-controls';
- const btn=document.createElement('button');btn.type='button';btn.textContent=label;
- if(muted)btn.classList.add('is-muted');
- btn.addEventListener('click',onClick);wrap.appendChild(btn);return wrap;
-}
-function updateMicCardControls(){
- const track=microphoneStream?.getAudioTracks().find(t=>t.readyState==='live');
- document.querySelectorAll('[data-bea-local-mic-control]').forEach(w=>{
-  const b=w.querySelector('button');if(!b)return;
-  b.textContent=track?(track.enabled?'🔇 Mute microphone':'🎙️ Unmute microphone'):'🎙️ Start microphone';
-  b.classList.toggle('is-muted',!!track&&!track.enabled);
- });
-}
-function toggleLocalMicFromCard(){
- const track=microphoneStream?.getAudioTracks().find(t=>t.readyState==='live');
- if(!track){startMic();return;}
- track.enabled=!track.enabled;
- $('muteMic').textContent=track.enabled?'🔇 Mute':'🎙️ Unmute';
- $('micStatusBadge').textContent=track.enabled?'Microphone active':'Muted';
- $('micStatusText').textContent=track.enabled?'Your microphone is on.':'Your microphone is muted.';
- updateMicCardControls();
-}
 function showLocalTeacherAtFront(stream) {
   const stage = $('teacherFrontStage');
   if (!stage || !stream) return;
@@ -1406,7 +1412,6 @@ function showLocalTeacherAtFront(stream) {
     status.textContent = '● Your live teaching camera';
 
     card.append(video, label, status);
-    const mic=beaMicControlButton('🎙️ Start microphone',toggleLocalMicFromCard);mic.dataset.beaLocalMicControl='true';card.appendChild(mic);
     stage.prepend(card);
   }
 
@@ -1562,10 +1567,6 @@ function showRemoteVideo(id, name, stream, role, type) {
      displayType === 'hall' ? 'Whole Hall — ' : 'Student — ') + name;
 
   card.append(video, label);
-  if(displayType==='student'){
-    const audioBtn=beaMicControlButton('🔊 Mute this student audio',()=>{const a=$('remoteAudio_'+id);if(!a)return;a.muted=!a.muted;audioBtn.querySelector('button').textContent=a.muted?'🔈 Unmute this student audio':'🔊 Mute this student audio';audioBtn.querySelector('button').classList.toggle('is-muted',a.muted);});
-    audioBtn.title='Controls whether this device hears this student; it does not switch off the student’s microphone.';card.appendChild(audioBtn);
-  }
   target.appendChild(card);
 
   remoteVideoTiles[key] = card;
@@ -1920,13 +1921,40 @@ async function removeStreamFromPeers(stream){
  }
 }
 function qualityConstraints(q){let w=1920,h=1080;if(q==='720'){w=1280;h=720;}if(q==='4k'){w=3840;h=2160;}return {width:{ideal:w},height:{ideal:h},frameRate:{ideal:30,max:30}};}
-async function refreshCameras(){
- if(!navigator.mediaDevices?.enumerateDevices)return;
+async function refreshCameras(requestPermission=false){
+ const discovery=$('cameraDiscoveryStatus');
+ if(!navigator.mediaDevices?.enumerateDevices){
+  if(discovery)discovery.textContent='Camera detection is unavailable. Open BEA using a supported browser over HTTPS.';
+  return [];
+ }
  try{
+  // A brief permission request lets browsers reveal camera names and stable device IDs.
+  // The temporary stream is stopped immediately; it does not replace either classroom camera.
+  if(requestPermission && navigator.mediaDevices.getUserMedia){
+   let temporaryStream=null;
+   try{temporaryStream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});}
+   finally{if(temporaryStream)temporaryStream.getTracks().forEach(track=>track.stop());}
+  }
   const cams=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');
-  [teacherSelect,hallSelect].forEach((sel,i)=>{const old=sel.value;sel.innerHTML='';cams.forEach((d,n)=>{const o=document.createElement('option');o.value=d.deviceId;o.textContent=d.label||'Camera '+(n+1);sel.appendChild(o);});if(cams.some(d=>d.deviceId===old))sel.value=old;else if(cams.length)sel.value=cams[Math.min(i,cams.length-1)].deviceId;if(!cams.length){const o=document.createElement('option');o.textContent='No camera detected';sel.appendChild(o);}});
-  if(cams.length===1)$('hallStatus').textContent='One camera detected. Connect a second camera for a separate hall view.';
- }catch(e){console.error('Camera detection:',e);}
+  [teacherSelect,hallSelect].forEach((sel,i)=>{
+   const old=sel.value;sel.innerHTML='';
+   cams.forEach((d,n)=>{const o=document.createElement('option');o.value=d.deviceId;o.textContent=d.label||('Camera '+(n+1)+' (name hidden until permission)');sel.appendChild(o);});
+   if(cams.some(d=>d.deviceId===old))sel.value=old;
+   else if(cams.length)sel.value=cams[Math.min(i,cams.length-1)].deviceId;
+   if(!cams.length){const o=document.createElement('option');o.value='';o.textContent='No camera detected';sel.appendChild(o);}
+  });
+  if(discovery){
+   const phoneHint=' If your phone is connected but is not listed, enable its USB webcam mode or a compatible phone-webcam app so the computer recognises it as a camera, then scan again.';
+   discovery.textContent=cams.length?cams.length+' camera device(s) detected. Select one for Teacher or Whole Hall.':('No camera devices found.'+phoneHint);
+  }
+  if(cams.length===1)$('hallStatus').textContent='One camera detected. You can use it for either view; a second recognised camera is needed for two independent views.';
+  return cams;
+ }catch(e){
+  console.error('Camera detection:',e);
+  if(discovery)discovery.textContent=e.name==='NotAllowedError'?'Camera permission was not granted. Allow camera access, then scan again.':'Could not scan cameras: '+e.message;
+  // Still show any devices the browser permits us to enumerate without a permission prompt.
+  try{const cams=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');return cams;}catch{return [];}
+ }
 }
 async function startVideo(which){
  const teacher=which==='teacher',video=teacher?teacherCamera:hallCamera,select=teacher?teacherSelect:hallSelect;
@@ -1945,7 +1973,7 @@ if(teacher && currentParticipantRole==='student')showLocalStudentInGallery(fresh
   await addStreamToExistingPeers(fresh);
   video.style.display='block';placeholder.style.display='none';tag.style.display='block';
   const s=fresh.getVideoTracks()[0].getSettings();status.textContent='Camera active: '+(s.width||'?')+' × '+(s.height||'?')+(s.frameRate?' · '+Math.round(s.frameRate)+' FPS':'');
-  updateOverallStatus();refreshCameras();
+  updateOverallStatus();refreshCameras(false);
  }catch(e){console.error(e);status.textContent='Camera could not start.';alert('Unable to start '+which+' camera: '+(e.name==='NotAllowedError'?'Allow camera permission.':e.name==='OverconstrainedError'?'Try Auto or 720p.':e.message));}
 }
 async function stopVideo(which){
@@ -2027,8 +2055,11 @@ $('startHall').onclick=()=>startVideo('hall');
 $('stopTeacher').onclick=()=>stopVideo('teacher');
 $('stopHall').onclick=()=>stopVideo('hall');
 
+if($('scanCameras')){
+  $('scanCameras').onclick=()=>refreshCameras(true);
+}
 if($('refreshCameras')){
-  $('refreshCameras').onclick=refreshCameras;
+  $('refreshCameras').onclick=()=>refreshCameras(false);
 }
 $('teacherQuality').onchange=()=>{if(teacherStream)startVideo('teacher');};$('hallQuality').onchange=()=>{if(hallStream)startVideo('hall');};
 teacherSelect.onchange=()=>{if(teacherStream)startVideo('teacher');};hallSelect.onchange=()=>{if(hallStream)startVideo('hall');};
@@ -2040,34 +2071,25 @@ if($('stopAllCameras')){
     stopVideo('hall');
   };
 }
-navigator.mediaDevices?.addEventListener?.('devicechange',refreshCameras);
+navigator.mediaDevices?.addEventListener?.('devicechange',()=>refreshCameras(false));
 async function startMic(){
  try{
   if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone is not supported by this browser.');
-  const fresh=await navigator.mediaDevices.getUserMedia({
-   audio:{
-    echoCancellation:true,
-    noiseSuppression:true,
-    autoGainControl:true
-   },
-   video:false
-  });
+  const fresh=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
   if(microphoneStream)microphoneStream.getTracks().forEach(t=>t.stop());
   microphoneStream=fresh; microphoneStream.getAudioTracks().forEach(track=>track.enabled=true);
   await addStreamToExistingPeers(fresh);
   $('startMic').textContent='🎤 Microphone active';
   $('muteMic').disabled=false; $('muteMic').textContent='🔇 Mute';
   $('micStatusBadge').textContent='Microphone active'; $('micStatusText').textContent='Your microphone is on.';
-  updateMicCardControls();if($('beaOwnMicButton'))$('beaOwnMicButton').textContent='🔇 Mute microphone';
   updateOverallStatus();
  }catch(e){alert('Unable to start microphone: '+e.message);}
 }
 async function stopMic(){
  if(microphoneStream){await removeStreamFromPeers(microphoneStream);microphoneStream.getTracks().forEach(t=>t.stop());microphoneStream=null;}
  $('startMic').textContent='🎙️ Start microphone'; $('muteMic').disabled=true; $('muteMic').textContent='🔇 Mute';
- $('micStatusBadge').textContent='Microphone off'; $('micStatusText').textContent='Microphone is off.'; updateMicCardControls();if($('beaOwnMicButton'))$('beaOwnMicButton').textContent='🎙️ Start microphone'; updateOverallStatus();
+ $('micStatusBadge').textContent='Microphone off'; $('micStatusText').textContent='Microphone is off.'; updateOverallStatus();
 }
-if($('beaOwnMicButton'))$('beaOwnMicButton').onclick=toggleLocalMicFromCard;
 if($('startMic')) $('startMic').onclick=startMic;
 if($('stopMic')) $('stopMic').onclick=stopMic;
 if($('muteMic')) $('muteMic').onclick=()=>{
@@ -2077,7 +2099,6 @@ if($('muteMic')) $('muteMic').onclick=()=>{
  $('muteMic').textContent=track.enabled?'🔇 Mute':'🎙️ Unmute';
  $('micStatusBadge').textContent=track.enabled?'Microphone active':'Muted';
  $('micStatusText').textContent=track.enabled?'Your microphone is on.':'Your microphone is muted; you can still hear the class.';
- updateMicCardControls();if($('beaOwnMicButton'))$('beaOwnMicButton').textContent=track.enabled?'🔇 Mute microphone':'🎙️ Unmute microphone';
 };
 function updateOverallStatus(){cameraStatus.textContent=(currentRoomCode?'● Connected · ':'● ')+(teacherStream?'Teacher camera · ':'')+(hallStream?'Hall camera · ':'')+(microphoneStream?'Microphone':'Ready');}
 document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedMode=b.dataset.mode;});
@@ -2298,7 +2319,7 @@ async function cleanup(){
  [teacherStream,hallStream,microphoneStream].forEach(s=>s?.getTracks().forEach(t=>t.stop()));
 }
 window.addEventListener('beforeunload',()=>{cleanup();});
-refreshCameras();
+refreshCameras(false);
 </script>
 <!-- BEA: Live person-segmentation engine -->
 <script type="module">
@@ -2386,34 +2407,3 @@ window.addEventListener('error', function(e) {
 </script>
 </body>
 </html>
-
-/* BEA FINAL PRESENTATION TUNE — remove the student name strip and give
-   live learner feeds more visible screen area. CSS only: no camera,
-   Supabase, WebRTC, attendance, chat or whiteboard logic is changed. */
-#studentGallery .remote-video-name,
-#studentGallery .student-name {
-  display: none !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-}
-#studentGallery .remote-video-card,
-#studentGallery .student-video-card {
-  align-self: start !important;
-  justify-content: flex-start !important;
-  gap: 0 !important;
-}
-#studentGallery video {
-  width: 100% !important;
-  max-width: none !important;
-  height: clamp(260px, 42vw, 420px) !important;
-  object-fit: contain !important;
-  background: transparent !important;
-}
-@media (max-width: 700px) {
-  #studentGallery video {
-    height: clamp(220px, 65vw, 340px) !important;
-  }
-}
