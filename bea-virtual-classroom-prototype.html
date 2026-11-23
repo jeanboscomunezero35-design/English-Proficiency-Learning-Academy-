@@ -49,7 +49,7 @@ h1{margin:0;color:var(--navy);font-size:clamp(25px,4vw,36px)}.intro p{margin:8px
 .camera-status{font-size:11px;color:#c5d6eb;line-height:1.5}
 .camera-card.expanded{grid-column:1/-1}.camera-card.expanded .camera-screen{height:480px}
 .camera-global-controls,.controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
-.camera-global-controls button{flex:1}.camera-note{font-size:12px;color:#17324f;line-height:1.5;margin-top:10px}.camera-scan-result{display:block;flex:1 1 100%;min-width:220px;padding:10px 12px;border:1px solid #b8cde2;border-left:4px solid #1769aa;border-radius:8px;background:#f0f6fc;color:#17324f;font-size:13px;line-height:1.55;white-space:pre-line;min-height:42px}.camera-scan-result strong{display:block;margin-bottom:3px}
+.camera-global-controls button{flex:1}.camera-note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}
 button,.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:700;cursor:pointer;font-size:13px}
 .primary{background:var(--blue);color:white}.secondary{background:var(--sky);color:#15558a}.dark{background:#e9edf3;color:#34445a}.danger{background:#fff0ef;color:#b42318}
 button:disabled{opacity:.45;cursor:not-allowed}
@@ -928,38 +928,6 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
 .bea-teacher-board-controls label{display:flex;gap:8px;align-items:center;font-weight:700}.bea-teacher-board-controls span{display:block;margin-top:6px;color:#425b78}
 #beaStudentColumnWritingText{white-space:pre-wrap}
 @media(max-width:600px){.bea-type-toolbar{gap:6px}.bea-rich-editor{font-size:18px;min-height:100px}}
-
-
-/* BEA FINAL PRESENTATION TUNE — remove the student name strip and give
-   live learner feeds more visible screen area. CSS only: no camera,
-   Supabase, WebRTC, attendance, chat or whiteboard logic is changed. */
-#studentGallery .remote-video-name,
-#studentGallery .student-name {
-  display: none !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-}
-#studentGallery .remote-video-card,
-#studentGallery .student-video-card {
-  align-self: start !important;
-  justify-content: flex-start !important;
-  gap: 0 !important;
-}
-#studentGallery video {
-  width: 100% !important;
-  max-width: none !important;
-  height: clamp(260px, 42vw, 420px) !important;
-  object-fit: contain !important;
-  background: transparent !important;
-}
-@media (max-width: 700px) {
-  #studentGallery video {
-    height: clamp(220px, 65vw, 340px) !important;
-  }
-}
 </style>
 </head>
 <body>
@@ -976,8 +944,9 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
       <div class="stage">
         <div class="camera-global-controls" style="margin:0 0 12px;align-items:center">
           <button class="secondary" id="scanCameras" type="button">🔎 Scan available cameras</button>
-          <div id="cameraDiscoveryStatus" class="camera-scan-result" role="status" aria-live="polite"><strong>Camera scan status</strong>Camera list is ready to scan. Click Scan available cameras to check connected devices.</div>
+          <span id="cameraDiscoveryStatus" class="camera-note" role="status" aria-live="polite">Camera list is ready to scan.</span>
         </div>
+        <div id="cameraDetectedList" class="camera-note" aria-live="polite" style="margin:0 0 12px;padding:10px;border:1px solid #d5e5f5;border-radius:8px;background:#f7fbff">No scan results yet. Select <b>Scan available cameras</b> to search devices recognised by this computer.</div>
         <div class="camera-note" style="margin:0 0 12px">BEA supports cameras recognised by your computer, including built-in webcams, USB webcams, and professional cameras connected through a compatible capture card. A phone can also be used if it is enabled as a webcam and appears in your computer's camera list.</div>
         <div class="camera-grid">
           <div class="camera-card" id="teacherCard">
@@ -1921,6 +1890,7 @@ async function removeStreamFromPeers(stream){
  }
 }
 function qualityConstraints(q){let w=1920,h=1080;if(q==='720'){w=1280;h=720;}if(q==='4k'){w=3840;h=2160;}return {width:{ideal:w},height:{ideal:h},frameRate:{ideal:30,max:30}};}
+function escapeHtml(value){return String(value).replace(/[&<>\"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));}
 async function refreshCameras(requestPermission=false){
  const discovery=$('cameraDiscoveryStatus');
  if(!navigator.mediaDevices?.enumerateDevices){
@@ -1943,21 +1913,17 @@ async function refreshCameras(requestPermission=false){
    else if(cams.length)sel.value=cams[Math.min(i,cams.length-1)].deviceId;
    if(!cams.length){const o=document.createElement('option');o.value='';o.textContent='No camera detected';sel.appendChild(o);}
   });
+  const resultList=$('cameraDetectedList');
   if(discovery){
-   const phoneHint='If your phone is connected but is not listed, enable its USB webcam mode or a compatible phone-webcam app so the computer recognises it as a camera, then scan again.';
-   const names=cams.map((d,n)=>'• '+(d.label || ('Camera '+(n+1)+' (name hidden)'))).join('\n');
-   const scannedAt=new Date().toLocaleTimeString();
-   discovery.innerHTML='';
-   const heading=document.createElement('strong');
-   heading.textContent=cams.length?'Scan complete — '+cams.length+' camera device(s) detected':'Scan complete — no camera devices found';
-   discovery.appendChild(heading);
-   const details=document.createElement('span');
-   details.textContent=cams.length?names+'\nSelect a camera in the Teacher or Whole Hall dropdown below.':'Check camera connection and browser permission. '+phoneHint;
-   discovery.appendChild(details);
-   const time=document.createElement('small');
-   time.textContent='Last scan: '+scannedAt;
-   time.style.display='block'; time.style.marginTop='5px'; time.style.opacity='.8';
-   discovery.appendChild(time);
+   const phoneHint=' If your phone or external camera is not listed, make it available to Windows first (UVC driver, webcam mode, capture card, or compatible virtual-camera/streaming bridge), then scan again.';
+   discovery.textContent=cams.length?'Scan complete — '+cams.length+' camera device(s) detected. Select one for Teacher or Whole Hall.':'Scan complete — no camera devices found.'+phoneHint;
+  }
+  if(resultList){
+   if(cams.length){
+    resultList.innerHTML='<b>Detected camera devices:</b><ol style="margin:6px 0 0;padding-left:22px">'+cams.map((d,i)=>'<li style="margin:4px 0">'+escapeHtml(d.label||('Camera '+(i+1)+' (name hidden until permission)'))+'</li>').join('')+'</ol><div style="margin-top:7px">Last scan: '+new Date().toLocaleTimeString()+'</div><div style="margin-top:5px">These are all video-input devices currently exposed to this browser. Cameras not recognised by the computer cannot be discovered by a webpage.</div>';
+   }else{
+    resultList.textContent='No camera devices are currently exposed to this browser. Connect or enable the camera in your computer settings, install its supported driver or webcam bridge, and scan again. Last scan: '+new Date().toLocaleTimeString();
+   }
   }
   if(cams.length===1)$('hallStatus').textContent='One camera detected. You can use it for either view; a second recognised camera is needed for two independent views.';
   return cams;
@@ -2067,7 +2033,9 @@ $('startHall').onclick=()=>startVideo('hall');
 $('stopTeacher').onclick=()=>stopVideo('teacher');
 $('stopHall').onclick=()=>stopVideo('hall');
 
-// Camera scan click is attached by the independent safety handler near the end of this page.
+if($('scanCameras')){
+  $('scanCameras').onclick=()=>refreshCameras(true);
+}
 if($('refreshCameras')){
   $('refreshCameras').onclick=()=>refreshCameras(false);
 }
@@ -2415,41 +2383,36 @@ window.addEventListener('error', function(e) {
     ' — Line: ' + e.lineno;
 });
 </script>
-
-<script>
-/* BEA CAMERA SCAN BUTTON SAFETY HANDLER */
-(function () {
-  function attachBEACameraScan() {
-    const button = document.getElementById('scanCameras');
-    if (!button || button.dataset.beaScanAttached === 'yes') return;
-    button.dataset.beaScanAttached = 'yes';
-    button.addEventListener('click', async function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-      const status = document.getElementById('cameraDiscoveryStatus');
-      button.disabled = true;
-      button.textContent = '⏳ Scanning cameras…';
-      if (status) status.textContent = 'SCANNING CAMERAS\nChecking camera access. Your browser may ask you to allow camera permission. Please wait.';
-      try {
-        if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-          throw new Error('Camera scanning requires HTTPS and a supported browser. Open the BEA site using its secure https address.');
-        }
-        await refreshCameras(true);
-      } catch (error) {
-        console.error('BEA camera scan button:', error);
-        if (status) status.textContent = error && error.message ? error.message : 'Camera scan could not start. Check browser camera permissions.';
-      } finally {
-        button.disabled = false;
-        button.textContent = '🔎 Scan available cameras';
-      }
-    });
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', attachBEACameraScan, { once: true });
-  } else {
-    attachBEACameraScan();
-  }
-})();
-</script>
 </body>
 </html>
+
+/* BEA FINAL PRESENTATION TUNE — remove the student name strip and give
+   live learner feeds more visible screen area. CSS only: no camera,
+   Supabase, WebRTC, attendance, chat or whiteboard logic is changed. */
+#studentGallery .remote-video-name,
+#studentGallery .student-name {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+#studentGallery .remote-video-card,
+#studentGallery .student-video-card {
+  align-self: start !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+}
+#studentGallery video {
+  width: 100% !important;
+  max-width: none !important;
+  height: clamp(260px, 42vw, 420px) !important;
+  object-fit: contain !important;
+  background: transparent !important;
+}
+@media (max-width: 700px) {
+  #studentGallery video {
+    height: clamp(220px, 65vw, 340px) !important;
+  }
+}
