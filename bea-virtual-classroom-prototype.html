@@ -947,7 +947,51 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
           <span id="cameraDiscoveryStatus" class="camera-note" role="status" aria-live="polite">Camera list is ready to scan.</span>
         </div>
         <div id="cameraDetectedList" class="camera-note" aria-live="polite" style="margin:0 0 12px;padding:10px;border:1px solid #d5e5f5;border-radius:8px;background:#f7fbff">No scan results yet. Select <b>Scan available cameras</b> to search devices recognised by this computer.</div>
-        <div class="camera-note" style="margin:0 0 12px">BEA supports cameras recognised by your computer, including built-in webcams, USB webcams, and professional cameras connected through a compatible capture card. A phone can also be used if it is enabled as a webcam and appears in your computer's camera list.</div>
+        <div class="camera-note" style="margin:0 0 12px">BEA searches the camera sources made available by your computer and browser. This includes built-in and external webcams, USB/UVC cameras, phones in webcam mode, HDMI/SDI capture cards, PTZ cameras exposed as webcams, and virtual cameras.</div>
+        <div id="beaCameraCompatibility" style="margin:0 0 14px;padding:13px;border:1px solid #cbdced;border-radius:10px;background:#f5f9fe;color:#18324d">
+          <b>🌐 BEA Universal Camera Discovery</b>
+          <p style="margin:7px 0;font-size:12px;line-height:1.55">Connect or enable an external camera, then press <b>Scan available cameras</b>. BEA will list every video-input source currently exposed to this browser and let you select it for the Teacher or Whole Hall view.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;font-size:12px">
+            <div style="padding:8px;background:white;border:1px solid #dbe7f3;border-radius:7px"><b>✓ Direct camera sources</b><br>Built-in, USB/UVC, webcam-enabled phones, capture cards, PTZ and virtual cameras.</div>
+            <div style="padding:8px;background:white;border:1px solid #dbe7f3;border-radius:7px"><b>↗ Network / IP cameras</b><br>Require a compatible BEA Camera Bridge or streaming software. Browser-only scanning cannot search private networks or open raw RTSP feeds.</div>
+            <div style="padding:8px;background:white;border:1px solid #dbe7f3;border-radius:7px"><b>↗ Professional cameras</b><br>HDMI/SDI cameras need a compatible capture interface and driver before they appear in the camera list.</div>
+          </div>
+          <div id="beaCameraBridgeStatus" style="margin-top:8px;font-size:11px;color:#805400">Camera Bridge: checking connection…</div>
+          <div id="beaBridgePanel" style="margin-top:12px;padding:12px;background:#fff;border:1px solid #d5e5f5;border-radius:9px">
+            <b>🔗 BEA Camera Bridge — authorised Wi-Fi / IP cameras</b>
+            <p style="font-size:12px;margin:6px 0">Run the BEA Camera Bridge on this teacher computer, then connect it here. Camera passwords remain on that computer.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <label for="beaBridgeToken" style="font-size:12px;font-weight:700">Local bridge token</label>
+              <input id="beaBridgeToken" type="password" autocomplete="off" placeholder="Paste token from bridge-token.txt" style="min-width:240px;flex:1;padding:9px;border:1px solid #c8d7e6;border-radius:6px">
+              <button class="secondary" id="beaBridgeConnect" type="button">Connect bridge</button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+              <button class="secondary" id="beaBridgeScan" type="button">Scan authorised ONVIF cameras</button>
+              <button class="secondary" id="beaBridgeRefresh" type="button">Refresh saved cameras</button>
+            </div>
+            <div id="beaBridgeFound" style="font-size:12px;margin-top:8px"></div>
+            <div id="beaBridgeAddForm" style="display:none;margin-top:10px;padding:10px;background:#f5f9fe;border-radius:7px">
+              <b id="beaBridgeChosenTitle">Add discovered camera</b>
+              <input id="beaBridgeAddress" type="hidden">
+              <label style="display:block;font-size:12px;margin-top:7px">Camera username</label><input id="beaBridgeUsername" autocomplete="off" style="width:100%;padding:8px">
+              <label style="display:block;font-size:12px;margin-top:7px">Camera password</label><input id="beaBridgePassword" type="password" autocomplete="new-password" style="width:100%;padding:8px">
+              <button class="primary" id="beaBridgeAddOnvif" type="button" style="margin-top:8px">Add authorised camera</button>
+            </div>
+            <details style="margin-top:10px">
+              <summary style="cursor:pointer;font-size:12px;font-weight:700">Add a compatible RTSP / RTSPS camera manually</summary>
+              <label style="display:block;font-size:12px;margin-top:7px">Camera display name</label><input id="beaManualName" placeholder="School hall camera" style="width:100%;padding:8px">
+              <label style="display:block;font-size:12px;margin-top:7px">RTSP / RTSPS address (local camera only)</label><input id="beaManualUrl" placeholder="rtsp://192.168.1.50:554/stream1" style="width:100%;padding:8px">
+              <label style="display:block;font-size:12px;margin-top:7px">Camera username</label><input id="beaManualUsername" autocomplete="off" style="width:100%;padding:8px">
+              <label style="display:block;font-size:12px;margin-top:7px">Camera password</label><input id="beaManualPassword" type="password" autocomplete="new-password" style="width:100%;padding:8px">
+              <button class="primary" id="beaBridgeAddManual" type="button" style="margin-top:8px">Save authorised RTSP camera</button>
+            </details>
+            <div class="camera-grid" style="margin-top:10px">
+              <div><label for="beaTeacherNetworkCamera" style="font-size:12px;font-weight:700">Teacher network camera</label><select id="beaTeacherNetworkCamera" style="width:100%;padding:8px"><option value="">No saved network cameras</option></select><button class="primary" id="beaUseTeacherNetwork" type="button" style="margin-top:7px">Use network camera for Teacher</button></div>
+              <div><label for="beaHallNetworkCamera" style="font-size:12px;font-weight:700">Whole Hall network camera</label><select id="beaHallNetworkCamera" style="width:100%;padding:8px"><option value="">No saved network cameras</option></select><button class="primary" id="beaUseHallNetwork" type="button" style="margin-top:7px">Use network camera for Whole Hall</button></div>
+            </div>
+            <div id="beaBridgeMessage" role="status" aria-live="polite" style="font-size:12px;margin-top:8px;color:#345"></div>
+          </div>
+        </div>
         <div class="camera-grid">
           <div class="camera-card" id="teacherCard">
             <div class="camera-heading"><span>🎥 CAMERA 1 — TEACHER</span><span>Teacher view</span></div>
@@ -1920,7 +1964,8 @@ async function refreshCameras(requestPermission=false){
   }
   if(resultList){
    if(cams.length){
-    resultList.innerHTML='<b>Detected camera devices:</b><ol style="margin:6px 0 0;padding-left:22px">'+cams.map((d,i)=>'<li style="margin:4px 0">'+escapeHtml(d.label||('Camera '+(i+1)+' (name hidden until permission)'))+'</li>').join('')+'</ol><div style="margin-top:7px">Last scan: '+new Date().toLocaleTimeString()+'</div><div style="margin-top:5px">These are all video-input devices currently exposed to this browser. Cameras not recognised by the computer cannot be discovered by a webpage.</div>';
+    const classifyCamera=(label)=>{const x=String(label||'').toLowerCase();if(/virtual|obs|manycam|snap camera|mmhmm/.test(x))return 'Virtual camera';if(/capture|cam link|hdmi|sdi|decklink|avermedia|elgato/.test(x))return 'Capture interface / professional camera';if(/ptz|panasonic|sony|canon|nikon|lumix|gopro|dji/.test(x))return 'External / professional camera (label-based guess)';if(/phone|android|iphone|pixel|samsung|infinix|droidcam|iriun|epoccam/.test(x))return 'Phone / phone-webcam source';if(/usb|webcam|logitech|lenovo|integrated|camera/.test(x))return 'Computer / USB camera';return 'Video-input device';};
+    resultList.innerHTML='<b>Detected camera sources ('+cams.length+'):</b><ol style="margin:6px 0 0;padding-left:22px">'+cams.map((d,i)=>'<li style="margin:6px 0"><b>'+escapeHtml(d.label||('Camera '+(i+1)+' (name hidden until permission)'))+'</b><br><span style="color:#536b83">'+escapeHtml(classifyCamera(d.label))+'</span></li>').join('')+'</ol><div style="margin-top:7px">Last scan: '+new Date().toLocaleTimeString()+'</div><div style="margin-top:5px"><b>Search scope:</b> all video-input devices currently exposed by this computer/browser. Connect another camera or enable its driver/webcam mode, then scan again. The browser cannot independently discover arbitrary Wi-Fi/IP cameras or raw RTSP streams; those need a separate secure camera-bridge service.</div>';
    }else{
     resultList.textContent='No camera devices are currently exposed to this browser. Connect or enable the camera in your computer settings, install its supported driver or webcam bridge, and scan again. Last scan: '+new Date().toLocaleTimeString();
    }
@@ -1935,6 +1980,7 @@ async function refreshCameras(requestPermission=false){
  }
 }
 async function startVideo(which){
+ if(window.beaCloseWhep) await window.beaCloseWhep(which);
  const teacher=which==='teacher',video=teacher?teacherCamera:hallCamera,select=teacher?teacherSelect:hallSelect;
  const quality=$(teacher?'teacherQuality':'hallQuality'),placeholder=$(teacher?'teacherPlaceholder':'hallPlaceholder'),tag=$(teacher?'teacherLiveTag':'hallLiveTag'),status=$(teacher?'teacherStatus':'hallStatus');
  const request=teacher?++teacherCameraRequest:++hallCameraRequest;status.textContent='Starting camera...';
@@ -1961,6 +2007,7 @@ async function stopVideo(which){
  const video = teacher ? teacherCamera : hallCamera;
 
  const stream = teacher ? teacherStream : hallStream;
+ if (window.beaCloseWhep) await window.beaCloseWhep(which);
 
  const streamType = teacher
   ? (currentParticipantRole === 'teacher' ? 'teacher' : 'student')
@@ -2034,7 +2081,7 @@ $('stopTeacher').onclick=()=>stopVideo('teacher');
 $('stopHall').onclick=()=>stopVideo('hall');
 
 if($('scanCameras')){
-  $('scanCameras').onclick=()=>refreshCameras(true);
+  $('scanCameras').onclick=async()=>{const b=$('scanCameras');b.disabled=true;b.textContent='🔎 Searching cameras…';try{await refreshCameras(true);}finally{b.disabled=false;b.textContent='🔎 Scan available cameras';}};
 }
 if($('refreshCameras')){
   $('refreshCameras').onclick=()=>refreshCameras(false);
@@ -2049,7 +2096,7 @@ if($('stopAllCameras')){
     stopVideo('hall');
   };
 }
-navigator.mediaDevices?.addEventListener?.('devicechange',()=>refreshCameras(false));
+navigator.mediaDevices?.addEventListener?.('devicechange',()=>{const st=$('cameraDiscoveryStatus');if(st)st.textContent='A camera connection changed. Updating available camera sources…';refreshCameras(false);});
 async function startMic(){
  try{
   if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone is not supported by this browser.');
@@ -2382,6 +2429,170 @@ window.addEventListener('error', function(e) {
   box.textContent = 'BEA ERROR: ' + e.message +
     ' — Line: ' + e.lineno;
 });
+
+/* BEA Camera Bridge integration — network camera becomes a MediaStream,
+   then uses the existing BEA WebRTC peer connections to reach students. */
+window.beaWhepConnections = window.beaWhepConnections || {};
+window.beaBridgeBase = 'http://127.0.0.1:8765';
+window.beaMediaBase = 'http://127.0.0.1:8889';
+window.beaBridgeToken = localStorage.getItem('beaCameraBridgeToken') || '';
+window.beaBridgeCameras = [];
+
+function beaBridgeMessage(message, bad=false) {
+  const el = document.getElementById('beaBridgeMessage');
+  if (el) { el.textContent = message; el.style.color = bad ? '#a12626' : '#245b35'; }
+}
+async function beaBridgeFetch(route, options={}) {
+  const headers = Object.assign({'Content-Type':'application/json'}, options.headers || {});
+  if (window.beaBridgeToken) headers.Authorization = 'Bearer ' + window.beaBridgeToken;
+  const response = await fetch(window.beaBridgeBase + route, Object.assign({}, options, {headers}));
+  const data = await response.json().catch(()=>({}));
+  if (!response.ok) throw new Error(data.error || ('Bridge request failed ('+response.status+')'));
+  return data;
+}
+function beaBridgePopulate() {
+  ['beaTeacherNetworkCamera','beaHallNetworkCamera'].forEach(id=>{
+    const sel=document.getElementById(id), old=sel.value;
+    sel.innerHTML='';
+    const empty=document.createElement('option'); empty.value=''; empty.textContent=window.beaBridgeCameras.length?'Choose a saved network camera':'No saved network cameras'; sel.appendChild(empty);
+    window.beaBridgeCameras.forEach(cam=>{
+      const o=document.createElement('option'); o.value=cam.id; o.textContent=cam.name+' — '+cam.address; sel.appendChild(o);
+    });
+    if(window.beaBridgeCameras.some(c=>c.id===old))sel.value=old;
+  });
+  const list=document.getElementById('beaBridgeFound');
+  if(list) {
+    if(!window.beaBridgeCameras.length) list.textContent='No authorised network cameras saved yet.';
+    else list.innerHTML='<b>Saved authorised cameras:</b><ul>'+window.beaBridgeCameras.map(c=>'<li>'+escapeHtml(c.name)+' ('+escapeHtml(c.sourceType)+', '+escapeHtml(c.address)+') <button type="button" data-bea-remove="'+escapeHtml(c.id)+'" class="dark">Remove</button></li>').join('')+'</ul>';
+  }
+}
+async function beaBridgeRefresh() {
+  const data=await beaBridgeFetch('/api/cameras');
+  window.beaBridgeCameras=data.cameras||[];
+  beaBridgePopulate();
+}
+async function beaBridgeConnect() {
+  const input=document.getElementById('beaBridgeToken');
+  const token=(input.value||window.beaBridgeToken||'').trim();
+  if(!token) throw new Error('Open bridge-token.txt on the teacher computer and paste its token first.');
+  window.beaBridgeToken=token;
+  const h=await fetch(window.beaBridgeBase+'/health');
+  if(!h.ok) throw new Error('The local bridge did not respond. Start START-BEA-CAMERA-BRIDGE.bat first.');
+  localStorage.setItem('beaCameraBridgeToken',token);
+  await beaBridgeRefresh();
+  const status=document.getElementById('beaCameraBridgeStatus');
+  if(status)status.textContent='Camera Bridge: connected on this teacher computer. Saved authorised network cameras: '+window.beaBridgeCameras.length+'.';
+  beaBridgeMessage('Bridge connected. You can now discover and register authorised local network cameras.');
+}
+async function beaBridgeDiscover() {
+  beaBridgeMessage('Searching ONVIF devices on the teacher computer’s local network…');
+  const result=await beaBridgeFetch('/api/discover',{method:'POST',body:'{}'});
+  const found=document.getElementById('beaBridgeFound');
+  const devices=result.devices||[];
+  if(!devices.length){if(found)found.textContent='No ONVIF cameras replied. Confirm that the camera and teacher computer are on the same network and ONVIF is enabled.';return;}
+  if(found)found.innerHTML='<b>ONVIF devices found:</b><ul>'+devices.map((d,i)=>'<li>'+escapeHtml(d.address)+' <button type="button" class="secondary" data-bea-onvif="'+escapeHtml(d.address)+'">Set up this camera</button></li>').join('')+'</ul>';
+  beaBridgeMessage('Discovery complete: '+devices.length+' ONVIF device(s) found. Select Set up this camera and enter its camera account locally.');
+}
+async function beaBridgeAddOnvif() {
+  const address=document.getElementById('beaBridgeAddress').value;
+  const username=document.getElementById('beaBridgeUsername').value;
+  const password=document.getElementById('beaBridgePassword').value;
+  const result=await beaBridgeFetch('/api/cameras/onvif',{method:'POST',body:JSON.stringify({address,username,password})});
+  document.getElementById('beaBridgePassword').value='';
+  document.getElementById('beaBridgeAddForm').style.display='none';
+  await beaBridgeRefresh(); beaBridgeMessage('Camera added and MediaMTX is updating. Select it as Teacher or Whole Hall.');
+}
+async function beaBridgeAddManual() {
+  const body={name:document.getElementById('beaManualName').value,rtspUrl:document.getElementById('beaManualUrl').value,
+    username:document.getElementById('beaManualUsername').value,password:document.getElementById('beaManualPassword').value};
+  await beaBridgeFetch('/api/cameras/rtsp',{method:'POST',body:JSON.stringify(body)});
+  document.getElementById('beaManualPassword').value='';
+  await beaBridgeRefresh(); beaBridgeMessage('RTSP camera saved. The bridge is updating its media routes.');
+}
+window.beaCloseWhep = async function(which) {
+  const pc=window.beaWhepConnections[which];
+  if(!pc)return;
+  const resource=pc.__whepResource;
+  try { if(resource) await fetch(resource,{method:'DELETE'}); } catch {}
+  try { pc.close(); } catch {}
+  delete window.beaWhepConnections[which];
+};
+async function beaWhepRead(pathName, which) {
+  if(!window.beaBridgeToken) await beaBridgeConnect();
+  const camera=window.beaBridgeCameras.find(c=>c.id===pathName);
+  if(!camera) throw new Error('Choose a saved network camera first.');
+  const url=window.beaMediaBase+'/'+encodeURIComponent(camera.path)+'/whep';
+  const pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+  if(window.beaWhepConnections[which]) await window.beaCloseWhep(which);
+  window.beaWhepConnections[which]=pc;
+  pc.addTransceiver('video',{direction:'recvonly'});
+  const received=new Promise((resolve,reject)=>{
+    const timer=setTimeout(()=>reject(new Error('No video arrived from the network camera. Check its RTSP stream and H.264 codec.')),18000);
+    pc.ontrack=e=>{clearTimeout(timer);resolve(e.streams[0]||new MediaStream([e.track]));};
+    pc.onconnectionstatechange=()=>{if(pc.connectionState==='failed') {clearTimeout(timer);reject(new Error('Network camera WebRTC connection failed.'));}};
+  });
+  const offer=await pc.createOffer(); await pc.setLocalDescription(offer);
+  await new Promise(resolve=>{
+    if(pc.iceGatheringState==='complete')return resolve();
+    const timeout=setTimeout(resolve,2500);
+    pc.addEventListener('icegatheringstatechange',()=>{if(pc.iceGatheringState==='complete'){clearTimeout(timeout);resolve();}});
+  });
+  try {
+    const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/sdp'},body:pc.localDescription.sdp});
+    if(!response.ok)throw new Error('MediaMTX WHEP could not open the camera ('+response.status+'). Wait for MediaMTX to reload, then retry.');
+    const answer=await response.text();
+    const location=response.headers.get('Location');
+    if(location)pc.__whepResource=new URL(location,url).toString();
+    await pc.setRemoteDescription({type:'answer',sdp:answer});
+    return await received;
+  } catch(error) { await window.beaCloseWhep(which); throw error; }
+}
+async function beaStartNetworkCamera(which) {
+  const teacher=which==='teacher';
+  const select=document.getElementById(teacher?'beaTeacherNetworkCamera':'beaHallNetworkCamera');
+  const camera=window.beaBridgeCameras.find(c=>c.id===select.value);
+  if(!camera)throw new Error('Select a saved network camera.');
+  beaBridgeMessage('Opening '+camera.name+' through the local WebRTC bridge…');
+  const fresh=await beaWhepRead(camera.id,which);
+  const video=teacher?teacherCamera:hallCamera;
+  const placeholder=$(teacher?'teacherPlaceholder':'hallPlaceholder');
+  const tag=$(teacher?'teacherLiveTag':'hallLiveTag');
+  const status=$(teacher?'teacherStatus':'hallStatus');
+  const old=teacher?teacherStream:hallStream;
+  if(old){await removeStreamFromPeers(old);old.getTracks().forEach(t=>t.stop());}
+  video.srcObject=fresh; await video.play().catch(()=>{});
+  if(teacher)teacherStream=fresh;else hallStream=fresh;
+  if(teacher && currentParticipantRole==='teacher')showLocalTeacherAtFront(fresh);
+  if(teacher && currentParticipantRole==='student')showLocalStudentInGallery(fresh);
+  await addStreamToExistingPeers(fresh);
+  video.style.display='block';placeholder.style.display='none';tag.style.display='block';
+  status.textContent='Network camera active: '+camera.name+' · relayed through BEA WebRTC';
+  updateOverallStatus();
+  beaBridgeMessage(camera.name+' is live in the '+(teacher?'Teacher':'Whole Hall')+' view. Existing BEA WebRTC connections will relay it to students.');
+}
+document.getElementById('beaBridgeConnect')?.addEventListener('click',()=>beaBridgeConnect().catch(e=>beaBridgeMessage(e.message,true)));
+document.getElementById('beaBridgeScan')?.addEventListener('click',()=>beaBridgeDiscover().catch(e=>beaBridgeMessage(e.message,true)));
+document.getElementById('beaBridgeRefresh')?.addEventListener('click',()=>beaBridgeRefresh().catch(e=>beaBridgeMessage(e.message,true)));
+document.getElementById('beaBridgeAddOnvif')?.addEventListener('click',()=>beaBridgeAddOnvif().catch(e=>beaBridgeMessage(e.message,true)));
+document.getElementById('beaBridgeAddManual')?.addEventListener('click',()=>beaBridgeAddManual().catch(e=>beaBridgeMessage(e.message,true)));
+document.getElementById('beaUseTeacherNetwork')?.addEventListener('click',()=>beaStartNetworkCamera('teacher').catch(e=>beaBridgeMessage(e.message,true)));
+document.getElementById('beaUseHallNetwork')?.addEventListener('click',()=>beaStartNetworkCamera('hall').catch(e=>beaBridgeMessage(e.message,true)));
+document.getElementById('beaBridgeFound')?.addEventListener('click',async e=>{
+  const setup=e.target.closest('[data-bea-onvif]');
+  if(setup){
+    document.getElementById('beaBridgeAddress').value=setup.dataset.beaOnvif;
+    document.getElementById('beaBridgeChosenTitle').textContent='Set up camera at '+setup.dataset.beaOnvif;
+    document.getElementById('beaBridgeAddForm').style.display='block';
+  }
+  const remove=e.target.closest('[data-bea-remove]');
+  if(remove && confirm('Remove this saved camera from the BEA bridge?')){
+    try{await beaBridgeFetch('/api/cameras/'+encodeURIComponent(remove.dataset.beaRemove),{method:'DELETE'});await beaBridgeRefresh();beaBridgeMessage('Camera removed.');}
+    catch(err){beaBridgeMessage(err.message,true);}
+  }
+});
+document.getElementById('beaBridgeToken')?.addEventListener('keydown',e=>{if(e.key==='Enter')beaBridgeConnect().catch(err=>beaBridgeMessage(err.message,true));});
+if(window.beaBridgeToken && document.getElementById('beaBridgeToken'))document.getElementById('beaBridgeToken').value=window.beaBridgeToken;
+
 </script>
 </body>
 </html>
