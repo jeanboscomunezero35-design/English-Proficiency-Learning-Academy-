@@ -49,7 +49,7 @@ h1{margin:0;color:var(--navy);font-size:clamp(25px,4vw,36px)}.intro p{margin:8px
 .camera-status{font-size:11px;color:#c5d6eb;line-height:1.5}
 .camera-card.expanded{grid-column:1/-1}.camera-card.expanded .camera-screen{height:480px}
 .camera-global-controls,.controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
-.camera-global-controls button{flex:1}.camera-note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}
+.camera-global-controls button{flex:1}.camera-note{font-size:12px;color:#17324f;line-height:1.5;margin-top:10px}.camera-scan-result{display:block;flex:1 1 100%;min-width:220px;padding:10px 12px;border:1px solid #b8cde2;border-left:4px solid #1769aa;border-radius:8px;background:#f0f6fc;color:#17324f;font-size:13px;line-height:1.55;white-space:pre-line;min-height:42px}.camera-scan-result strong{display:block;margin-bottom:3px}
 button,.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:700;cursor:pointer;font-size:13px}
 .primary{background:var(--blue);color:white}.secondary{background:var(--sky);color:#15558a}.dark{background:#e9edf3;color:#34445a}.danger{background:#fff0ef;color:#b42318}
 button:disabled{opacity:.45;cursor:not-allowed}
@@ -976,7 +976,7 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
       <div class="stage">
         <div class="camera-global-controls" style="margin:0 0 12px;align-items:center">
           <button class="secondary" id="scanCameras" type="button">🔎 Scan available cameras</button>
-          <span id="cameraDiscoveryStatus" class="camera-note" role="status" aria-live="polite">Camera list is ready to scan.</span>
+          <div id="cameraDiscoveryStatus" class="camera-scan-result" role="status" aria-live="polite"><strong>Camera scan status</strong>Camera list is ready to scan. Click Scan available cameras to check connected devices.</div>
         </div>
         <div class="camera-note" style="margin:0 0 12px">BEA supports cameras recognised by your computer, including built-in webcams, USB webcams, and professional cameras connected through a compatible capture card. A phone can also be used if it is enabled as a webcam and appears in your computer's camera list.</div>
         <div class="camera-grid">
@@ -1944,8 +1944,20 @@ async function refreshCameras(requestPermission=false){
    if(!cams.length){const o=document.createElement('option');o.value='';o.textContent='No camera detected';sel.appendChild(o);}
   });
   if(discovery){
-   const phoneHint=' If your phone is connected but is not listed, enable its USB webcam mode or a compatible phone-webcam app so the computer recognises it as a camera, then scan again.';
-   discovery.textContent=cams.length?cams.length+' camera device(s) detected. Select one for Teacher or Whole Hall.':('No camera devices found.'+phoneHint);
+   const phoneHint='If your phone is connected but is not listed, enable its USB webcam mode or a compatible phone-webcam app so the computer recognises it as a camera, then scan again.';
+   const names=cams.map((d,n)=>'• '+(d.label || ('Camera '+(n+1)+' (name hidden)'))).join('\n');
+   const scannedAt=new Date().toLocaleTimeString();
+   discovery.innerHTML='';
+   const heading=document.createElement('strong');
+   heading.textContent=cams.length?'Scan complete — '+cams.length+' camera device(s) detected':'Scan complete — no camera devices found';
+   discovery.appendChild(heading);
+   const details=document.createElement('span');
+   details.textContent=cams.length?names+'\nSelect a camera in the Teacher or Whole Hall dropdown below.':'Check camera connection and browser permission. '+phoneHint;
+   discovery.appendChild(details);
+   const time=document.createElement('small');
+   time.textContent='Last scan: '+scannedAt;
+   time.style.display='block'; time.style.marginTop='5px'; time.style.opacity='.8';
+   discovery.appendChild(time);
   }
   if(cams.length===1)$('hallStatus').textContent='One camera detected. You can use it for either view; a second recognised camera is needed for two independent views.';
   return cams;
@@ -2417,7 +2429,7 @@ window.addEventListener('error', function(e) {
       const status = document.getElementById('cameraDiscoveryStatus');
       button.disabled = true;
       button.textContent = '⏳ Scanning cameras…';
-      if (status) status.textContent = 'Checking camera access. Your browser may ask you to allow camera permission.';
+      if (status) status.textContent = 'SCANNING CAMERAS\nChecking camera access. Your browser may ask you to allow camera permission. Please wait.';
       try {
         if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
           throw new Error('Camera scanning requires HTTPS and a supported browser. Open the BEA site using its secure https address.');
