@@ -965,6 +965,16 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
           <div style="flex:1;min-width:0"><b id="beaCameraScanTitle">BEA is searching for cameras…</b><div id="beaCameraScanDetail" style="font-size:12px;margin-top:3px">Checking camera devices available to this browser. If permission is requested, choose Allow.</div><div class="bea-scan-track" aria-hidden="true"></div></div>
         </div>
         <div id="cameraDetectedList" class="camera-note" aria-live="polite" style="margin:0 0 12px;padding:10px;border:1px solid #d5e5f5;border-radius:8px;background:#f7fbff">No scan results yet. Select <b>Scan available cameras</b> to search devices recognised by this computer.</div>
+        <div id="beaPhoneCameraPanel" style="margin:0 0 14px;padding:13px;border:1px solid #9fc8e8;border-radius:10px;background:#f0f8ff;color:#18324d">
+          <b>📱 BEA PHONE CAMERA DETECTION — USB + Wi-Fi</b>
+          <p style="font-size:12px;line-height:1.5;margin:6px 0">This panel shows when your phone camera becomes available to BEA. Keep scanning while you connect or enable your phone camera.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px">
+            <div style="background:#fff;border:1px solid #d5e5f5;border-radius:8px;padding:9px"><b>🔌 USB phone camera</b><div id="beaPhoneUsbStatus" role="status" style="font-size:12px;margin-top:5px;color:#805400">Waiting for an Android webcam driver/app to expose the phone as a Windows camera. Then press Scan available cameras.</div></div>
+            <div style="background:#fff;border:1px solid #d5e5f5;border-radius:8px;padding:9px"><b>📶 Wi-Fi phone camera</b><div id="beaPhoneWifiStatus" role="status" style="font-size:12px;margin-top:5px;color:#805400">Waiting for a phone webcam stream. Connect phone and laptop to the same Wi-Fi, then add its supported RTSP stream through the BEA Camera Bridge.</div></div>
+          </div>
+          <div id="beaPhoneDetectionResult" role="status" aria-live="polite" style="font-size:12px;margin-top:9px;font-weight:700">Phone camera: not detected yet. Laptop cameras remain available.</div>
+          <div style="font-size:11px;line-height:1.45;margin-top:6px;color:#526a80">Important: scanning cannot discover a phone that is not connected or whose camera is not shared. USB requires compatible webcam software/driver on Windows. Wi-Fi requires a phone app or gateway that provides a supported stream; the BEA bridge does not install or control phone apps.</div>
+        </div>
         <div class="camera-note" style="margin:0 0 12px">BEA searches the camera sources made available by your computer and browser. This includes built-in and external webcams, USB/UVC cameras, phones in webcam mode, HDMI/SDI capture cards, PTZ cameras exposed as webcams, and virtual cameras.</div>
         <div id="beaCameraCompatibility" style="margin:0 0 14px;padding:13px;border:1px solid #cbdced;border-radius:10px;background:#f5f9fe;color:#18324d">
           <b>🌐 BEA Universal Camera Discovery</b>
@@ -1953,6 +1963,26 @@ async function removeStreamFromPeers(stream){
 }
 function qualityConstraints(q){let w=1920,h=1080;if(q==='720'){w=1280;h=720;}if(q==='4k'){w=3840;h=2160;}return {width:{ideal:w},height:{ideal:h},frameRate:{ideal:30,max:30}};}
 function escapeHtml(value){return String(value).replace(/[&<>\"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));}
+function beaUpdatePhoneDetection(cameras=[]){
+ const labels=cameras.map(d=>String(d.label||'').toLowerCase());
+ const phonePattern=/phone|android|iphone|pixel|samsung|infinix|droidcam|iriun|epoccam|ivcam|camo|vivo|oppo|xiaomi|redmi|huawei/;
+ const phoneDevices=labels.filter(label=>phonePattern.test(label));
+ const usb=document.getElementById('beaPhoneUsbStatus');
+ const wifi=document.getElementById('beaPhoneWifiStatus');
+ const result=document.getElementById('beaPhoneDetectionResult');
+ if(phoneDevices.length){
+  if(usb){usb.textContent='Phone camera detected by Windows/browser: '+phoneDevices.join(', ')+'. Select it in the Teacher or Whole Hall camera list.';usb.style.color='#176b3a';}
+  if(result){result.textContent='📱 PHONE CAMERA DETECTED — '+phoneDevices.length+' phone camera source(s) found.';result.style.color='#176b3a';}
+ }else{
+  if(usb){usb.textContent='No phone webcam device is exposed to Windows yet. Connect by USB, enable the webcam mode/app and driver, then scan again.';usb.style.color='#805400';}
+  if(result){result.textContent='Phone camera: not detected yet. '+cameras.length+' computer/browser camera source(s) found. When a phone source appears, it will be identified here.';result.style.color='#805400';}
+ }
+ if(wifi){
+  const saved=(window.beaBridgeCameras||[]).filter(c=>/phone|android|iphone|pixel|samsung|infinix|droidcam|iriun|epoccam|ivcam|camo/i.test(String(c.name||'')+' '+String(c.address||'')));
+  wifi.textContent=saved.length?'Possible phone stream saved in Camera Bridge: '+saved.map(c=>c.name).join(', ')+'. Choose it under Teacher or Whole Hall.':'No phone stream identified in saved bridge cameras. Add the phone app’s supported RTSP stream in the manual RTSP section after connecting both devices to the same Wi-Fi.';
+  wifi.style.color=saved.length?'#176b3a':'#805400';
+ }
+}
 async function refreshCameras(requestPermission=false){
  const discovery=$('cameraDiscoveryStatus');
  if(!navigator.mediaDevices?.enumerateDevices){
@@ -1968,6 +1998,7 @@ async function refreshCameras(requestPermission=false){
    finally{if(temporaryStream)temporaryStream.getTracks().forEach(track=>track.stop());}
   }
   const cams=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');
+  beaUpdatePhoneDetection(cams);
   [teacherSelect,hallSelect].forEach((sel,i)=>{
    const old=sel.value;sel.innerHTML='';
    cams.forEach((d,n)=>{const o=document.createElement('option');o.value=d.deviceId;o.textContent=d.label||('Camera '+(n+1)+' (name hidden until permission)');sel.appendChild(o);});
@@ -2567,6 +2598,7 @@ async function beaBridgeRefresh() {
   const data=await beaBridgeFetch('/api/cameras');
   window.beaBridgeCameras=data.cameras||[];
   beaBridgePopulate();
+  beaUpdatePhoneDetection((await navigator.mediaDevices.enumerateDevices().catch(()=>[])).filter(d=>d.kind==='videoinput'));
 }
 async function beaBridgeConnect() {
   const input=document.getElementById('beaBridgeToken');
