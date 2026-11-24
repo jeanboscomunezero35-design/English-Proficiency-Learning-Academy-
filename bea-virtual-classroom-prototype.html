@@ -2098,32 +2098,55 @@ $('startHall').onclick=()=>startVideo('hall');
 $('stopTeacher').onclick=()=>stopVideo('teacher');
 $('stopHall').onclick=()=>stopVideo('hall');
 
+// Continuous local camera discovery. The browser is re-queried while the teacher
+// scans, and devicechange events trigger an immediate refresh when supported.
+let beaCameraScanTimer=null;
+let beaCameraScanBusy=false;
+let beaCameraScanPrevious='';
+async function beaRunCameraScanCycle(first=false){
+  if(beaCameraScanBusy)return;
+  beaCameraScanBusy=true;
+  const title=$('beaCameraScanTitle'),detail=$('beaCameraScanDetail'),discovery=$('cameraDiscoveryStatus');
+  try{
+    const cams=await refreshCameras(first);
+    const signature=cams.map(c=>c.deviceId+'|'+c.label).sort().join('::');
+    const changed=signature!==beaCameraScanPrevious;
+    beaCameraScanPrevious=signature;
+    if(title)title.textContent='BEA is searching for cameras… '+cams.length+' currently detected.';
+    if(detail)detail.textContent=changed&&cams.length
+      ?'Camera list updated. A newly available camera may now be selected. Scanning continues for more cameras.'
+      :'Keep this search running while you connect or enable another USB/webcam device. BEA checks again every few seconds.';
+    if(discovery)discovery.textContent='Continuous scan active — '+cams.length+' camera device(s) currently available. Connect another camera and BEA will check again.';
+  }catch(err){
+    console.error('BEA continuous camera scan:',err);
+    if(title)title.textContent='BEA is still trying to search for cameras…';
+    if(detail)detail.textContent=err.message||'Camera check failed. Check browser permission; BEA will try again.';
+    if(discovery)discovery.textContent='Camera check had a problem. The next scan attempt will run automatically.';
+  }finally{beaCameraScanBusy=false;}
+}
+function beaStopContinuousCameraScan(){
+  if(beaCameraScanTimer){clearInterval(beaCameraScanTimer);beaCameraScanTimer=null;}
+  const b=$('scanCameras'),panel=$('beaCameraScanPanel'),title=$('beaCameraScanTitle'),detail=$('beaCameraScanDetail'),discovery=$('cameraDiscoveryStatus');
+  if(panel){panel.classList.remove('active');panel.classList.add('done');}
+  if(title)title.textContent='Camera search paused.';
+  if(detail)detail.textContent='The latest detected camera list is kept below. Press Scan available cameras to resume continuous discovery.';
+  if(discovery)discovery.textContent='Camera search paused. The latest camera list is still available.';
+  if(b){b.removeAttribute('aria-busy');b.textContent='🔎 Scan available cameras';b.setAttribute('aria-pressed','false');}
+}
 if($('scanCameras')){
+  $('scanCameras').setAttribute('aria-pressed','false');
   $('scanCameras').onclick=async()=>{
     const b=$('scanCameras'),panel=$('beaCameraScanPanel'),title=$('beaCameraScanTitle'),detail=$('beaCameraScanDetail'),discovery=$('cameraDiscoveryStatus');
-    if(b.disabled)return;
-    b.disabled=true;b.setAttribute('aria-busy','true');b.textContent='🔎 Searching cameras…';
+    if(beaCameraScanTimer){beaStopContinuousCameraScan();return;}
+    b.setAttribute('aria-busy','true');b.setAttribute('aria-pressed','true');b.textContent='■ Stop scanning';
     if(panel){panel.classList.add('active');panel.classList.remove('done');}
-    if(title)title.textContent='BEA is searching for cameras…';
-    if(detail)detail.textContent='Checking camera devices available to this browser. If permission is requested, choose Allow.';
-    if(discovery)discovery.textContent='Camera search is running. Please wait…';
-    // Allow the progress animation to paint before the browser permission/device check begins.
+    if(title)title.textContent='BEA is searching for available cameras…';
+    if(detail)detail.textContent='Checking this computer now, then checking again every few seconds. Connect an external camera while this search remains active.';
+    if(discovery)discovery.textContent='Continuous camera search starting…';
     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-    try{
-      const cams=await refreshCameras(true);
-      if(panel)panel.classList.add('done');
-      if(title)title.textContent=cams.length?('Search complete — '+cams.length+' camera device(s) found.'):'Search complete — no camera devices found.';
-      if(detail)detail.textContent=cams.length?'Choose the camera from the Teacher Camera or Whole Hall selector, then click Start Camera.':'Connect or enable the camera in Windows, check its driver/webcam mode, and scan again.';
-    }catch(err){
-      console.error('BEA camera scan failed:',err);
-      if(panel)panel.classList.add('done');
-      if(title)title.textContent='Camera search could not be completed.';
-      if(detail)detail.textContent=err.message||'Check browser camera permission and try again.';
-      if(discovery)discovery.textContent='Camera search failed. Check camera permission and try again.';
-    }finally{
-      b.disabled=false;b.removeAttribute('aria-busy');b.textContent='🔎 Scan available cameras';
-      // Keep the completed panel visible; it is replaced only when the teacher starts another scan.
-    }
+    await beaRunCameraScanCycle(true);
+    if(beaCameraScanTimer){clearInterval(beaCameraScanTimer);}
+    beaCameraScanTimer=setInterval(()=>beaRunCameraScanCycle(false),2500);
   };
 }
 if($('refreshCameras')){
@@ -2139,7 +2162,7 @@ if($('stopAllCameras')){
     stopVideo('hall');
   };
 }
-navigator.mediaDevices?.addEventListener?.('devicechange',()=>{const st=$('cameraDiscoveryStatus');if(st)st.textContent='A camera connection changed. Updating available camera sources…';refreshCameras(false);});
+navigator.mediaDevices?.addEventListener?.('devicechange',()=>{const st=$('cameraDiscoveryStatus');if(st)st.textContent='A camera connection changed. Updating available camera sources…';if(beaCameraScanTimer)beaRunCameraScanCycle(false);else refreshCameras(false);});
 async function startMic(){
  try{
   if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone is not supported by this browser.');
@@ -2480,6 +2503,30 @@ window.beaBridgeBase = 'http://127.0.0.1:8765';
 window.beaMediaBase = 'http://127.0.0.1:8889';
 window.beaBridgeToken = localStorage.getItem('beaCameraBridgeToken') || '';
 window.beaBridgeCameras = [];
+window.beaBridgeAuthenticated = false;
+
+async function beaCheckBridgeHealth(){
+  const status=document.getElementById('beaCameraBridgeStatus');
+  if(!status)return;
+  try{
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),2500);
+    let response;
+    try{response=await fetch(window.beaBridgeBase+'/health',{method:'GET',cache:'no-store',signal:controller.signal});}
+    finally{clearTimeout(timer);}
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    if(window.beaBridgeAuthenticated){
+      status.textContent='Camera Bridge: service running and authenticated. Saved network cameras: '+window.beaBridgeCameras.length+'.';
+      status.style.color='#176b3a';
+    }else{
+      status.textContent='Camera Bridge: service is running, but a local bridge token is still required to connect.';
+      status.style.color='#805400';
+    }
+  }catch(error){
+    status.textContent='Camera Bridge: not reachable on this computer. Start the separate BEA Camera Bridge service; local USB camera scanning still works.';
+    status.style.color='#a12626';
+  }
+}
 
 function beaBridgeMessage(message, bad=false) {
   const el = document.getElementById('beaBridgeMessage');
@@ -2522,6 +2569,7 @@ async function beaBridgeConnect() {
   const h=await fetch(window.beaBridgeBase+'/health');
   if(!h.ok) throw new Error('The local bridge did not respond. Start START-BEA-CAMERA-BRIDGE.bat first.');
   localStorage.setItem('beaCameraBridgeToken',token);
+  window.beaBridgeAuthenticated=true;
   await beaBridgeRefresh();
   const status=document.getElementById('beaCameraBridgeStatus');
   if(status)status.textContent='Camera Bridge: connected on this teacher computer. Saved authorised network cameras: '+window.beaBridgeCameras.length+'.';
@@ -2613,6 +2661,9 @@ async function beaStartNetworkCamera(which) {
   updateOverallStatus();
   beaBridgeMessage(camera.name+' is live in the '+(teacher?'Teacher':'Whole Hall')+' view. Existing BEA WebRTC connections will relay it to students.');
 }
+beaCheckBridgeHealth();
+setInterval(beaCheckBridgeHealth,5000);
+
 document.getElementById('beaBridgeConnect')?.addEventListener('click',()=>beaBridgeConnect().catch(e=>beaBridgeMessage(e.message,true)));
 document.getElementById('beaBridgeScan')?.addEventListener('click',()=>beaBridgeDiscover().catch(e=>beaBridgeMessage(e.message,true)));
 document.getElementById('beaBridgeRefresh')?.addEventListener('click',()=>beaBridgeRefresh().catch(e=>beaBridgeMessage(e.message,true)));
