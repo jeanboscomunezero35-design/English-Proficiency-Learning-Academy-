@@ -928,6 +928,20 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
 .bea-teacher-board-controls label{display:flex;gap:8px;align-items:center;font-weight:700}.bea-teacher-board-controls span{display:block;margin-top:6px;color:#425b78}
 #beaStudentColumnWritingText{white-space:pre-wrap}
 @media(max-width:600px){.bea-type-toolbar{gap:6px}.bea-rich-editor{font-size:18px;min-height:100px}}
+
+/* BEA camera scan: keep progress visible for the full device check */
+.bea-scan-panel{display:none;margin:0 0 12px;padding:12px 14px;border:1px solid #9fc5e8;border-radius:10px;background:#f0f7ff;color:#17466f}
+.bea-scan-panel.active{display:flex;gap:11px;align-items:center}
+.bea-scan-spinner{width:20px;height:20px;flex:0 0 20px;border:3px solid #c6def3;border-top-color:#1769aa;border-radius:50%;animation:beaScanSpin .8s linear infinite}
+.bea-scan-panel.done .bea-scan-spinner{animation:none;border:0;width:20px;height:20px;background:#198754;border-radius:50%;position:relative}
+.bea-scan-panel.done .bea-scan-spinner:after{content:"✓";position:absolute;inset:0;color:#fff;font-weight:800;text-align:center;line-height:20px}
+.bea-scan-track{height:5px;margin-top:7px;overflow:hidden;border-radius:8px;background:#d4e5f5}
+.bea-scan-track:after{content:"";display:block;width:32%;height:100%;border-radius:8px;background:#1769aa;animation:beaScanSweep 1.15s ease-in-out infinite}
+.bea-scan-panel.done .bea-scan-track:after{animation:none;width:100%;background:#198754}
+@keyframes beaScanSpin{to{transform:rotate(360deg)}}
+@keyframes beaScanSweep{from{transform:translateX(-110%)}to{transform:translateX(320%)}}
+@media(prefers-reduced-motion:reduce){.bea-scan-spinner,.bea-scan-track:after{animation:none}}
+
 </style>
 </head>
 <body>
@@ -945,6 +959,10 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
         <div class="camera-global-controls" style="margin:0 0 12px;align-items:center">
           <button class="secondary" id="scanCameras" type="button">🔎 Scan available cameras</button>
           <span id="cameraDiscoveryStatus" class="camera-note" role="status" aria-live="polite">Camera list is ready to scan.</span>
+        </div>
+        <div id="beaCameraScanPanel" class="bea-scan-panel" role="status" aria-live="polite" aria-atomic="true">
+          <span class="bea-scan-spinner" aria-hidden="true"></span>
+          <div style="flex:1;min-width:0"><b id="beaCameraScanTitle">BEA is searching for cameras…</b><div id="beaCameraScanDetail" style="font-size:12px;margin-top:3px">Checking camera devices available to this browser. If permission is requested, choose Allow.</div><div class="bea-scan-track" aria-hidden="true"></div></div>
         </div>
         <div id="cameraDetectedList" class="camera-note" aria-live="polite" style="margin:0 0 12px;padding:10px;border:1px solid #d5e5f5;border-radius:8px;background:#f7fbff">No scan results yet. Select <b>Scan available cameras</b> to search devices recognised by this computer.</div>
         <div class="camera-note" style="margin:0 0 12px">BEA searches the camera sources made available by your computer and browser. This includes built-in and external webcams, USB/UVC cameras, phones in webcam mode, HDMI/SDI capture cards, PTZ cameras exposed as webcams, and virtual cameras.</div>
@@ -2081,7 +2099,32 @@ $('stopTeacher').onclick=()=>stopVideo('teacher');
 $('stopHall').onclick=()=>stopVideo('hall');
 
 if($('scanCameras')){
-  $('scanCameras').onclick=async()=>{const b=$('scanCameras');b.disabled=true;b.textContent='🔎 Searching cameras…';try{await refreshCameras(true);}finally{b.disabled=false;b.textContent='🔎 Scan available cameras';}};
+  $('scanCameras').onclick=async()=>{
+    const b=$('scanCameras'),panel=$('beaCameraScanPanel'),title=$('beaCameraScanTitle'),detail=$('beaCameraScanDetail'),discovery=$('cameraDiscoveryStatus');
+    if(b.disabled)return;
+    b.disabled=true;b.setAttribute('aria-busy','true');b.textContent='🔎 Searching cameras…';
+    if(panel){panel.classList.add('active');panel.classList.remove('done');}
+    if(title)title.textContent='BEA is searching for cameras…';
+    if(detail)detail.textContent='Checking camera devices available to this browser. If permission is requested, choose Allow.';
+    if(discovery)discovery.textContent='Camera search is running. Please wait…';
+    // Allow the progress animation to paint before the browser permission/device check begins.
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    try{
+      const cams=await refreshCameras(true);
+      if(panel)panel.classList.add('done');
+      if(title)title.textContent=cams.length?('Search complete — '+cams.length+' camera device(s) found.'):'Search complete — no camera devices found.';
+      if(detail)detail.textContent=cams.length?'Choose the camera from the Teacher Camera or Whole Hall selector, then click Start Camera.':'Connect or enable the camera in Windows, check its driver/webcam mode, and scan again.';
+    }catch(err){
+      console.error('BEA camera scan failed:',err);
+      if(panel)panel.classList.add('done');
+      if(title)title.textContent='Camera search could not be completed.';
+      if(detail)detail.textContent=err.message||'Check browser camera permission and try again.';
+      if(discovery)discovery.textContent='Camera search failed. Check camera permission and try again.';
+    }finally{
+      b.disabled=false;b.removeAttribute('aria-busy');b.textContent='🔎 Scan available cameras';
+      // Keep the completed panel visible; it is replaced only when the teacher starts another scan.
+    }
+  };
 }
 if($('refreshCameras')){
   $('refreshCameras').onclick=()=>refreshCameras(false);
