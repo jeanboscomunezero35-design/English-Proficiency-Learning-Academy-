@@ -965,16 +965,6 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
           <div style="flex:1;min-width:0"><b id="beaCameraScanTitle">BEA is searching for cameras…</b><div id="beaCameraScanDetail" style="font-size:12px;margin-top:3px">Checking camera devices available to this browser. If permission is requested, choose Allow.</div><div class="bea-scan-track" aria-hidden="true"></div></div>
         </div>
         <div id="cameraDetectedList" class="camera-note" aria-live="polite" style="margin:0 0 12px;padding:10px;border:1px solid #d5e5f5;border-radius:8px;background:#f7fbff">No scan results yet. Select <b>Scan available cameras</b> to search devices recognised by this computer.</div>
-        <div id="beaPhoneCameraPanel" style="margin:0 0 14px;padding:13px;border:1px solid #9fc8e8;border-radius:10px;background:#f0f8ff;color:#18324d">
-          <b>📱 BEA PHONE CAMERA DETECTION — USB + Wi-Fi</b>
-          <p style="font-size:12px;line-height:1.5;margin:6px 0">This panel shows when your phone camera becomes available to BEA. Keep scanning while you connect or enable your phone camera.</p>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px">
-            <div style="background:#fff;border:1px solid #d5e5f5;border-radius:8px;padding:9px"><b>🔌 USB phone camera</b><div id="beaPhoneUsbStatus" role="status" style="font-size:12px;margin-top:5px;color:#805400">Waiting for an Android webcam driver/app to expose the phone as a Windows camera. Then press Scan available cameras.</div></div>
-            <div style="background:#fff;border:1px solid #d5e5f5;border-radius:8px;padding:9px"><b>📶 Wi-Fi phone camera</b><div id="beaPhoneWifiStatus" role="status" style="font-size:12px;margin-top:5px;color:#805400">Waiting for a phone webcam stream. Connect phone and laptop to the same Wi-Fi, then add its supported RTSP stream through the BEA Camera Bridge.</div></div>
-          </div>
-          <div id="beaPhoneDetectionResult" role="status" aria-live="polite" style="font-size:12px;margin-top:9px;font-weight:700">Phone camera: not detected yet. Laptop cameras remain available.</div>
-          <div style="font-size:11px;line-height:1.45;margin-top:6px;color:#526a80">Important: scanning cannot discover a phone that is not connected or whose camera is not shared. USB requires compatible webcam software/driver on Windows. Wi-Fi requires a phone app or gateway that provides a supported stream; the BEA bridge does not install or control phone apps.</div>
-        </div>
         <div class="camera-note" style="margin:0 0 12px">BEA searches the camera sources made available by your computer and browser. This includes built-in and external webcams, USB/UVC cameras, phones in webcam mode, HDMI/SDI capture cards, PTZ cameras exposed as webcams, and virtual cameras.</div>
         <div id="beaCameraCompatibility" style="margin:0 0 14px;padding:13px;border:1px solid #cbdced;border-radius:10px;background:#f5f9fe;color:#18324d">
           <b>🌐 BEA Universal Camera Discovery</b>
@@ -987,10 +977,10 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
           <div id="beaCameraBridgeStatus" style="margin-top:8px;font-size:11px;color:#805400">Camera Bridge: checking connection…</div>
           <div id="beaBridgePanel" style="margin-top:12px;padding:12px;background:#fff;border:1px solid #d5e5f5;border-radius:9px">
             <b>🔗 BEA Camera Bridge — authorised Wi-Fi / IP cameras</b>
-            <p style="font-size:12px;margin:6px 0">Install and start the separate BEA Camera Bridge on this teacher computer. Then paste its local token and connect. Camera passwords stay in the local bridge configuration.</p>
+            <p style="font-size:12px;margin:6px 0">Run the BEA Camera Bridge on this teacher computer, then connect it here. Camera passwords remain on that computer.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
               <label for="beaBridgeToken" style="font-size:12px;font-weight:700">Local bridge token</label>
-              <input id="beaBridgeToken" type="password" autocomplete="off" placeholder="Paste token from bridge-token.txt after installing bridge" style="min-width:240px;flex:1;padding:9px;border:1px solid #c8d7e6;border-radius:6px">
+              <input id="beaBridgeToken" type="password" autocomplete="off" placeholder="Paste token from bridge-token.txt" style="min-width:240px;flex:1;padding:9px;border:1px solid #c8d7e6;border-radius:6px">
               <button class="secondary" id="beaBridgeConnect" type="button">Connect bridge</button>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
@@ -999,7 +989,7 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
             </div>
             <div id="beaBridgeFound" style="font-size:12px;margin-top:8px"></div>
             <div id="beaBridgeAddForm" style="display:none;margin-top:10px;padding:10px;background:#f5f9fe;border-radius:7px">
-              <b id="beaBridgeChosenTitle">ONVIF setup (use manual RTSP below)</b>
+              <b id="beaBridgeChosenTitle">Add discovered camera</b>
               <input id="beaBridgeAddress" type="hidden">
               <label style="display:block;font-size:12px;margin-top:7px">Camera username</label><input id="beaBridgeUsername" autocomplete="off" style="width:100%;padding:8px">
               <label style="display:block;font-size:12px;margin-top:7px">Camera password</label><input id="beaBridgePassword" type="password" autocomplete="new-password" style="width:100%;padding:8px">
@@ -1963,26 +1953,6 @@ async function removeStreamFromPeers(stream){
 }
 function qualityConstraints(q){let w=1920,h=1080;if(q==='720'){w=1280;h=720;}if(q==='4k'){w=3840;h=2160;}return {width:{ideal:w},height:{ideal:h},frameRate:{ideal:30,max:30}};}
 function escapeHtml(value){return String(value).replace(/[&<>\"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));}
-function beaUpdatePhoneDetection(cameras=[]){
- const labels=cameras.map(d=>String(d.label||'').toLowerCase());
- const phonePattern=/phone|android|iphone|pixel|samsung|infinix|droidcam|iriun|epoccam|ivcam|camo|vivo|oppo|xiaomi|redmi|huawei/;
- const phoneDevices=labels.filter(label=>phonePattern.test(label));
- const usb=document.getElementById('beaPhoneUsbStatus');
- const wifi=document.getElementById('beaPhoneWifiStatus');
- const result=document.getElementById('beaPhoneDetectionResult');
- if(phoneDevices.length){
-  if(usb){usb.textContent='Phone camera detected by Windows/browser: '+phoneDevices.join(', ')+'. Select it in the Teacher or Whole Hall camera list.';usb.style.color='#176b3a';}
-  if(result){result.textContent='📱 PHONE CAMERA DETECTED — '+phoneDevices.length+' phone camera source(s) found.';result.style.color='#176b3a';}
- }else{
-  if(usb){usb.textContent='No phone webcam device is exposed to Windows yet. Connect by USB, enable the webcam mode/app and driver, then scan again.';usb.style.color='#805400';}
-  if(result){result.textContent='Phone camera: not detected yet. '+cameras.length+' computer/browser camera source(s) found. When a phone source appears, it will be identified here.';result.style.color='#805400';}
- }
- if(wifi){
-  const saved=(window.beaBridgeCameras||[]).filter(c=>/phone|android|iphone|pixel|samsung|infinix|droidcam|iriun|epoccam|ivcam|camo/i.test(String(c.name||'')+' '+String(c.address||'')));
-  wifi.textContent=saved.length?'Possible phone stream saved in Camera Bridge: '+saved.map(c=>c.name).join(', ')+'. Choose it under Teacher or Whole Hall.':'No phone stream identified in saved bridge cameras. Add the phone app’s supported RTSP stream in the manual RTSP section after connecting both devices to the same Wi-Fi.';
-  wifi.style.color=saved.length?'#176b3a':'#805400';
- }
-}
 async function refreshCameras(requestPermission=false){
  const discovery=$('cameraDiscoveryStatus');
  if(!navigator.mediaDevices?.enumerateDevices){
@@ -1998,7 +1968,6 @@ async function refreshCameras(requestPermission=false){
    finally{if(temporaryStream)temporaryStream.getTracks().forEach(track=>track.stop());}
   }
   const cams=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');
-  beaUpdatePhoneDetection(cams);
   [teacherSelect,hallSelect].forEach((sel,i)=>{
    const old=sel.value;sel.innerHTML='';
    cams.forEach((d,n)=>{const o=document.createElement('option');o.value=d.deviceId;o.textContent=d.label||('Camera '+(n+1)+' (name hidden until permission)');sel.appendChild(o);});
@@ -2530,7 +2499,7 @@ window.addEventListener('error', function(e) {
 /* BEA Camera Bridge integration — network camera becomes a MediaStream,
    then uses the existing BEA WebRTC peer connections to reach students. */
 window.beaWhepConnections = window.beaWhepConnections || {};
-window.beaBridgeBase = 'http://127.0.0.1:8765'; // loopback-only local service
+window.beaBridgeBase = 'http://127.0.0.1:8765';
 window.beaMediaBase = 'http://127.0.0.1:8889';
 window.beaBridgeToken = localStorage.getItem('beaCameraBridgeToken') || '';
 window.beaBridgeCameras = [];
@@ -2538,26 +2507,24 @@ window.beaBridgeAuthenticated = false;
 
 async function beaCheckBridgeHealth(){
   const status=document.getElementById('beaCameraBridgeStatus');
-  if(!status)return false;
+  if(!status)return;
   try{
     const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),3500);
+    const timer=setTimeout(()=>controller.abort(),2500);
     let response;
-    try{response=await fetch(window.beaBridgeBase+'/health',{method:'GET',mode:'cors',cache:'no-store',signal:controller.signal});}
+    try{response=await fetch(window.beaBridgeBase+'/health',{method:'GET',cache:'no-store',signal:controller.signal});}
     finally{clearTimeout(timer);}
     if(!response.ok)throw new Error('HTTP '+response.status);
-    const health=await response.json().catch(()=>({}));
-    status.textContent=window.beaBridgeAuthenticated
-      ? 'Camera Bridge: running and authenticated. Saved network cameras: '+window.beaBridgeCameras.length+'.'
-      : 'Camera Bridge: running on this computer. Enter the local token, then connect.';
-    status.style.color=window.beaBridgeAuthenticated?'#176b3a':'#805400';
-    if(health.version)status.title='BEA Camera Bridge '+health.version;
-    return true;
+    if(window.beaBridgeAuthenticated){
+      status.textContent='Camera Bridge: service running and authenticated. Saved network cameras: '+window.beaBridgeCameras.length+'.';
+      status.style.color='#176b3a';
+    }else{
+      status.textContent='Camera Bridge: service is running, but a local bridge token is still required to connect.';
+      status.style.color='#805400';
+    }
   }catch(error){
-    status.textContent='Camera Bridge: not reachable. Start BEA Camera Bridge on this teacher computer. USB camera scanning remains available.';
-    status.title='Connection detail: '+(error&&error.message?error.message:'local service unavailable')+'. Check that START-BEA-CAMERA-BRIDGE.bat is running and allow Node.js through Windows Firewall on Private networks.';
+    status.textContent='Camera Bridge: not reachable on this computer. Start the separate BEA Camera Bridge service; local USB camera scanning still works.';
     status.style.color='#a12626';
-    return false;
   }
 }
 
@@ -2568,12 +2535,7 @@ function beaBridgeMessage(message, bad=false) {
 async function beaBridgeFetch(route, options={}) {
   const headers = Object.assign({'Content-Type':'application/json'}, options.headers || {});
   if (window.beaBridgeToken) headers.Authorization = 'Bearer ' + window.beaBridgeToken;
-  let response;
-  try{
-    response=await fetch(window.beaBridgeBase + route, Object.assign({mode:'cors',cache:'no-store'}, options, {headers}));
-  }catch(error){
-    throw new Error('Cannot reach the local BEA Camera Bridge. Start START-BEA-CAMERA-BRIDGE.bat on this computer, then reload this page. If it is running, allow Node.js through Windows Firewall on Private networks. ('+(error.message||'network/CORS error')+')');
-  }
+  const response = await fetch(window.beaBridgeBase + route, Object.assign({}, options, {headers}));
   const data = await response.json().catch(()=>({}));
   if (!response.ok) throw new Error(data.error || ('Bridge request failed ('+response.status+')'));
   return data;
@@ -2598,14 +2560,13 @@ async function beaBridgeRefresh() {
   const data=await beaBridgeFetch('/api/cameras');
   window.beaBridgeCameras=data.cameras||[];
   beaBridgePopulate();
-  beaUpdatePhoneDetection((await navigator.mediaDevices.enumerateDevices().catch(()=>[])).filter(d=>d.kind==='videoinput'));
 }
 async function beaBridgeConnect() {
   const input=document.getElementById('beaBridgeToken');
   const token=(input.value||window.beaBridgeToken||'').trim();
-  if(!token) throw new Error('Start the BEA Camera Bridge, then paste the token from bridge-token.txt.');
+  if(!token) throw new Error('Open bridge-token.txt on the teacher computer and paste its token first.');
   window.beaBridgeToken=token;
-  const h=await fetch(window.beaBridgeBase+'/health',{mode:'cors',cache:'no-store'});
+  const h=await fetch(window.beaBridgeBase+'/health');
   if(!h.ok) throw new Error('The local bridge did not respond. Start START-BEA-CAMERA-BRIDGE.bat first.');
   localStorage.setItem('beaCameraBridgeToken',token);
   window.beaBridgeAuthenticated=true;
@@ -2620,8 +2581,8 @@ async function beaBridgeDiscover() {
   const found=document.getElementById('beaBridgeFound');
   const devices=result.devices||[];
   if(!devices.length){if(found)found.textContent='No ONVIF cameras replied. Confirm that the camera and teacher computer are on the same network and ONVIF is enabled.';return;}
-  if(found)found.innerHTML='<b>Network video devices replied:</b><ul>'+devices.map(d=>'<li>'+escapeHtml(d.address)+'</li>').join('')+'</ul><div>For each camera, enter its RTSP stream address in the manual setup section below.</div>';
-  beaBridgeMessage('Discovery complete: '+devices.length+' device(s) replied. Add a camera using its RTSP address in the manual setup section.');
+  if(found)found.innerHTML='<b>ONVIF devices found:</b><ul>'+devices.map((d,i)=>'<li>'+escapeHtml(d.address)+' <button type="button" class="secondary" data-bea-onvif="'+escapeHtml(d.address)+'">Set up this camera</button></li>').join('')+'</ul>';
+  beaBridgeMessage('Discovery complete: '+devices.length+' ONVIF device(s) found. Select Set up this camera and enter its camera account locally.');
 }
 async function beaBridgeAddOnvif() {
   const address=document.getElementById('beaBridgeAddress').value;
