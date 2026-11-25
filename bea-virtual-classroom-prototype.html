@@ -2633,13 +2633,44 @@ async function beaBridgeAddOnvif() {
   await beaBridgeRefresh(); beaBridgeMessage('Camera added and MediaMTX is updating. Select it as Teacher or Whole Hall.');
 }
 async function beaBridgeAddManual() {
-  const body={name:document.getElementById('beaManualName').value,rtspUrl:document.getElementById('beaManualUrl').value,
-    username:document.getElementById('beaManualUsername').value,password:document.getElementById('beaManualPassword').value};
-  await beaBridgeFetch('/api/cameras/rtsp',{method:'POST',body:JSON.stringify(body)});
-  document.getElementById('beaManualPassword').value='';
-  await beaBridgeRefresh(); beaBridgeMessage('RTSP camera saved. The bridge is updating its media routes.');
+  const nameField = document.getElementById('beaManualName');
+  const urlField = document.getElementById('beaManualUrl');
+  const usernameField = document.getElementById('beaManualUsername');
+  const passwordField = document.getElementById('beaManualPassword');
+
+  const body = {
+    name: (nameField?.value || '').trim(),
+    rtspUrl: (urlField?.value || '').trim(),
+    username: (usernameField?.value || '').trim(),
+    password: passwordField?.value || ''
+  };
+
+  if (!body.name || !body.rtspUrl) {
+    beaBridgeMessage(
+      'Please enter both the camera name and RTSP address.',
+      true
+    );
+    return;
+  }
+
+  try {
+    await beaBridgeFetch('/api/cameras/rtsp', {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+
+    if (passwordField) passwordField.value = '';
+
+    await beaBridgeRefresh();
+
+    beaBridgeMessage(
+      'Camera saved successfully. Media routes are updating.'
+    );
+
+  } catch (error) {
+    beaBridgeMessage(error.message, true);
+  }
 }
-window.beaCloseWhep = async function(which) {
   const pc=window.beaWhepConnections[which];
   if(!pc)return;
   const resource=pc.__whepResource;
