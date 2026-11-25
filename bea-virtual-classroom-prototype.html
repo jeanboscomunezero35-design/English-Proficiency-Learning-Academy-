@@ -942,6 +942,36 @@ body.bea-student .board-wrap .board-tools, body.bea-student .board-wrap .board-i
 @keyframes beaScanSweep{from{transform:translateX(-110%)}to{transform:translateX(320%)}}
 @media(prefers-reduced-motion:reduce){.bea-scan-spinner,.bea-scan-track:after{animation:none}}
 
+
+/* BEA final student-gallery presentation tune. */
+#studentGallery .remote-video-name,
+#studentGallery .student-name {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+#studentGallery .remote-video-card,
+#studentGallery .student-video-card {
+  align-self: start !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+}
+#studentGallery video {
+  width: 100% !important;
+  max-width: none !important;
+  height: clamp(260px, 42vw, 420px) !important;
+  object-fit: contain !important;
+  background: transparent !important;
+}
+@media (max-width: 700px) {
+  #studentGallery video {
+    height: clamp(220px, 65vw, 340px) !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2548,9 +2578,11 @@ async function beaCheckBridgeHealth(){
     if(!response.ok)throw new Error('HTTP '+response.status);
     const health=await response.json().catch(()=>({}));
     status.textContent=window.beaBridgeAuthenticated
-      ? 'Camera Bridge: running and authenticated. Saved network cameras: '+window.beaBridgeCameras.length+'.'
-      : 'Camera Bridge: running on this computer. Enter the local token, then connect.';
-    status.style.color=window.beaBridgeAuthenticated?'#176b3a':'#805400';
+      ? 'BRIDGE: CONNECTED | NETWORK CAMERAS: '+(window.beaBridgeCameras.length ? window.beaBridgeCameras.length+' REGISTERED' : 'NONE REGISTERED')
+      : 'BRIDGE: RUNNING | NOT AUTHENTICATED — enter the local token.';
+    status.style.color=window.beaBridgeAuthenticated
+      ? (window.beaBridgeCameras.length ? '#176b3a' : '#a12626')
+      : '#805400';
     if(health.version)status.title='BEA Camera Bridge '+health.version;
     return true;
   }catch(error){
@@ -2598,6 +2630,11 @@ async function beaBridgeRefresh() {
   const data=await beaBridgeFetch('/api/cameras');
   window.beaBridgeCameras=data.cameras||[];
   beaBridgePopulate();
+  const status=document.getElementById('beaCameraBridgeStatus');
+  if(status && window.beaBridgeAuthenticated){
+    status.textContent='BRIDGE: CONNECTED | NETWORK CAMERAS: '+(window.beaBridgeCameras.length ? window.beaBridgeCameras.length+' REGISTERED' : 'NONE REGISTERED');
+    status.style.color=window.beaBridgeCameras.length ? '#176b3a' : '#a12626';
+  }
   beaUpdatePhoneDetection((await navigator.mediaDevices.enumerateDevices().catch(()=>[])).filter(d=>d.kind==='videoinput'));
 }
 async function beaBridgeConnect() {
@@ -2611,7 +2648,10 @@ async function beaBridgeConnect() {
   window.beaBridgeAuthenticated=true;
   await beaBridgeRefresh();
   const status=document.getElementById('beaCameraBridgeStatus');
-  if(status)status.textContent='Camera Bridge: connected on this teacher computer. Saved authorised network cameras: '+window.beaBridgeCameras.length+'.';
+  if(status){
+    status.textContent='BRIDGE: CONNECTED | NETWORK CAMERAS: '+(window.beaBridgeCameras.length ? window.beaBridgeCameras.length+' REGISTERED' : 'NONE REGISTERED');
+    status.style.color=window.beaBridgeCameras.length ? '#176b3a' : '#a12626';
+  }
   beaBridgeMessage('Bridge connected. You can now discover and register authorised local network cameras.');
 }
 async function beaBridgeDiscover() {
@@ -2633,45 +2673,26 @@ async function beaBridgeAddOnvif() {
   await beaBridgeRefresh(); beaBridgeMessage('Camera added and MediaMTX is updating. Select it as Teacher or Whole Hall.');
 }
 async function beaBridgeAddManual() {
-  const nameField = document.getElementById('beaManualName');
-  const urlField = document.getElementById('beaManualUrl');
-  const usernameField = document.getElementById('beaManualUsername');
-  const passwordField = document.getElementById('beaManualPassword');
-
-  const body = {
-    name: (nameField?.value || '').trim(),
-    rtspUrl: (urlField?.value || '').trim(),
-    username: (usernameField?.value || '').trim(),
-    password: passwordField?.value || ''
+  const nameField=document.getElementById('beaManualName');
+  const urlField=document.getElementById('beaManualUrl');
+  const usernameField=document.getElementById('beaManualUsername');
+  const passwordField=document.getElementById('beaManualPassword');
+  const body={
+    name:(nameField?.value||'').trim(),
+    rtspUrl:(urlField?.value||'').trim(),
+    username:(usernameField?.value||'').trim(),
+    password:passwordField?.value||''
   };
-
-  if (!body.name || !body.rtspUrl) {
-    beaBridgeMessage(
-      'Please enter both the camera name and RTSP address.',
-      true
-    );
+  if(!body.name || !body.rtspUrl){
+    beaBridgeMessage('Enter both the camera name and RTSP address before saving.',true);
     return;
   }
-
-  try {
-    await beaBridgeFetch('/api/cameras/rtsp', {
-      method: 'POST',
-      body: JSON.stringify(body)
-    });
-
-    if (passwordField) passwordField.value = '';
-
-    await beaBridgeRefresh();
-
-    beaBridgeMessage(
-      'Camera saved successfully. Media routes are updating.'
-    );
-
-  } catch (error) {
-    beaBridgeMessage(error.message, true);
-  }
+  await beaBridgeFetch('/api/cameras/rtsp',{method:'POST',body:JSON.stringify(body)});
+  if(passwordField)passwordField.value='';
+  await beaBridgeRefresh();
+  beaBridgeMessage('RTSP camera saved. The bridge is updating its media routes.');
 }
-  window.beaCloseWhep = async function(which) {
+window.beaCloseWhep = async function(which) {
   const pc=window.beaWhepConnections[which];
   if(!pc)return;
   const resource=pc.__whepResource;
@@ -2761,34 +2782,3 @@ if(window.beaBridgeToken && document.getElementById('beaBridgeToken'))document.g
 </script>
 </body>
 </html>
-
-/* BEA FINAL PRESENTATION TUNE — remove the student name strip and give
-   live learner feeds more visible screen area. CSS only: no camera,
-   Supabase, WebRTC, attendance, chat or whiteboard logic is changed. */
-#studentGallery .remote-video-name,
-#studentGallery .student-name {
-  display: none !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-}
-#studentGallery .remote-video-card,
-#studentGallery .student-video-card {
-  align-self: start !important;
-  justify-content: flex-start !important;
-  gap: 0 !important;
-}
-#studentGallery video {
-  width: 100% !important;
-  max-width: none !important;
-  height: clamp(260px, 42vw, 420px) !important;
-  object-fit: contain !important;
-  background: transparent !important;
-}
-@media (max-width: 700px) {
-  #studentGallery video {
-    height: clamp(220px, 65vw, 340px) !important;
-  }
-}
