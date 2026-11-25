@@ -2671,6 +2671,7 @@ async function beaBridgeAddManual() {
     beaBridgeMessage(error.message, true);
   }
 }
+  window.beaCloseWhep = async function(which) {
   const pc=window.beaWhepConnections[which];
   if(!pc)return;
   const resource=pc.__whepResource;
