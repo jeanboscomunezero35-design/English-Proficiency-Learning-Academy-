@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BEA External Camera Manager</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: #f2f5fa;
+      color: #17233b;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    header {
+      background: #12376a;
+      color: white;
+      padding: 25px;
+      border-radius: 14px;
+      margin-bottom: 22px;
+    }
+
+    header h1 { margin: 0 0 8px; }
+
+    .panel {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      box-shadow: 0 3px 12px #0000000d;
+    }
+
+    button, select {
+      padding: 12px;
+      border-radius: 7px;
+      border: 1px solid #ccd4e0;
+      margin: 5px 4px 5px 0;
+      font-size: 15px;
+    }
+
+    button {
+      background: #1766c2;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover { background: #104d96; }
+
+    video {
+      width: 100%;
+      max-height: 420px;
+      background: #111;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+
+    .status {
+      padding: 12px;
+      background: #edf3fb;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+
+    .note {
+      color: #536174;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 12px; }
+      .panel { padding: 15px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <header>
+    <h1>BEA External Camera Manager</h1>
+    <p>Building Confidence in English</p>
+    <p>Connect and manage cameras for Bosco English Academy.</p>
+  </header>
+
+  <section class="panel">
+    <h2>1. Camera Detection</h2>
+    <p class="note">
+      Connect a USB camera, or connect a wireless webcam to your computer
+      using its compatible application or driver.
+    </p>
+
+    <button id="scanBtn">Detect Available Cameras</button>
+
+    <label for="cameraSelect">Available cameras</label>
+    <select id="cameraSelect">
+      <option value="">Select a camera</option>
+    </select>
+
+    <div id="cameraStatus" class="status">
+      Camera manager is ready. Select Detect Available Cameras.
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>2. Live Camera Preview</h2>
+
+    <video id="cameraPreview" autoplay playsinline muted></video>
+
+    <br>
+    <button id="startBtn">Start Camera</button>
+    <button id="stopBtn">Stop Camera</button>
+
+    <div id="previewStatus" class="status">
+      No camera is currently active.
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>3. Camera Assignment</h2>
+
+    <label for="teacherCamera">Teacher camera</label>
+    <select id="teacherCamera">
+      <option value="">No camera selected</option>
+    </select>
+
+    <label for="classCamera">Classroom camera</label>
+    <select id="classCamera">
+      <option value="">No camera selected</option>
+    </select>
+
+    <p class="note">
+      These selections are currently local to this manager.
+      Integration with the BEA Virtual Classroom will be a separate step.
+    </p>
+  </section>
+
+  <section class="panel">
+    <h2>4. Wi-Fi and IP Cameras</h2>
+    <p class="note">
+      Network cameras may require a compatible BEA Camera Bridge or
+      streaming gateway. A browser cannot directly scan your Wi-Fi
+      network or open every raw RTSP camera address.
+    </p>
+    <div class="status">
+      Network camera service: awaiting compatible bridge setup.
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>5. Connection Information</h2>
+    <p class="note">
+      This manager detects cameras that your browser and computer expose
+      as available video devices. Camera access requires your permission.
+    </p>
+  </section>
+
+</div>
+
+<script>
+  const cameraSelect = document.getElementById("cameraSelect");
+  const teacherCamera = document.getElementById("teacherCamera");
+  const classCamera = document.getElementById("classCamera");
+  const cameraPreview = document.getElementById("cameraPreview");
+
+  let activeStream = null;
+
+  async function detectCameras() {
+    const status = document.getElementById("cameraStatus");
+
+    try {
+      // Request permission so camera names can be displayed.
+      const permissionStream =
+        await navigator.mediaDevices.getUserMedia({ video: true });
+
+      permissionStream.getTracks().forEach(track => track.stop());
+
+      const devices =
+        await navigator.mediaDevices.enumerateDevices();
+
+      const cameras = devices.filter(
+        device => device.kind === "videoinput"
+      );
+
+      [cameraSelect, teacherCamera, classCamera].forEach(select => {
+        select.innerHTML = "";
+
+        const firstOption = document.createElement("option");
+        firstOption.value = "";
+        firstOption.textContent = "Select a camera";
+        select.appendChild(firstOption);
+
+        cameras.forEach((camera, index) => {
+          const option = document.createElement("option");
+          option.value = camera.deviceId;
+          option.textContent =
+            camera.label || `Camera ${index + 1}`;
+          select.appendChild(option);
+        });
+      });
+
+      status.textContent = cameras.length
+        ? `${cameras.length} camera(s) detected successfully.`
+        : "No cameras detected.";
+
+    } catch (error) {
+      status.textContent =
+        "Camera access failed: " + error.message;
+    }
+  }
+
+  async function startCamera() {
+    const selectedId = cameraSelect.value;
+
+    if (!selectedId) {
+      document.getElementById("previewStatus").textContent =
+        "Please select a camera first.";
+      return;
+    }
+
+    try {
+      stopCamera();
+
+      activeStream =
+        await navigator.mediaDevices.getUserMedia({
+          video: {
+            deviceId: { exact: selectedId },
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            frameRate: { ideal: 30 }
+          },
+          audio: false
+        });
+
+      cameraPreview.srcObject = activeStream;
+
+      document.getElementById("previewStatus").textContent =
+        "Camera connected. Live preview is active.";
+
+    } catch (error) {
+      document.getElementById("previewStatus").textContent =
+        "Unable to start camera: " + error.message;
+    }
+  }
+
+  function stopCamera() {
+    if (activeStream) {
+      activeStream.getTracks().forEach(track => track.stop());
+      activeStream = null;
+    }
+
+    cameraPreview.srcObject = null;
+
+    document.getElementById("previewStatus").textContent =
+      "Camera stopped.";
+  }
+
+  document.getElementById("scanBtn")
+    .addEventListener("click", detectCameras);
+
+  document.getElementById("startBtn")
+    .addEventListener("click", startCamera);
+
+  document.getElementById("stopBtn")
+    .addEventListener("click", stopCamera);
+
+  cameraSelect.addEventListener("change", () => {
+    teacherCamera.value = cameraSelect.value;
+  });
+</script>
+
+</body>
+</html>
