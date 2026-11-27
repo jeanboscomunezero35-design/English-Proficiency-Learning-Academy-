@@ -3,24 +3,30 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const { randomUUID } = require("crypto");
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || "127.0.0.1";
+const HOST = process.env.HOST || "0.0.0.0";
 
+// BEA configuration
 const allowedOrigins = (
-  process.env.BEA_ALLOWED_ORIGINS ||
-  "http://localhost:3000"
+  process.env.BEA_ALLOWED_ORIGINS || ""
 )
   .split(",")
-  .map(origin => origin.trim());
+  .map(origin => origin.trim())
+  .filter(Boolean);
 
 app.use(helmet());
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (
+      !origin ||
+      allowedOrigins.length === 0 ||
+      allowedOrigins.includes(origin)
+    ) {
       return callback(null, true);
     }
 
@@ -28,47 +34,155 @@ app.use(cors({
   }
 }));
 
-app.use(express.json({ limit: "10kb" }));
+app.use(express.json({ limit: "20kb" }));
 
-// Main information endpoint
+// Temporary camera registry.
+// A database will replace this before production deployment.
+const cameras = new Map();
+
+const CAMERA_TYPES = [
+  "wifi-ip",
+  "4g-5g",
+  "wireless-ptz",
+  "onvif",
+  "rtsp",
+  "webrtc"
+];
+
+// MAIN INFORMATION
 app.get("/", (req, res) => {
   res.json({
-    name: "BEA Camera Bridge",
     academy: "Bosco English Academy",
+    service: "BEA Universal Camera Bridge",
     status: "Running",
-    version: "1.0.0"
+    version: "1.1.0"
   });
 });
 
-// Health check
+// HEALTH CHECK
 app.get("/health", (req, res) => {
   res.json({
     status: "healthy",
     service: "BEA Camera Bridge",
-    cameraStreaming: "Not yet configured"
+    cameraRegistration: "Available",
+    cameraStreaming: "Not yet implemented"
   });
 });
 
-// Bridge capabilities
+// BRIDGE CAPABILITIES
 app.get("/api/v1/bridge/info", (req, res) => {
   res.json({
     service: "BEA Universal Camera Bridge",
-    supportedTargets: [
-      "Compatible ONVIF cameras",
-      "Compatible RTSP cameras",
-      "WebRTC streaming cameras",
-      "Compatible 4G and 5G network cameras"
-    ],
+
+    supportedCameraTypes: CAMERA_TYPES,
+
     features: {
-      cameraRegistration: "Planned",
-      cameraDiscovery: "Planned",
-      videoStreaming: "Not yet implemented",
-      schoolAccounts: "Planned"
+      cameraRegistration: "Available",
+      cameraListing: "Available",
+      cameraRemoval: "Available",
+      onvifDiscovery: "Not yet implemented",
+      rtspStreaming: "Not yet implemented",
+      webrtcDelivery: "Not yet implemented",
+      schoolAccounts: "Planned",
+      cloudDeployment: "Planned"
     }
   });
 });
 
-// Error handler
+// REGISTER A CAMERA
+app.post("/api/v1/cameras", (req, res) => {
+  const { name, type, address, location, schoolId } = req.body;
+
+  if (!name || !type || !address) {
+    return res.status(400).json({
+      error: "Camera name, type and address are required."
+    });
+  }
+
+  if (!CAMERA_TYPES.includes(type)) {
+    return res.status(400).json({
+      error: "Unsupported camera connection type.",
+      supportedTypes: CAMERA_TYPES
+    });
+  }
+
+  if (
+    typeof name !== "string" ||
+    typeof address !== "string" ||
+    name.length > 100 ||
+    address.length > 500
+  ) {
+    return res.status(400).json({
+      error: "Invalid camera information."
+    });
+  }
+
+  const camera = {
+    id: randomUUID(),
+    name: name.trim(),
+    type,
+    address: address.trim(),
+    location: typeof location === "string" ? location.trim() : "",
+    schoolId: typeof schoolId === "string" ? schoolId.trim() : null,
+    status: "registered",
+    streaming: false,
+    createdAt: new Date().toISOString()
+  };
+
+  cameras.set(camera.id, camera);
+
+  res.status(201).json({
+    message: "Camera registered successfully.",
+    camera
+  });
+});
+
+// LIST ALL CAMERAS
+app.get("/api/v1/cameras", (req, res) => {
+  res.json({
+    total: cameras.size,
+    cameras: Array.from(cameras.values())
+  });
+});
+
+// GET ONE CAMERA
+app.get("/api/v1/cameras/:id", (req, res) => {
+  const camera = cameras.get(req.params.id);
+
+  if (!camera) {
+    return res.status(404).json({
+      error: "Camera not found."
+    });
+  }
+
+  res.json({ camera });
+});
+
+// REMOVE A CAMERA
+app.delete("/api/v1/cameras/:id", (req, res) => {
+  const exists = cameras.has(req.params.id);
+
+  if (!exists) {
+    return res.status(404).json({
+      error: "Camera not found."
+    });
+  }
+
+  cameras.delete(req.params.id);
+
+  res.json({
+    message: "Camera removed successfully."
+  });
+});
+
+// UNKNOWN ROUTES
+app.use((req, res) => {
+  res.status(404).json({
+    error: "BEA Bridge endpoint not found."
+  });
+});
+
+// ERROR HANDLER
 app.use((err, req, res, next) => {
   console.error("BEA Bridge error:", err.message);
 
@@ -77,12 +191,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
+// START SERVER
 app.listen(PORT, HOST, () => {
   console.log("--------------------------------");
-  console.log("BEA CAMERA BRIDGE");
+  console.log("BEA UNIVERSAL CAMERA BRIDGE");
   console.log("Server is running.");
-  console.log(`Address: http://${HOST}:${PORT}`);
+  console.log(`Port: ${PORT}`);
   console.log("--------------------------------");
 });
-
