@@ -1,1 +1,230 @@
+<!DOCTYPE html>
 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BEA Universal Wireless Camera Connector</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #f1f5fa;
+  color: #17233b;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+header {
+  background: #12376a;
+  color: white;
+  padding: 25px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.panel {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 12px #0000000d;
+}
+
+label {
+  display: block;
+  margin-top: 14px;
+  font-weight: bold;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 7px;
+  border: 1px solid #ccd4e0;
+  border-radius: 7px;
+  font-size: 15px;
+}
+
+button {
+  background: #1766c2;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #104d96;
+}
+
+.status {
+  padding: 13px;
+  background: #edf3fb;
+  border-radius: 8px;
+  margin-top: 13px;
+  line-height: 1.5;
+}
+
+.note {
+  color: #536174;
+  line-height: 1.6;
+}
+
+video {
+  width: 100%;
+  max-height: 400px;
+  background: #111;
+  border-radius: 10px;
+  margin-top: 12px;
+}
+
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <header>
+    <h1>BEA Universal Wireless Camera Connector</h1>
+    <p>Building Confidence in English</p>
+    <p>Connect compatible wireless cameras to Bosco English Academy.</p>
+  </header>
+
+  <section class="panel">
+    <h2>1. Camera Connection Type</h2>
+
+<label for="connectionType">Select connection type</label>
+<select id="connectionType">
+  <option value="wifi">Wi-Fi IP Camera</option>
+  <option value="mobile">4G / 5G SIM Camera</option>
+  <option value="ptz">Wireless PTZ Camera</option>
+  <option value="onvif">ONVIF Network Camera</option>
+  <option value="rtsp">RTSP Camera Stream</option>
+  <option value="webrtc">WebRTC Camera</option>
+</select>
+
+  </section>
+
+  <section class="panel">
+    <h2>2. Register External Camera</h2>
+
+<label for="cameraName">Camera name</label>
+<input id="cameraName" type="text"
+  placeholder="Example: BEA Classroom Camera">
+
+<label for="cameraAddress">Camera connection address</label>
+<input id="cameraAddress" type="text"
+  placeholder="Enter a supported camera address">
+
+<label for="cameraLocation">Camera location</label>
+<input id="cameraLocation" type="text"
+  placeholder="Example: Classroom 1">
+
+<button id="registerBtn">Register Camera</button>
+
+<div id="registerStatus" class="status">
+  Waiting for camera registration.
+</div>
+
+  </section>
+
+  <section class="panel">
+    <h2>3. Registered Cameras</h2>
+    <div id="cameraList" class="status">
+      No external cameras registered yet.
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>4. Camera Preview</h2>
+
+<video id="cameraPreview" autoplay playsinline muted controls></video>
+
+<div class="status">
+  Live streaming will be enabled after connecting a compatible
+  camera through the BEA Camera Bridge or a supported WebRTC service.
+</div>
+
+  </section>
+
+  <section class="panel">
+    <h2>5. Compatibility and Connection Information</h2>
+
+<p class="note">
+  BEA aims to support compatible Wi-Fi, 4G/5G, ONVIF, RTSP and
+  WebRTC cameras. Actual compatibility depends on the camera model,
+  its streaming protocols, network configuration and authentication.
+</p>
+
+<div class="status">
+  Wireless camera bridge: Not yet connected.
+</div>
+
+  </section>
+
+</div>
+
+<script>
+const cameraName = document.getElementById("cameraName");
+const cameraAddress = document.getElementById("cameraAddress");
+const cameraLocation = document.getElementById("cameraLocation");
+const connectionType = document.getElementById("connectionType");
+
+const registerBtn = document.getElementById("registerBtn");
+const registerStatus = document.getElementById("registerStatus");
+const cameraList = document.getElementById("cameraList");
+
+let registeredCameras = [];
+
+registerBtn.addEventListener("click", function() {
+  const name = cameraName.value.trim();
+  const address = cameraAddress.value.trim();
+  const location = cameraLocation.value.trim();
+
+  if (!name || !address) {
+    registerStatus.textContent =
+      "Please enter the camera name and connection address.";
+    return;
+  }
+
+  const camera = {
+    name: name,
+    address: address,
+    location: location || "Not specified",
+    type: connectionType.value
+  };
+
+  registeredCameras.push(camera);
+
+  cameraList.innerHTML = "";
+
+  registeredCameras.forEach((item, index) => {
+    const entry = document.createElement("div");
+    entry.className = "status";
+    entry.textContent =
+      (index + 1) + ". " + item.name +
+      " | " + item.type +
+      " | " + item.location;
+
+    cameraList.appendChild(entry);
+  });
+
+  registerStatus.textContent =
+    "Camera registered in this browser session. Streaming connection has not yet been established.";
+
+  cameraName.value = "";
+  cameraAddress.value = "";
+  cameraLocation.value = "";
+});
+</script>
+
+</body>
+</html>
